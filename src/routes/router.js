@@ -1,5 +1,6 @@
-module.exports = function (app){
-    var controller = require('../controllers/controller')
+const { authJwt } = require("../middlewares");
+const controller = require("../controllers/controller");
 
-    app.route('/').get(controller.show_homepage)
-}
+module.exports = function(app) {
+    app.get("/", controller.show_homepage);
+};

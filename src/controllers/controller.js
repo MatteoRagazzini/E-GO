@@ -1,6 +1,3 @@
-const mongoose = require('mongoose');
-model = require("../models/userModel")(mongoose)
-
 exports.show_homepage = (req,res)=>{
-    res.sendFile(appRoot + '/www/index.html');
-}
+    res.status(200).sendFile(appRoot + '/www/index.html');
+};

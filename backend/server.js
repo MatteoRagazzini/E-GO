@@ -5,7 +5,7 @@ const cors = require('cors')
 const path = require('path')
 
 const app = express()
-const port = 8080
+const port = 3000
 
 global.appRoot = path.resolve(__dirname);
 
@@ -32,7 +32,7 @@ db.mongoose
     });
 
 var corsOptions = {
-    origin: "http://localhost:8081"
+    origin: "http://127.0.0.1:8081"
 };
 
 app.use(cors(corsOptions))
@@ -48,7 +48,7 @@ require('./src/routes/auth.routes')(app);
 require('./src/routes/user.routes')(app);
 
 app.use(function(req, res) {
-    res.status(404).send({url: req.originalUrl + ' not found'})
+    res.status(404).send({url: req.originalUrl + ' not found - dio porcone'})
 });
 
 app.listen(port, () => {

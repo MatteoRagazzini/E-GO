@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth/';
+axios.defaults.headers.common = {
+  "Content-Type": "application/json"
+}
+
+const API_URL = 'http://localhost:3000/api/auth/';
 
 class AuthService {
   login(user) {
@@ -15,6 +19,8 @@ class AuthService {
         }
 
         return response.data;
+      }).catch(function (error){
+        console.log(error);
       });
   }
 

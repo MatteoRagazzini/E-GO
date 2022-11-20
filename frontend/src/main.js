@@ -1,13 +1,27 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { FontAwesomeIcon } from './plugins/font-awesome'
+/**
+ * main.js
+ *
+ * Bootstraps Vuetify and other plugins then mounts the App`
+ */
 
-createApp(App)
+// Components
+import App from './App.vue'
+import store from './store'
+import router from './router'
+
+// Composables
+import { createApp } from 'vue'
+
+// Plugins
+import { registerPlugins } from '@/plugins'
+import vuetify from './plugins/vuetify'
+
+const app = createApp(App)
+
+registerPlugins(app)
+
+app
+  .use(vuetify)
   .use(router)
   .use(store)
-  .component("font-awesome-icon", FontAwesomeIcon)
-  .mount("#app");
+  .mount('#app')

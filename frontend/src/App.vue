@@ -154,6 +154,7 @@
 
 <template>
   <div id="app">
+    <v-app>
     <div v-if="!currentUser">
         <v-carousel>
           <v-carousel-item
@@ -167,16 +168,12 @@
           ></v-carousel-item>
 
           <v-carousel-item>
-            <router-link to="/register">
-              <v-btn prepend-icon="mdi-vuetify" variant="tonal">
+              <v-btn to="/register" prepend-icon="mdi-vuetify" variant="tonal">
               Register
               </v-btn>
-            </router-link>
-            <router-link to="/login">
-              <v-btn prepend-icon="mdi-vuetify" variant="tonal">
+              <v-btn to="/login" prepend-icon="mdi-vuetify" variant="tonal" color="primary">
                 Login
               </v-btn>
-            </router-link>
             <router-view></router-view>
           </v-carousel-item>
         </v-carousel>
@@ -184,6 +181,7 @@
     <div v-if="currentUser">
       <home></home>
     </div>
+    </v-app>
   </div>
 </template>
 

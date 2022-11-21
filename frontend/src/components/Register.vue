@@ -1,40 +1,51 @@
 <template>
-  <div class="col-md-12">
-    <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
-      />
-      <Form @submit="handleRegister" :validation-schema="schema">
-        <div v-if="!successful">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <Field name="username" type="text" class="form-control" />
-            <ErrorMessage name="username" class="error-feedback" />
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <Field name="email" type="email" class="form-control" />
-            <ErrorMessage name="email" class="error-feedback" />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <Field name="password" type="password" class="form-control" />
-            <ErrorMessage name="password" class="error-feedback" />
-          </div>
+  <v-sheet class="pa-12" rounded>
+    <v-card class="mx-auto px-6 py-8" max-width="344">
+      <v-form
+        v-model="form"
+        @submit.prevent="onRegister"
+      >
+        <v-text-field
+          v-model="username"
+          :readonly="loading"
+          :rules="[required]"
+          class="mb-2"
+          clearable
+          label="Username"
+          placeholder="Set your username"
+        ></v-text-field>
 
-          <div class="form-group">
-            <button class="btn btn-primary btn-block" :disabled="loading">
-              <span
-                v-show="loading"
-                class="spinner-border spinner-border-sm"
-              ></span>
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </Form>
+        <v-text-field
+          v-model="email"
+          :readonly="loading"
+          :rules="[required]"
+          clearable
+          label="Email"
+          placeholder="Set your email"
+        ></v-text-field>
+
+        <v-text-field
+          v-model="password"
+          :readonly="loading"
+          :rules="[required]"
+          clearable
+          label="Password"
+          type="password"
+          placeholder="Set your password"
+        ></v-text-field>
+
+        <v-btn
+          :disabled="!form"
+          :loading="loading"
+          block
+          color="success"
+          size="large"
+          type="submit"
+          variant="elevated"
+        >
+          Sign Up
+        </v-btn>
+      </v-form>
 
       <div
         v-if="message"
@@ -43,8 +54,8 @@
       >
         {{ message }}
       </div>
-    </div>
-  </div>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script>
@@ -53,11 +64,6 @@ import * as yup from "yup";
 
 export default {
   name: "Register",
-  components: {
-    Form,
-    Field,
-    ErrorMessage,
-  },
   data() {
     const schema = yup.object().shape({
       username: yup
@@ -78,6 +84,10 @@ export default {
     });
 
     return {
+      form: false,
+      username: null,
+      email: null,
+      password: null,
       successful: false,
       loading: false,
       message: "",
@@ -95,12 +105,12 @@ export default {
     }
   },
   methods: {
-    handleRegister(user) {
+    onRegister() {
       this.message = "";
       this.successful = false;
       this.loading = true;
 
-      this.$store.dispatch("auth/register", user).then(
+      this.$store.dispatch("auth/register", {"username":this.username, "email":this.email, "password":this.password, "user":["user"]}).then(
         (data) => {
           this.message = data.message;
           this.successful = true;
@@ -116,7 +126,12 @@ export default {
           this.successful = false;
           this.loading = false;
         }
-      );
+      ).catch((error)=> {
+        console.log(error);
+      });
+    },
+    required (v) {
+      return !!v || 'Field is required'
     },
   },
 };

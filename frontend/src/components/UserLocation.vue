@@ -44,6 +44,8 @@
 <script>
 
 import axios from "axios";
+import StationService from "@/services/station.service";
+import imgUrl from '../assets/charging-station.png'
 export default {
   name: "UserLocation.vue",
   data() {
@@ -54,6 +56,39 @@ export default {
     }
   },
   mounted() {
+
+    let map = new google.maps.Map(document.getElementById("map"),{
+      zoom:15,
+      center:new google.maps.LatLng(48.137154,11.576124),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    })
+
+    StationService.getStation().then(
+      (response) => {
+        const icon = {
+          url: imgUrl, // url
+          scaledSize: new google.maps.Size(40, 40), // scaled size
+          origin: new google.maps.Point(0,0), // origin
+          anchor: new google.maps.Point(0, 0) // anchor
+        };
+
+        var stations = response.data
+        stations.forEach(function(station) {
+          console.log(station.latitude + ", " + station.longitude)
+          new google.maps.Marker({
+            position:new google.maps.LatLng(station.latitude,station.longitude),
+            icon: icon,
+            map: map
+          })
+        });
+
+
+      },
+      (error) => {
+         console.log(error.toString());
+      }
+    );
+
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
       bounds: new google.maps.LatLngBounds(
         new google.maps.LatLng(48.137154,11.576124)
@@ -114,7 +149,6 @@ export default {
 
       })
     }
-
   }
 }
 </script>

@@ -46,9 +46,10 @@ app.use('/static', express.static(__dirname + '/public'));
 require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
 require('./src/routes/user.routes')(app);
+require('./src/routes/station.routes')(app);
 
 app.use(function(req, res) {
-    res.status(404).send({url: req.originalUrl + ' not found - dio porcone'})
+    res.status(404).send({url: req.originalUrl + ' not found'})
 });
 
 app.listen(port, () => {

@@ -58,7 +58,7 @@ export default {
   mounted() {
       const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 48.137154, lng: 11.576124 },
-        zoom: 15,
+        zoom: 13,
         mapId: "16c023e99af33056",
       });
 
@@ -76,8 +76,13 @@ export default {
 
           const availabilityTag = document.createElement("div");
 
-          availabilityTag.className = "availability-tag";
-          availabilityTag.textContent = "10/12";
+          if(station.usedSpaces !== station.maxSpaces){
+            availabilityTag.className = "availability-tag available";
+          }else{
+            availabilityTag.className = "availability-tag unavailable";
+          }
+
+          availabilityTag.textContent = station.usedSpaces + "/" + station.maxSpaces;
 
 
           console.log(station.latitude + ", " + station.longitude)
@@ -198,12 +203,19 @@ export default {
 
 /* HTML marker styles */
 .availability-tag {
-  background-color: #4285F4;
   border-radius: 8px;
   color: #FFFFFF;
   font-size: 14px;
   padding: 10px 15px;
   position: relative;
+}
+
+.available{
+  background-color: #1a912c;
+}
+
+.unavailable{
+  background-color: #c92020;
 }
 
 .availability-tag::after {

@@ -57,14 +57,51 @@ export default {
   },
   mounted() {
       const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 37.4239163, lng: -122.0947209 },
-        zoom: 14,
+        center: { lat: 48.137154, lng: 11.576124 },
+        zoom: 15,
         mapId: "16c023e99af33056",
       });
-      const marker = new google.maps.marker.AdvancedMarkerView({
-        map,
-        position: { lat: 37.4239163, lng: -122.0947209 },
-      });
+
+    StationService.getStation().then(
+      (response) => {
+        const icon = {
+          url: imgUrl, // url
+          scaledSize: new google.maps.Size(40, 40), // scaled size
+          origin: new google.maps.Point(0,0), // origin
+          anchor: new google.maps.Point(0, 0) // anchor
+        };
+
+        var stations = response.data
+        stations.forEach(function(station) {
+
+          const availabilityTag = document.createElement("div");
+
+          availabilityTag.className = "availability-tag";
+          availabilityTag.textContent = "10/12";
+
+
+          console.log(station.latitude + ", " + station.longitude)
+          new google.maps.marker.AdvancedMarkerView({
+            position:new google.maps.LatLng(station.latitude,station.longitude),
+            content: availabilityTag,
+            map
+          })
+        });
+
+
+      },
+      (error) => {
+         console.log(error.toString());
+      }
+    );
+
+
+
+      // const marker = new google.maps.marker.AdvancedMarkerView({
+      //   map,
+      //   position: { lat: 37.4239163, lng: -122.0947209 },
+      //   content: availabilityTag,
+      // });
 
     // const map = new google.maps.Map(document.getElementById("map"), {
     //   center: { lat: 37.4239163, lng: -122.0947209 },
@@ -92,31 +129,6 @@ export default {
     //   }
     // });
 
-    // StationService.getStation().then(
-    //   (response) => {
-    //     const icon = {
-    //       url: imgUrl, // url
-    //       scaledSize: new google.maps.Size(40, 40), // scaled size
-    //       origin: new google.maps.Point(0,0), // origin
-    //       anchor: new google.maps.Point(0, 0) // anchor
-    //     };
-    //
-    //     var stations = response.data
-    //     stations.forEach(function(station) {
-    //       console.log(station.latitude + ", " + station.longitude)
-    //       new google.maps.marker.AdvancedMarkerView({
-    //         position:new google.maps.LatLng(station.latitude,station.longitude),
-    //         icon: icon,
-    //         map
-    //       })
-    //     });
-    //
-    //
-    //   },
-    //   (error) => {
-    //      console.log(error.toString());
-    //   }
-    // );
 
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
       bounds: new google.maps.LatLngBounds(
@@ -183,6 +195,29 @@ export default {
 </script>
 
 <style>
+
+/* HTML marker styles */
+.availability-tag {
+  background-color: #4285F4;
+  border-radius: 8px;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 10px 15px;
+  position: relative;
+}
+
+.availability-tag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 0);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #4285F4;
+}
 
 #map {
   height: 100%;

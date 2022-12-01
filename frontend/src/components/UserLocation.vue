@@ -52,42 +52,71 @@ export default {
     return{
       address: null,
       error: null,
-      loadingLocate: false
+      loadingLocate: false,
     }
   },
   mounted() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 37.4239163, lng: -122.0947209 },
+        zoom: 14,
+        mapId: "16c023e99af33056",
+      });
+      const marker = new google.maps.marker.AdvancedMarkerView({
+        map,
+        position: { lat: 37.4239163, lng: -122.0947209 },
+      });
 
-    let map = new google.maps.Map(document.getElementById("map"),{
-      zoom:15,
-      center:new google.maps.LatLng(48.137154,11.576124),
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    })
+    // const map = new google.maps.Map(document.getElementById("map"), {
+    //   center: { lat: 37.4239163, lng: -122.0947209 },
+    //   zoom: 14,
+    //   mapId: "16c023e99af33056",
+    // });
+    // const markerView = new google.maps.marker.AdvancedMarkerView({
+    //   map,
+    //   position: { lat: 37.4239163, lng: -122.0947209 },
+    // });
 
-    StationService.getStation().then(
-      (response) => {
-        const icon = {
-          url: imgUrl, // url
-          scaledSize: new google.maps.Size(40, 40), // scaled size
-          origin: new google.maps.Point(0,0), // origin
-          anchor: new google.maps.Point(0, 0) // anchor
-        };
+    // let map = new google.maps.Map(document.getElementById("map"),{
+    //   zoom:15,
+    //   center:new google.maps.LatLng(48.137154,11.576124),
+    //   mapId: '16c023e99af33056'
+    // })
+    //
+    // map.addListener('mapcapabilities_changed', () => {
+    //   const mapCapabilities = map.getMapCapabilities();
+    //
+    //   if (!mapCapabilities.isAdvancedMarkersAvailable) {
+    //     console.log('Advanced markers not available')
+    //   }else{
+    //     console.log('Advanced markers available')
+    //   }
+    // });
 
-        var stations = response.data
-        stations.forEach(function(station) {
-          console.log(station.latitude + ", " + station.longitude)
-          new google.maps.Marker({
-            position:new google.maps.LatLng(station.latitude,station.longitude),
-            icon: icon,
-            map: map
-          })
-        });
-
-
-      },
-      (error) => {
-         console.log(error.toString());
-      }
-    );
+    // StationService.getStation().then(
+    //   (response) => {
+    //     const icon = {
+    //       url: imgUrl, // url
+    //       scaledSize: new google.maps.Size(40, 40), // scaled size
+    //       origin: new google.maps.Point(0,0), // origin
+    //       anchor: new google.maps.Point(0, 0) // anchor
+    //     };
+    //
+    //     var stations = response.data
+    //     stations.forEach(function(station) {
+    //       console.log(station.latitude + ", " + station.longitude)
+    //       new google.maps.marker.AdvancedMarkerView({
+    //         position:new google.maps.LatLng(station.latitude,station.longitude),
+    //         icon: icon,
+    //         map
+    //       })
+    //     });
+    //
+    //
+    //   },
+    //   (error) => {
+    //      console.log(error.toString());
+    //   }
+    // );
 
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
       bounds: new google.maps.LatLngBounds(
@@ -154,6 +183,25 @@ export default {
 </script>
 
 <style>
+
+#map {
+  height: 100%;
+}
+
+/*
+ * Optional: Makes the sample page fill the window.
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+[class$=api-load-alpha-banner] {
+  display: none;
+}
+
 .pac-icon {
   display: none;
 }

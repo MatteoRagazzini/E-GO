@@ -6,7 +6,7 @@ import BoardAdmin from "@/components/BoardAdmin";
 import BoardModerator from "@/components/BoardModerator";
 import BoardUser from "@/components/BoardUser";
 import Register from "@/components/Register";
-import Home from "@/components/Home2";
+import Home from "@/components/Home";
 
 
 const routes = [

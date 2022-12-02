@@ -27,7 +27,7 @@
             @click="onLocate">
           </v-btn>
         </v-col>
-      </v-row>au
+      </v-row>
     </v-form>
     </v-container>
     <div

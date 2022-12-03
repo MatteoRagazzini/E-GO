@@ -15,7 +15,7 @@ mapInit() {
 
   }
 
-loadStations() {
+loadStations(showProperty) {
     StationService.getStation().then(
       (response) => {
         const icon = {
@@ -38,12 +38,13 @@ loadStations() {
 
           availabilityTag.textContent = station.usedSpaces + "/" + station.maxSpaces;
 
-
-          console.log(station.latitude + ", " + station.longitude)
           new google.maps.marker.AdvancedMarkerView({
             position: new google.maps.LatLng(station.latitude, station.longitude),
             content: availabilityTag,
             map
+          }).addListener("click",()=>{
+            alert("clicked")
+            showProperty =!showProperty
           })
         });
       });

@@ -1,20 +1,28 @@
 <template>
-  <v-sheet id="map" class="pa-12" rounded></v-sheet>
+  <v-slide-y-transition>
+  <StationCard id="stationCard" v-show="show" style="position:absolute;z-index: 1"></StationCard>
+  </v-slide-y-transition>
+  <div id="map">
+    <div id="marker-test" class="availability-tag available">3/10</div>
+  </div>
 </template>
 
 <script>
 
 import MapService from "@/services/map.service";
+import StationCard from "@/components/StationCard";
 
 export default {
   name: "UserLocation.vue",
+  components: {StationCard},
   data() {
-    return{}
+    return{
+      show:false
+    }
   },
   mounted() {
     MapService.mapInit();
-    MapService.loadStations()
-
+    MapService.loadStations(this.show)
   },
   methods:{
   }
@@ -53,10 +61,6 @@ export default {
   border-top: 8px solid #4285F4;
 }
 
-#map {
-  height: 100%;
-}
-
 /*
  * Optional: Makes the sample page fill the window.
  */
@@ -89,11 +93,18 @@ body {
   }
 
   #map{
-    position: absolute;
-    top:0;
+    position: relative;
+    height:100%;
     right: 0;
     bottom: 0;
     left: 0;
     background: #0b2e13;
+  }
+  #stationCard{
+    position: absolute;
+    bottom: 56px;
+    height: 30%;
+    width: 100%;
+    border-radius: 30px 30px 0 0
   }
 </style>

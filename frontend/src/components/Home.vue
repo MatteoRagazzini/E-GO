@@ -18,12 +18,10 @@
         </v-menu>
     </v-app-bar>
     <v-main>
-<!--        <div class="m-auto">-->
-<!--          <h4>Your position</h4>-->
-<!--          Latitude : {{currentPos.lat.toFixed(2)}}, Longitude: {{currentPos.lng.toFixed(2)}}-->
-<!--        </div>-->
-<!--      <div ref="mapDiv" style="width: 100%; height: 80vh"/>-->
-      <userlocationpage></userlocationpage>
+<!--      <userlocationpage></userlocationpage>-->
+      <google-map>
+        <google-map-marker :stations="stations"></google-map-marker>
+      </google-map>
     </v-main>
     <v-bottom-navigation>
       <v-btn value="recent">
@@ -47,44 +45,44 @@
   </v-app>
 </template>
 <script>
-/* eslint-disable no-undef */
-import {useGeolocation} from "@/map/GeolocationFuctions";
-import {computed, onMounted, ref} from "vue";
-// import {Loader} from '@googlemaps/js-api-loader'
 import UserLocation from "@/components/UserLocation";
 import AutocompleteComponent from "@/components/AutocompleteComponent";
+import GoogleMap from "@/components/google-map";
+import GoogleMapMarker from "@/components/google-map-marker";
+import StationService from "@/services/station.service";
+import imgUrl from "@/assets/charging-station.png";
+import MapService from "@/services/map.service";
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
   name: "Home",
-  // setup(){
-  //   const {coords} = useGeolocation()
-  //   const currentPos = computed(()=>({
-  //     lat: coords.value.latitude,
-  //     lng: coords.value.longitude
-  //   }))
-  //
-  //   const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-  //   const mapDiv = ref(null)
-  //   onMounted(async ()=>{
-  //     await loader.load()
-  //     new google.maps.Map(mapDiv.value,{
-  //       center: {
-  //         lat: 48.17,
-  //         lng: 11.59
-  //       },
-  //       zoom: 15
-  //     })
-  //   })
-  //   return {currentPos, mapDiv}
-  // },
+  data() {
+    return {
+      stations: []
+    }
+  },
+  mounted() {
+    this.init()
+  },
   methods: {
+    listStations(){
+      StationService.getStation().then(
+        response => {
+          console.log(response);
+          this.stations = response.data
+        }
+      )
+    },
+    init(){
+      this.listStations();
+    },
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     }
   },
   components:{
+    GoogleMapMarker,
+    GoogleMap,
     userlocationpage : UserLocation,
     autocompleteComponent: AutocompleteComponent
   }
@@ -94,3 +92,22 @@ export default {
 <style scoped>
 
 </style>
+
+listMovies: function () {
+axios.get("http://localhost:3000/api/movies")
+//.then(response => (console.log(response.data)))
+.then(response => {
+this.movies = response.data
+this.movies.forEach(function(movie) {
+if(movie.poster!=null) movie.poster = movie.poster.replace("http://ia.media-imdb.com/", "https://m.media-amazon.com/")
+});
+})
+.catch(error => (console.log(error)));
+
+},
+init: function(){
+this.listMovies();
+}
+},
+mounted(){
+this.init()

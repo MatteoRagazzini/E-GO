@@ -44,6 +44,8 @@ export default {
     }
   },
   setup(){
+    //composable function useGeolocation
+    //created for improve code reusability
     const {coords} = useGeolocation()
     const currPos = computed(()=>({
       lat: coords.value.latitude, lng:coords.value.longitude

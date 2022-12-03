@@ -49,13 +49,13 @@ loadStations() {
       });
   }
 
-showUserLocationOnTheMap(latitude, longitude) {
+showUserLocationOnTheMap(currPos) {
   if (currentPositionMarker) currentPositionMarker.setMap(null);
   currentPositionMarker = new google.maps.Marker({
-    position: new google.maps.LatLng(latitude, longitude),
+    position: currPos,
     map
   })
-    map.setCenter(new google.maps.LatLng(latitude,longitude));
+    map.setCenter(currPos);
     map.setZoom(16);
   }
 }

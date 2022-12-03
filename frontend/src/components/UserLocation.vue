@@ -4,9 +4,6 @@
 
 <script>
 
-import axios from "axios";
-import StationService from "@/services/station.service";
-import imgUrl from '../assets/charging-station.png'
 import MapService from "@/services/map.service";
 
 export default {

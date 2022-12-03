@@ -32,14 +32,23 @@
 <script>
 import axios from "axios";
 import MapService from "@/services/map.service";
+import {useGeolocation} from "@/map/GeolocationFuctions";
+import {computed} from "vue";
 export default {
   name: "UserLocation.vue",
   data() {
     return{
-      address: null,
-      error: null,
       loadingLocate: false,
+      error:null,
+      address:null
     }
+  },
+  setup(){
+    const {coords} = useGeolocation()
+    const currPos = computed(()=>({
+      lat: coords.value.latitude, lng:coords.value.longitude
+    }))
+    return {currPos}
   },
   mounted() {
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
@@ -50,44 +59,23 @@ export default {
 
     autocomplete.addListener("place_changed",()=>{
       let place = autocomplete.getPlace();
-      MapService.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng())
+      this.currPos.lat = place.geometry.location.lat()
+      this.currPos.lng = place.geometry.location.lng()
+      MapService.showUserLocationOnTheMap(this.currPos)
     })
   },
   methods:{
     onLocate(){
-      if(navigator.geolocation){
-        this.successful = false;
-        this.loadingLocate = true;
-        navigator.geolocation.getCurrentPosition(
-          position =>{
-            this.getAddressForm(position.coords.latitude, position.coords.longitude)
-            MapService.showUserLocationOnTheMap(position.coords.latitude, position.coords.longitude)
-            this.successful = true;
-            this.loadingLocate = false;
-          },error =>{
-            this.loadingLocate = false;
-            this.successful = false;
-            this.error = error.message
-          });
-
-      }else{
-        console.log("you browser is not supporting geolocation API");
-      }
-    },
-
-    getAddressForm(lat, long){
-
-      axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," +  long + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
+      axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
         if(response.data.error_message){
           this.error = response.data.error_message
-          console.log(response.data.error_message)
         }else{
-          this.address = response.data.results[0].formatted_address;
+          this.address =  response.data.results[0].formatted_address;
         }
+      }).catch(e =>{
+        this.error=  e.message;
       })
-        .catch(error =>{
-          this.error = error.message;
-        })
+      MapService.showUserLocationOnTheMap(this.currPos)
     },
   }
 }

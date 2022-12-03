@@ -1,10 +1,7 @@
 <template>
   <v-app>
     <v-app-bar :elevation="15" rounded>
-      <template v-slot:append>
-        <v-btn icon="mdi-heart"></v-btn>
-
-        <v-btn icon="mdi-magnify"></v-btn>
+        <autocompleteComponent></autocompleteComponent>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -19,7 +16,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-      </template>
     </v-app-bar>
     <v-main>
 <!--        <div class="m-auto">-->
@@ -56,6 +52,7 @@ import {useGeolocation} from "@/map/GeolocationFuctions";
 import {computed, onMounted, ref} from "vue";
 // import {Loader} from '@googlemaps/js-api-loader'
 import UserLocation from "@/components/UserLocation";
+import AutocompleteComponent from "@/components/AutocompleteComponent";
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
@@ -88,7 +85,8 @@ export default {
     }
   },
   components:{
-    userlocationpage : UserLocation
+    userlocationpage : UserLocation,
+    autocompleteComponent: AutocompleteComponent
   }
 }
 </script>

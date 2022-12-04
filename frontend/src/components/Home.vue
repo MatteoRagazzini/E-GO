@@ -38,10 +38,10 @@
         Favorites
       </v-btn>
 
-      <v-btn value="nearby">
-        <v-icon>mdi-map-marker</v-icon>
+      <v-btn value="charging" @click="showChargingState">
+        <v-icon>mdi-battery</v-icon>
 
-        Nearby
+        Charging
       </v-btn>
     </v-bottom-navigation>
   </v-app>
@@ -82,6 +82,9 @@ export default {
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
+    },
+    showChargingState(){
+      this.$router.push('/chargingStatus');
     }
   },
   components:{

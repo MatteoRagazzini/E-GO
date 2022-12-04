@@ -7,6 +7,7 @@ import BoardModerator from "@/components/BoardModerator";
 import BoardUser from "@/components/BoardUser";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
+import ChargingStatus from "@/components/ChargingStatus";
 
 
 const routes = [
@@ -50,6 +51,11 @@ const routes = [
     name: "user",
     // lazy-loaded
     component: BoardUser,
+  },
+  {
+    path: "/chargingStatus",
+    name: "chargingStatus",
+    component: ChargingStatus,
   },
 ];
 

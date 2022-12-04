@@ -44,6 +44,10 @@ loadStations() {
             position: new google.maps.LatLng(station.latitude, station.longitude),
             content: availabilityTag,
             map
+          }).addListener("click",()=>{
+            alert("clicked")
+            document.getElementById("stationCard").style.visibility='hidden'
+
           })
         });
       });

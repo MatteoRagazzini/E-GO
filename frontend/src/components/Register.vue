@@ -5,6 +5,14 @@
         v-model="form"
         @submit.prevent="onRegister"
       >
+        <v-img
+          :src=this.url
+          cover
+          width="100"
+          class="mx-auto"
+        >
+        </v-img>
+
         <v-text-field
           v-model="username"
           :readonly="loading"
@@ -61,6 +69,8 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import imgUrl from "@/assets/Logo_Matteo.png";
+
 
 export default {
   name: "Register",
@@ -92,6 +102,7 @@ export default {
       loading: false,
       message: "",
       schema,
+      url: imgUrl
     };
   },
   computed: {

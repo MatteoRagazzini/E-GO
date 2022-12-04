@@ -2,7 +2,9 @@
   <div id="app">
     <v-app>
     <div v-if="!currentUser">
-        <v-carousel>
+        <v-carousel
+          height="auto"
+        >
           <v-carousel-item
             src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
             cover
@@ -14,13 +16,21 @@
           ></v-carousel-item>
 
           <v-carousel-item>
-              <v-btn to="/register" prepend-icon="mdi-vuetify" variant="tonal">
+            <v-container>
+              <br>
+              <v-row align="center"
+                     justify="center"
+                     style="gap: 1rem">
+              <v-btn to="/register" variant="tonal">
               Register
               </v-btn>
-              <v-btn to="/login" prepend-icon="mdi-vuetify" variant="tonal" color="primary">
+              <v-btn to="/login" variant="tonal">
                 Login
               </v-btn>
+              </v-row>
+            </v-container>
             <router-view></router-view>
+            <br>
           </v-carousel-item>
         </v-carousel>
     </div>

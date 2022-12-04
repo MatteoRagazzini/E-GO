@@ -1,10 +1,21 @@
+
 <template>
   <v-sheet class="pa-12" rounded>
-    <v-card class="mx-auto px-6 py-8" max-width="344">
+    <v-card class="mx-auto px-6 py-8 justify-center" max-width="344">
       <v-form
         v-model="form"
         @submit.prevent="onSubmit"
       >
+
+        <v-img
+          :src=this.url
+          cover
+          width="100"
+          class="mx-auto"
+        >
+        </v-img>
+
+
         <v-text-field
           v-model="username"
           :readonly="loading"
@@ -24,7 +35,6 @@
           placeholder="Enter your password"
         ></v-text-field>
 
-        <br>
 
         <v-btn
           :disabled="!form"
@@ -37,6 +47,7 @@
         >
           Sign In
         </v-btn>
+        <br>
           <div v-if="message" class="alert alert-danger" role="alert">
             {{ message }}
           </div>
@@ -46,13 +57,18 @@
 </template>
 <script>
 
+import imgUrl from "@/assets/Logo_Matteo.png";
+
+
 export default {
+
   data: () => ({
     form: false,
     username: null,
     password: null,
     loading: false,
-    message: ""
+    message: "",
+    url: imgUrl,
   }),
   computed: {
     loggedIn() {

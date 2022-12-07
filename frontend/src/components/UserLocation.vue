@@ -1,14 +1,14 @@
 <template>
   <v-sheet id="map" class="pa-12" rounded></v-sheet>
-  <div id="stationCard">
-    <v-field>10/10</v-field>
-    <v-btn>
-      START
-    </v-btn>
-    <v-btn>
-      RESERVE
-    </v-btn>
-  </div>
+<!--  <div id="stationCard">-->
+<!--    <v-field>10/10</v-field>-->
+<!--    <v-btn>-->
+<!--      START-->
+<!--    </v-btn>-->
+<!--    <v-btn>-->
+<!--      RESERVE-->
+<!--    </v-btn>-->
+<!--  </div>-->
 </template>
 
 <script>

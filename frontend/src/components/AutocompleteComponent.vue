@@ -1,25 +1,28 @@
 <template>
-  <v-text-field
-    density="compact"
-    variant="solo"
-    v-model="address"
-    id="autocomplete"
-    clearable
-    label="Address"
-    placeholder="Enter your address"
-    append-inner-icon="mdi-magnify"
-    single-line
-    hide-details
-    rounded
-    @click:append-inner="onClick"
-  ></v-text-field>
-            <v-btn
-              elevation="2"
-              icon="mdi-map-marker"
-              x-large
-              :loading="loadingLocate"
-              @click="onLocate">
-            </v-btn>
+  <v-col class="flex-grow-1">
+    <v-text-field
+      density="compact"
+      variant="solo"
+      v-model="address"
+      id="autocomplete"
+      clearable
+      label="Address"
+      placeholder="Enter your address"
+      append-inner-icon="mdi-magnify"
+      single-line
+      hide-details
+      rounded
+      @click:append-inner="onClick"
+    ></v-text-field>
+  </v-col>
+  <v-col class="flex-grow-0">
+    <v-btn
+      elevation="2"
+      icon="mdi-map-marker"
+      size="small"
+      :loading="loadingLocate"
+      @click="onLocate">
+    </v-btn>
     <div
       v-if="error"
       class="alert"
@@ -27,6 +30,7 @@
     >
       {{ error }}
     </div>
+  </v-col>
 </template>
 
 <script>
@@ -40,7 +44,7 @@ export default {
     return{
       loadingLocate: false,
       error:null,
-      address:null
+      address:null,
     }
   },
   setup(){

@@ -1,30 +1,40 @@
 <template>
   <v-app>
     <v-app-bar :elevation="15" rounded>
-        <autocompleteComponent></autocompleteComponent>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn
-              color="primary"
-              v-bind="props"
-              icon="mdi-dots-vertical"
-            ></v-btn>
-          </template>
-          <v-list>
-            <v-list-item>
-              <v-list-item-title @click="logOut">Logout</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+      <v-container class="flex-row">
+        <v-row>
+          <autocompleteComponent v-if="!this.isHidden"></autocompleteComponent>
+<!--         this is a trick which is not nice-->
+          <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
+          <v-col class="flex-grow-0">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  color="primary"
+                  v-bind="props"
+                  icon="mdi-dots-vertical"
+                ></v-btn>
+              </template>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title @click="logOut">Logout</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-app-bar>
+    <v-container>
     <v-main>
 <!--        <div class="m-auto">-->
 <!--          <h4>Your position</h4>-->
 <!--          Latitude : {{currentPos.lat.toFixed(2)}}, Longitude: {{currentPos.lng.toFixed(2)}}-->
 <!--        </div>-->
 <!--      <div ref="mapDiv" style="width: 100%; height: 80vh"/>-->
-      <userlocationpage></userlocationpage>
+      <router-view></router-view>
     </v-main>
+    </v-container>
     <v-bottom-navigation>
       <v-btn value="recent">
         <v-icon>mdi-history</v-icon>
@@ -32,16 +42,23 @@
         Recent
       </v-btn>
 
-      <v-btn value="favorites">
+      <v-btn to="/userLocation" value="favorites" @click="showLocationSearch">
         <v-icon>mdi-heart</v-icon>
 
         Favorites
       </v-btn>
-
-      <v-btn value="charging" @click="showChargingState">
+      <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">
+        <v-badge
+          dot
+          avatar
+          color="red"
+          overlap
+          :value="infoCharged"
+        >
         <v-icon>mdi-battery</v-icon>
-
+        </v-badge>
         Charging
+
       </v-btn>
     </v-bottom-navigation>
   </v-app>
@@ -53,10 +70,17 @@ import {computed, onMounted, ref} from "vue";
 // import {Loader} from '@googlemaps/js-api-loader'
 import UserLocation from "@/components/UserLocation";
 import AutocompleteComponent from "@/components/AutocompleteComponent";
+import ChargingStatus from "@/components/ChargingStatus";
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
   name: "Home",
+  data () {
+    return{
+      isHidden: false,
+      infoCharged: false,
+    }
+  },
   // setup(){
   //   const {coords} = useGeolocation()
   //   const currentPos = computed(()=>({
@@ -83,12 +107,18 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
-    showChargingState(){
-      this.$router.push('/chargingStatus');
+    hideLocationSearch(){
+      if (this.isHidden !== true){
+          this.isHidden = true
+      }
+    },
+    showLocationSearch(){
+      this.isHidden = false
     }
   },
   components:{
-    userlocationpage : UserLocation,
+    ChargingStatus,
+    UserLocation,
     autocompleteComponent: AutocompleteComponent
   }
 }

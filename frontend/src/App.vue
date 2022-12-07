@@ -51,7 +51,7 @@ export default {
       email: "",
     },
     slides:[
-      'Fisrt',
+      'First',
       'Second',
       'Third'
     ]

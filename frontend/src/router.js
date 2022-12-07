@@ -8,6 +8,7 @@ import BoardUser from "@/components/BoardUser";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
 import ChargingStatus from "@/components/ChargingStatus";
+import UserLocation from "@/components/UserLocation";
 
 
 const routes = [
@@ -56,6 +57,11 @@ const routes = [
     path: "/chargingStatus",
     name: "chargingStatus",
     component: ChargingStatus,
+  },
+  {
+    path: "/userLocation",
+    name: "userLocation",
+    component: UserLocation,
   },
 ];
 

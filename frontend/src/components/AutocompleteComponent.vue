@@ -1,3 +1,77 @@
+<!--<template>-->
+<!--  <GMapAutocomplete-->
+<!--    placeholder="Enter your addresss"-->
+<!--    append-inner-icon="mdi-magnify"-->
+<!--    id = "autoComplete"-->
+<!--    @change="setPlace"-->
+<!--    v-model="newAddress">-->
+<!--  </GMapAutocomplete>-->
+
+<!--  <v-btn-->
+<!--      elevation="2"-->
+<!--      icon="mdi-map-marker"-->
+<!--      size="small"-->
+<!--    >-->
+<!--  </v-btn>-->
+<!--  <div-->
+<!--          v-if="error"-->
+<!--          class="alert"-->
+<!--          :class="successful ? 'alert-success' : 'alert-danger'"-->
+<!--        >-->
+<!--          {{ error }}>-->
+<!--        </div>-->
+<!--</template>-->
+<!--<script>-->
+<!--export default {-->
+<!--  name: "UserLocation.vue",-->
+<!--  data() {-->
+<!--    return {-->
+<!--      loadingLocate: false,-->
+<!--      error: null,-->
+<!--      address: null,-->
+<!--      newAddress: null,-->
+<!--    }-->
+<!--  },-->
+<!--  // setup() {-->
+<!--  //   const {coords} = useGeolocation()-->
+<!--  //   const currPos = computed(() => ({-->
+<!--  //     lat: coords.value.latitude, lng: coords.value.longitude-->
+<!--  //   }))-->
+<!--  //   return {currPos}-->
+<!--  // },-->
+<!--  mounted() {-->
+<!--    // document.getElementById("autoComplete").-->
+<!--    //-->
+<!--    // addListener("place_changed", () => {-->
+<!--    //     console.log("yeahi")-->
+<!--    //   }-->
+<!--    // );-->
+
+<!--    // autocomplete.addListener("place_changed", () => {-->
+<!--    //   let place = this.newAdress;-->
+<!--    //   console.log(place)-->
+<!--    // });-->
+<!--  },-->
+<!--  methods: {-->
+<!--    setPlace() {-->
+<!--      console.log(this.newAddress)-->
+<!--    },-->
+
+<!--    //setPlace() {-->
+<!--       // document.getElementById("autoComplete").addListener("place_changed", () => {-->
+<!--       //   let place = this.newAdress;-->
+<!--       //   console.log(place)-->
+<!--      //   this.currPos.lat = place.geometry.location.lat();-->
+<!--      //   this.currPos.lng = place.geometry.location.lng();-->
+<!--      //   //MapService.showUserLocationOnTheMap(this.currPos)-->
+<!--      // });-->
+<!--    //}-->
+<!--  }-->
+<!--}-->
+
+<!--</script>-->
+
+
 <template>
   <v-col class="flex-grow-1">
     <v-text-field
@@ -43,16 +117,23 @@ export default {
   data() {
     return{
       loadingLocate: false,
-      error:null,
-      address:null,
+      error: null,
+      address: null,
+      successful:true,
+      currPos: {},
+      searchedPos: {},
     }
   },
-  setup(){
-    const {coords} = useGeolocation()
-    const currPos = computed(()=>({
-      lat: coords.value.latitude, lng:coords.value.longitude
-    }))
-    return {currPos}
+ created(){
+    console.log("setup")
+
+   const {coords} = useGeolocation()
+      const currPos = computed(()=>({
+        lat: coords.value.latitude, lng:coords.value.longitude
+      }))
+   this.currPos = currPos
+   return {currPos}
+
   },
   mounted() {
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
@@ -63,23 +144,40 @@ export default {
 
     autocomplete.addListener("place_changed",()=>{
       let place = autocomplete.getPlace();
-      this.currPos.lat = place.geometry.location.lat()
-      this.currPos.lng = place.geometry.location.lng()
-      MapService.showUserLocationOnTheMap(this.currPos)
+      this.searchedPos.lat = place.geometry.location.lat()
+      this.searchedPos.lng = place.geometry.location.lng()
+        console.log(this.searchedPos)
+      this.$store.state.LocationStore.searchedPos = this.searchedPos
+      this.$store.state.LocationStore.center = this.searchedPos
+      document.getElementById("recenterComponent").click()
+      //MapService.showUserLocationOnTheMap(this.currPos)
     })
   },
   methods:{
     onLocate(){
+      this.loadingLocate = true
       axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
+
         if(response.data.error_message){
           this.error = response.data.error_message
+          console.log("error")
         }else{
           this.address =  response.data.results[0].formatted_address;
+          console.log(this.address)
+        }
+
+        if(this.currPos) {
+          this.$store.state.LocationStore.currPos = this.currPos
+          this.$store.state.LocationStore.center = this.currPos
+          document.getElementById("recenterComponent").click()
+          this.loadingLocate = false
         }
       }).catch(e =>{
         this.error=  e.message;
       })
-      MapService.showUserLocationOnTheMap(this.currPos)
+
+      //MapService.showUserLocationOnTheMapNew(this.currPos)
+
     },
   }
 }

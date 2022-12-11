@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent v-if="!this.isHidden"></autocompleteComponent>
+          <autocompleteComponent v-if="!this.isHidden" v-model="currentPos"></autocompleteComponent>
 <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
@@ -114,7 +114,7 @@ export default {
     },
     showLocationSearch(){
       this.isHidden = false
-    }
+    },
   },
   components:{
     ChargingStatus,

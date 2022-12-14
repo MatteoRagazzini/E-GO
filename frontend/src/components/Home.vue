@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar :elevation="15" rounded>
-        <autocompleteComponent></autocompleteComponent>
+<!--        <autocompleteComponent></autocompleteComponent>-->
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -23,7 +23,7 @@
 <!--          Latitude : {{currentPos.lat.toFixed(2)}}, Longitude: {{currentPos.lng.toFixed(2)}}-->
 <!--        </div>-->
 <!--      <div ref="mapDiv" style="width: 100%; height: 80vh"/>-->
-      <userlocationpage></userlocationpage>
+      <GoogleMaps :center="{lat: 50.137154, lng: 11.576124}"></GoogleMaps>
     </v-main>
     <v-bottom-navigation>
       <v-btn value="recent">
@@ -53,8 +53,9 @@ import {computed, onMounted, ref} from "vue";
 // import {Loader} from '@googlemaps/js-api-loader'
 import UserLocation from "@/components/UserLocation";
 import AutocompleteComponent from "@/components/AutocompleteComponent";
+import GoogleMaps from "@/components/GoogleMaps";
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
+// const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
   name: "Home",
   // setup(){
@@ -85,6 +86,7 @@ export default {
     }
   },
   components:{
+    GoogleMaps,
     userlocationpage : UserLocation,
     autocompleteComponent: AutocompleteComponent
   }

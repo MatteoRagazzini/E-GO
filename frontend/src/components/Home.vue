@@ -27,11 +27,7 @@
     </v-app-bar>
     <v-container>
     <v-main>
-<!--        <div class="m-auto">-->
-<!--          <h4>Your position</h4>-->
-<!--          Latitude : {{currentPos.lat.toFixed(2)}}, Longitude: {{currentPos.lng.toFixed(2)}}-->
-<!--        </div>-->
-<!--      <div ref="mapDiv" style="width: 100%; height: 80vh"/>-->
+<!--      This is the main of the application where the pages changes based on the router map/charger-->
       <router-view></router-view>
     </v-main>
     </v-container>
@@ -42,10 +38,10 @@
         Recent
       </v-btn>
 
-      <v-btn to="/userLocation" value="favorites" @click="showLocationSearch">
-        <v-icon>mdi-heart</v-icon>
+      <v-btn to="/userLocation" value="Map" @click="showLocationSearch">
+        <v-icon>mdi-map</v-icon>
 
-        Favorites
+        Map
       </v-btn>
       <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">
         <v-badge

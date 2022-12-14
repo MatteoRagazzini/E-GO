@@ -5,7 +5,6 @@
     :center="centerK"
     :zoom="zoom"
     map-type-id="terrain"
-    style="width: 100%; height: 100vw; position: inherit !important; overflow: auto !important;"
     :disableDefaultUI="true"
     class = "vue-map"
     :options="{
@@ -58,7 +57,7 @@ export default {
       dialog: false,
       dialogText: "",
       currentPos: this.$store.state.LocationStore.currPos,
-      zoom: 13,
+      zoom: 15,
     }
   },
   computed: {
@@ -90,6 +89,8 @@ export default {
     reCenter(){
       console.log("recentered")
       this.centerK = this.$store.state.LocationStore.center
+      this.$refs.myMap.map.setCenter(this.centerK)
+      this.$refs.myMap.map.setZoom(16)
       this.$refs.myMap
     },
 
@@ -105,9 +106,13 @@ export default {
 body {
   margin: 0;
 }
-.vue-map > div{
-  position: inherit !important;
-  overflow: auto !important;
+.vue-map{
+  height: 100%;
+  position: absolute;
+  top:0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 </style>
 
@@ -140,7 +145,7 @@ body {
 <!--import imgUrl from "@/assets/charging-station.png";-->
 
 <!--export default {-->
-<!--  name: "UserLocation.vue",-->
+<!--  name: "GMapComponent.vue",-->
 <!--  data() {-->
 <!--    return {-->
 <!--      dialog: false,-->

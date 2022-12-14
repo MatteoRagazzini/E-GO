@@ -8,7 +8,7 @@ import BoardUser from "@/components/BoardUser";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
 import ChargingStatus from "@/components/ChargingStatus";
-import UserLocation from "@/components/UserLocation";
+import GMapComponent from "@/components/GMapComponent";
 
 
 const routes = [
@@ -59,9 +59,9 @@ const routes = [
     component: ChargingStatus,
   },
   {
-    path: "/userLocation",
-    name: "userLocation",
-    component: UserLocation,
+    path: "/GMapComponent",
+    name: "GMapComponent",
+    component: GMapComponent,
   },
 ];
 

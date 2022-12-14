@@ -38,7 +38,7 @@
         Recent
       </v-btn>
 
-      <v-btn to="/userLocation" value="Map" @click="showLocationSearch">
+      <v-btn to="/GMapComponent" value="Map" @click="showLocationSearch">
         <v-icon>mdi-map</v-icon>
 
         Map
@@ -60,15 +60,11 @@
   </v-app>
 </template>
 <script>
-/* eslint-disable no-undef */
-import {useGeolocation} from "@/map/GeolocationFuctions";
-import {computed, onMounted, ref} from "vue";
-// import {Loader} from '@googlemaps/js-api-loader'
-import UserLocation from "@/components/UserLocation";
+
+import GMapComponent from "@/components/GMapComponent";
 import AutocompleteComponent from "@/components/AutocompleteComponent";
 import ChargingStatus from "@/components/ChargingStatus";
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
   name: "Home",
   data () {
@@ -77,27 +73,6 @@ export default {
       infoCharged: false,
     }
   },
-  // setup(){
-  //   const {coords} = useGeolocation()
-  //   const currentPos = computed(()=>({
-  //     lat: coords.value.latitude,
-  //     lng: coords.value.longitude
-  //   }))
-  //
-  //   const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-  //   const mapDiv = ref(null)
-  //   onMounted(async ()=>{
-  //     await loader.load()
-  //     new google.maps.Map(mapDiv.value,{
-  //       center: {
-  //         lat: 48.17,
-  //         lng: 11.59
-  //       },
-  //       zoom: 15
-  //     })
-  //   })
-  //   return {currentPos, mapDiv}
-  // },
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
@@ -114,7 +89,7 @@ export default {
   },
   components:{
     ChargingStatus,
-    UserLocation,
+    GMapComponent,
     autocompleteComponent: AutocompleteComponent
   }
 }

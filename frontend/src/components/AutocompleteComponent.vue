@@ -23,7 +23,7 @@
 <!--</template>-->
 <!--<script>-->
 <!--export default {-->
-<!--  name: "UserLocation.vue",-->
+<!--  name: "GMapComponent.vue",-->
 <!--  data() {-->
 <!--    return {-->
 <!--      loadingLocate: false,-->

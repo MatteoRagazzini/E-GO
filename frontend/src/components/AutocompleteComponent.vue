@@ -109,8 +109,7 @@
 
 <script>
 import axios from "axios";
-import MapService from "@/services/map.service";
-import {useGeolocation} from "@/map/GeolocationFuctions";
+import {useGeolocation, changeLocation, setGeoLocation} from "@/map/GeolocationFuctions";
 import {computed} from "vue";
 export default {
   name: "UserLocation.vue",
@@ -125,17 +124,25 @@ export default {
     }
   },
  created(){
-    console.log("setup")
+   console.log("here")
 
-   const {coords} = useGeolocation()
+   const {GeoCoords} = useGeolocation()
       const currPos = computed(()=>({
-        lat: coords.value.latitude, lng:coords.value.longitude
+        lat: GeoCoords.value.latitude, lng:GeoCoords.value.longitude
       }))
    this.currPos = currPos
    return {currPos}
 
   },
   mounted() {
+
+    // const map = new google.maps.Map(document.getElementById("map"), {
+    //   center: { lat: -33.8688, lng: 151.2195 },
+    //   zoom: 13,
+    //   mapTypeId: "roadmap",
+    // });
+
+
     var autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"),{
       bounds: new google.maps.LatLngBounds(
         new google.maps.LatLng(48.137154,11.576124)
@@ -146,15 +153,31 @@ export default {
       let place = autocomplete.getPlace();
       this.searchedPos.lat = place.geometry.location.lat()
       this.searchedPos.lng = place.geometry.location.lng()
-        console.log(this.searchedPos)
+      console.log(this.searchedPos)
+      console.log(this.$store.state.LocationStore)
       this.$store.state.LocationStore.searchedPos = this.searchedPos
       this.$store.state.LocationStore.center = this.searchedPos
-      document.getElementById("recenterComponent").click()
-      //MapService.showUserLocationOnTheMap(this.currPos)
+      console.log(this.$store.state.LocationStore)
+      //this.resetMap()
+      changeLocation(this.searchedPos)
+      //map = document.getElementById("map")
+      //map.setCenter(this.searchedPos);
+
     })
   },
   methods:{
+
+    resetMap(){
+      var map = document.getElementById("mother")
+      console.log(map)
+      this.$store.dispatch('LocationStore/changeCenter', this.searchedPos);
+      // if(map){
+      //   map.setCenter(this.searchedPos)
+      // }
+    },
+
     onLocate(){
+      console.log(this.currPos)
       this.loadingLocate = true
       axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
 
@@ -165,13 +188,15 @@ export default {
           this.address =  response.data.results[0].formatted_address;
           console.log(this.address)
         }
+        setGeoLocation()
+        this.loadingLocate = false;
+        // if(this.currPos) {
+          // this.$store.state.LocationStore.currPos = this.currPos
+          // this.$store.state.LocationStore.center = this.currPos
+          // document.getElementById("recenterComponent").click()
+          // this.loadingLocate = false
 
-        if(this.currPos) {
-          this.$store.state.LocationStore.currPos = this.currPos
-          this.$store.state.LocationStore.center = this.currPos
-          document.getElementById("recenterComponent").click()
-          this.loadingLocate = false
-        }
+        // }
       }).catch(e =>{
         this.error=  e.message;
       })

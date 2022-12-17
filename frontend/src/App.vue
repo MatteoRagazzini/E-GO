@@ -34,7 +34,7 @@
           </v-carousel-item>
         </v-carousel>
     </div>
-    <div v-if="currentUser">
+    <div v-if="user && showMap">
       <home></home>
     </div>
     </v-app>
@@ -43,6 +43,7 @@
 
 <script>
 import Home from "@/components/Home";
+import StationService from "@/services/station.service";
 
 export default {
   data: () => ({
@@ -54,7 +55,9 @@ export default {
       'First',
       'Second',
       'Third'
-    ]
+    ],
+    showMap: true,
+    stations: null,
   }),
   computed: {
     currentUser() {
@@ -75,6 +78,17 @@ export default {
 
       return false;
     }
+
+  },
+  async created(){
+    const response =  await StationService.getStation()
+    console.log(1)
+    var stations = await response.data
+    console.log(2)
+    this.stations = stations
+    console.log(3)
+    this.$store.state.LocationStore.stations = stations
+    console.log(stations)
   },
   methods: {
     logOut() {

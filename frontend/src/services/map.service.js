@@ -45,7 +45,6 @@ class MapService {
             content: availabilityTag,
             map
           }).addListener("click", () => {
-              document.getElementById("stationCard").
               document.getElementById("stationCard").style.visibility = "visible"
               console.log(document.getElementById("userLoc"))
             }

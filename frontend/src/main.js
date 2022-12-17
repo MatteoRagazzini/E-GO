@@ -25,10 +25,11 @@ app
   .use(vuetify)
   .use(router)
   .use(store)
-  .use(VueGoogleMaps, {
-    load: {
-      key: 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI',
+  //.use(VueGoogleMaps, {
+    //load: {
+     // key: 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI',
       // language: 'de',
-      libraries: "places"
-    },
-  }).mount('#app')
+     // libraries: "places"
+   // },
+  //})
+.mount('#app')

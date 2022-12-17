@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent v-if="!this.isHidden" v-model="currentPos"></autocompleteComponent>
+          <autocompleteComponent v-if="!this.isHidden"></autocompleteComponent>
 <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
@@ -68,9 +68,10 @@
 import {useGeolocation} from "@/map/GeolocationFuctions";
 import {computed, onMounted, ref} from "vue";
 // import {Loader} from '@googlemaps/js-api-loader'
-import UserLocation from "@/components/UserLocation";
 import AutocompleteComponent from "@/components/AutocompleteComponent";
 import ChargingStatus from "@/components/ChargingStatus";
+import MapNew from "@/components/MapNew";
+import StationService from "@/services/station.service";
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
@@ -81,27 +82,27 @@ export default {
       infoCharged: false,
     }
   },
-  // setup(){
-  //   const {coords} = useGeolocation()
-  //   const currentPos = computed(()=>({
-  //     lat: coords.value.latitude,
-  //     lng: coords.value.longitude
-  //   }))
-  //
-  //   const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-  //   const mapDiv = ref(null)
-  //   onMounted(async ()=>{
-  //     await loader.load()
-  //     new google.maps.Map(mapDiv.value,{
-  //       center: {
-  //         lat: 48.17,
-  //         lng: 11.59
-  //       },
-  //       zoom: 15
-  //     })
-  //   })
-  //   return {currentPos, mapDiv}
-  // },
+
+  setup() {
+    //  const currentPos = computed(()=>({
+    //    lat: coords.value.latitude,
+    //    lng: coords.value.longitude
+    //  }))
+    //
+    // const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
+    // const mapDiv = ref(null)
+    // onMounted(async ()=>{
+    //   await loader.load()
+    //   new google.maps.Map(mapDiv.value,{
+    //     center: {
+    //       lat: 48.17,
+    //       lng: 11.59
+    //     },
+    //     zoom: 15
+    //   })
+    // })
+    // return {currentPos, mapDiv}
+  },
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
@@ -118,7 +119,7 @@ export default {
   },
   components:{
     ChargingStatus,
-    UserLocation,
+    MapNew,
     autocompleteComponent: AutocompleteComponent
   }
 }

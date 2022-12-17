@@ -1,103 +1,16 @@
 <template>
-  <div id="recenterComponent" @click="reCenter">
-  <GMapMap
-    ref = "myMap"
-    :center="centerK"
-    :zoom="zoom"
-    map-type-id="terrain"
-    style="width: 100%; height: 100vw; position: inherit !important; overflow: auto !important;"
-    :disableDefaultUI="true"
-    class = "vue-map"
-    :options="{
-      zoomControl: false,
-      mapTypeControl: false,
-      scaleControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false,
-    }"
-  >
-
-    <GMapCluster :zoomOnClick="true">
-      <GMapMarker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="openDialog(m.id)"
-      />
-    </GMapCluster>
-  </GMapMap>
-  <v-dialog
-    v-model="dialog"
-  >
-
-    <v-card>
-      <v-card-text>
-        {{this.dialogText}}
-        </v-card-text>
-      <v-card-actions>
-        <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-  </div>
+  <MapNew id="mother"></MapNew>
 </template>
 
 <script>
 import StationService from "@/services/station.service";
 import {LocationStore} from "@/store/LocationStore";
 import imgUrl from "@/assets/charging-station.png";
+import MapNew from "@/components/MapNew";
 
 export default {
-  data() {
-    return {
-      centerK: this.$store.state.LocationStore.center,
-      markers: null,
-      dialog: false,
-      dialogText: "",
-      currentPos: this.$store.state.LocationStore.currPos,
-      zoom: 13,
-    }
-  },
-  computed: {
-    //  centerK() {
-    //    return this.$store.state.LocationStore.center
-    // }
-  },
-  async created(){
-      const response = await StationService.getStation()
-      var stations = await response.data
-      var markers = []
-      stations.forEach(function(station) {
-        markers.push({
-          id: station._id,
-          position: {
-            lat: station.latitude,
-            lng: station.longitude,
-          },
-        });
-      });
-      this.markers = markers
-  },
-  methods: {
-    openDialog(StationID) {
-      this.dialog = true
-      console.log(this.dialogText)
-      this.dialogText = StationID
-    },
-    reCenter(){
-      console.log("recentered")
-      this.centerK = this.$store.state.LocationStore.center
-      this.$refs.myMap
-    },
-
-    updateCenter() {
-      console.log("update center")
-      this.centerK = this.$store.state.LocationStore.center
-    },
-  },
+  name: "GMapComponent",
+  components: {MapNew},
 };
 </script>
 
@@ -105,19 +18,15 @@ export default {
 body {
   margin: 0;
 }
-.vue-map > div{
-  position: inherit !important;
-  overflow: auto !important;
-}
 </style>
 
 
 <!--<template>-->
-<!--&lt;!&ndash;  <v-dialog&ndash;&gt;-->
-<!--&lt;!&ndash;    v-model="dialog"&ndash;&gt;-->
-<!--&lt;!&ndash;    id = "stationCard"&ndash;&gt;-->
-<!--&lt;!&ndash;  >&ndash;&gt;-->
-<!--&lt;!&ndash;  </v-dialog>&ndash;&gt;-->
+<!--  <v-dialog-->
+<!--    v-model="dialog"-->
+<!--    id = "stationCard"-->
+<!--  >-->
+<!--  </v-dialog>-->
 
 <!--  <div class="text-center">-->
 <!--    <v-sheet id="map" ref="map" class="pa-12" rounded></v-sheet>-->

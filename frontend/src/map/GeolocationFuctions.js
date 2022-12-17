@@ -1,30 +1,34 @@
 import {onMounted, onUnmounted, ref} from "vue";
-import MapService from "@/services/map.service";
-import axios from "axios";
-
+const GeoCoords = ref({latitude:44.22505599693137, longitude:12.04029382072501})
+const coords = ref({latitude:48.1351253, longitude: 11.5819806})
 export function useGeolocation(){
-    const coords = ref({latitude:0, longitude: 0})
-    let error = ref("")
-    let addressPromise = ref("null")
-    const isSupported = 'navigator' in window && 'geolocation' in navigator
+  const isSupported = 'navigator' in window && 'geolocation' in navigator
 
   let watcher = null
   onMounted(()=>{
     if(isSupported)
       watcher = navigator.geolocation.watchPosition(
-        position => {
-          coords.value = position.coords;
-          // const addressPromise = axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," +  position.coords.longitude + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI")
-        }
+        position => (GeoCoords.value = position.coords)
       )
   })
   onUnmounted(()=>{
     if(watcher) navigator.geolocation.clearWatch(watcher)
   })
 
-  // return{coords, isSupported, addressPromise}
-  return{coords, isSupported}
+  return{coords: coords, isSupported, GeoCoords: GeoCoords}
 }
+
+export function changeLocation(newPosition){
+  console.log(newPosition)
+  // coords.value = newPosition
+  coords.value = {latitude:newPosition.lat, longitude:newPosition.lng}
+}
+
+export function setGeoLocation(){
+  coords.value = GeoCoords.value;
+}
+
+
 
 
 // I was not able to return the promise

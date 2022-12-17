@@ -55,7 +55,41 @@ export default {
         zoom: 13,
         mapId: "16c023e99af33056",
       })
+      new google.maps.Marker({
+        position: {lat:48.1351253, lng: 11.5819806},
+        map: map.value
+      })
+
     })
+
+    const mapV = map.value
+
+      StationService.getStation().then(
+        (response) => {
+          var stations = response.data
+          const availabilityTag = document.createElement("div");
+
+          stations.forEach(station => {
+            if (station.usedSpaces !== station.maxSpaces) {
+              availabilityTag.className = "availability-tag available";
+            } else {
+              availabilityTag.className = "availability-tag unavailable";
+            }
+
+            availabilityTag.textContent = station.usedSpaces + "/" + station.maxSpaces;
+
+            availabilityTag.id = station._id
+            console.log(station._id)
+            new google.maps.Marker({
+              position: new google.maps.LatLng(station.latitude, station.longitude),
+              content: availabilityTag,
+              map:map.value
+            }).addListener("click", () => {
+              this.dialog = true
+              //this.dialogText = station._id
+            })
+          })
+        })
 
     watch([currPos], () => {
       console.log("poisition Changed! ")
@@ -64,7 +98,7 @@ export default {
     })
     return{currPos, mapDiv}
 
-  }
+  },
 }
 </script>
 

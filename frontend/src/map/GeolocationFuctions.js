@@ -1,5 +1,6 @@
 import {onMounted, onUnmounted, ref} from "vue";
-const GeoCoords = ref({latitude:44.22505599693137, longitude:12.04029382072501})
+// const GeoCoords = ref({latitude:44.22505599693137, longitude:12.04029382072501})
+const GeoCoords = ref(null)
 const coords = ref({latitude:48.1351253, longitude: 11.5819806})
 export function useGeolocation(){
   const isSupported = 'navigator' in window && 'geolocation' in navigator

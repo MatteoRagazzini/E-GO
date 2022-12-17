@@ -177,32 +177,34 @@ export default {
     },
 
     onLocate(){
-      console.log(this.currPos)
-      this.loadingLocate = true
-      axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
+      if(this.currPos == null)console.log("position not ready")
+      else{
+        console.log(this.currPos)
+        this.loadingLocate = true
+        axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
 
-        if(response.data.error_message){
-          this.error = response.data.error_message
-          console.log("error")
-        }else{
-          this.address =  response.data.results[0].formatted_address;
-          console.log(this.address)
-        }
-        setGeoLocation()
-        this.loadingLocate = false;
-        // if(this.currPos) {
+          if(response.data.error_message){
+            this.error = response.data.error_message
+            console.log("error")
+          }else{
+            this.address =  response.data.results[0].formatted_address;
+            console.log(this.address)
+          }
+          setGeoLocation()
+          this.loadingLocate = false;
+          // if(this.currPos) {
           // this.$store.state.LocationStore.currPos = this.currPos
           // this.$store.state.LocationStore.center = this.currPos
           // document.getElementById("recenterComponent").click()
           // this.loadingLocate = false
 
-        // }
-      }).catch(e =>{
-        this.error=  e.message;
-      })
+          // }
+        }).catch(e =>{
+          this.error=  e.message;
+        })
 
-      //MapService.showUserLocationOnTheMapNew(this.currPos)
-
+        //MapService.showUserLocationOnTheMapNew(this.currPos)
+      }
     },
   }
 }

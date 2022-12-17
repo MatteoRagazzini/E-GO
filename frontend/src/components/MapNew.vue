@@ -17,6 +17,16 @@
     Latitude : {{currPos.lat.toFixed(2)}} , Longitude: {{currPos.lng.toFixed(2)}}
   </v-card>
   <div ref="mapDiv" style="width:100%; height:80vh"/>
+        <v-dialog
+          v-model="state.dialog"
+          id = "stationCard"
+        >
+          <v-card>
+            <v-card-text>
+              {{state.dialogText}}
+            </v-card-text>
+          </v-card>
+        </v-dialog>
 </template>
 
 <script>
@@ -24,8 +34,9 @@
 
 import imgUrl from "@/assets/charging-station.png";
 import StationService from "@/services/station.service";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useGeolocation} from "@/map/GeolocationFuctions";
+import {reach} from "yup";
 
 export default {
   name: "MapNew",
@@ -45,6 +56,8 @@ export default {
       lng: coords.value.longitude
     }))
 
+    const state = reactive({dialogText:"", dialog:false});
+
     const mapDiv = ref(null)
     let map = ref(null)
     let clickListener = null
@@ -61,8 +74,6 @@ export default {
       })
 
     })
-
-    const mapV = map.value
 
       StationService.getStation().then(
         (response) => {
@@ -85,8 +96,8 @@ export default {
               content: availabilityTag,
               map:map.value
             }).addListener("click", () => {
-              this.dialog = true
-              //this.dialogText = station._id
+              state.dialog = true
+              state.dialogText = station._id
             })
           })
         })
@@ -96,7 +107,7 @@ export default {
       console.log("new position" + currPos.value.lat)
       map.value.setCenter(currPos.value)
     })
-    return{currPos, mapDiv}
+    return{currPos, mapDiv, state}
 
   },
 }

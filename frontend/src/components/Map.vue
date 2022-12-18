@@ -69,7 +69,13 @@ StationService.getStation().then(
         map: map.value
       }).addListener("click", () => {
         state.showStationCard = true
-        state.station.title = station._id
+        state.station.id = station._id
+       // state.station.title = station.title
+        state.station.title = "Münchner Freiheit"
+        state.station.availability = station.usedSpaces + "/" + station.maxSpaces
+        //state.station.address = station.address
+        state.station.address = "Leopoldstraße 34, 80804 Munich"
+        state.station.favorite = true
       })
     })
   })

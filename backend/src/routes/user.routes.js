@@ -25,4 +25,8 @@ module.exports = function(app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.adminBoard
     );
+
+    app.post("/api/user/addVehicle", controller.addVehicle);
+
+    app.post("/api/user/addVehicle", controller.addFavouriteStation);
 };

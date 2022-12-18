@@ -13,12 +13,12 @@ const User = mongoose.model(
                 ref: "Station"
             }
         ],
-        vehicles : [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Vehicle"
-            }
-        ],
+        vehicles : [{
+            name: String,
+            img: String,
+            batteryLevel: Number,
+            isCharging: Boolean,
+        }],
         roles: [
             {
                 type: mongoose.Schema.Types.ObjectId,

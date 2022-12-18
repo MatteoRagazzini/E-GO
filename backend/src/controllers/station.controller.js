@@ -8,8 +8,10 @@ exports.registerStation = (req, res) => {
     const station = new Station({
         latitude: req.body.latitude,
         longitude: req.body.longitude,
-        maxSpaces: req.body.maxSpaces,
-        usedSpaces: req.body.usedSpaces
+        address: req.body.address,
+        totalTowers: req.body.totalTowers,
+        usedTowers: req.body.usedTowers,
+        towers : req.body.towers
     });
 
     station.save(err => {

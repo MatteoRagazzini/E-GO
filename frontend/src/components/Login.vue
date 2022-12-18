@@ -77,7 +77,7 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      this.$router.push("/userLocation");
+      this.$router.push("/map");
     }
   },
   methods: {
@@ -85,7 +85,7 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/login", {"username":this.username, "password":this.password}).then(
         () => {
-          this.$router.push("/userLocation");
+          this.$router.push("/map");
         },
         (error) => {
 

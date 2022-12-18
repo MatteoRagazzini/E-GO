@@ -15,7 +15,6 @@ import { createApp } from 'vue'
 // Plugins
 import { registerPlugins } from '@/plugins'
 import vuetify from './plugins/vuetify'
-import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 const app = createApp(App)
 
@@ -25,11 +24,4 @@ app
   .use(vuetify)
   .use(router)
   .use(store)
-  //.use(VueGoogleMaps, {
-    //load: {
-     // key: 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI',
-      // language: 'de',
-     // libraries: "places"
-   // },
-  //})
 .mount('#app')

@@ -45,6 +45,7 @@ export default {
       address: null,
       successful:true,
       currPos: {},
+      currPosIsSet: false,
       searchedPos: {},
     }
   },
@@ -54,6 +55,8 @@ export default {
         lat: GeoCoords.value.latitude, lng:GeoCoords.value.longitude
       }))
    this.currPos = currPos
+   // this is not working as expected
+   if(currPos!= null) this.currPosIsSet = true
    return {currPos}
 
   },
@@ -74,15 +77,14 @@ export default {
   },
   methods:{
     onLocate(){
-      if(this.currPos == null)console.log("position not ready")
+      // this is not working as expected
+      if(!this.currPosIsSet)console.log("position not ready")
       else{
-        console.log(this.currPos)
         this.loadingLocate = true
         axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
 
           if(response.data.error_message){
             this.error = response.data.error_message
-            console.log("error")
           }else{
             this.address =  response.data.results[0].formatted_address;
             console.log(this.address)

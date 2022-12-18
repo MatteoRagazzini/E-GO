@@ -62,6 +62,7 @@ export default {
             new google.maps.Marker({
               position: new google.maps.LatLng(station.latitude, station.longitude),
               // content: availabilityTag,
+              label: ""+ station.usedSpaces,
               map:map.value
             }).addListener("click", () => {
               state.dialog = true
@@ -83,7 +84,10 @@ export default {
       locationMarkerIsSet = true;
       locationMarker= new google.maps.Marker({
         position: new google.maps.LatLng(currPos.value),
-        map:map.value
+        map:map.value,
+        icon: {
+          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        }
     })
     })
 

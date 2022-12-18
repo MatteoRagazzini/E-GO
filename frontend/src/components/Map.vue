@@ -15,15 +15,20 @@
 <script setup>
 
 import StationService from "@/services/station.service";
+import UserService from "@/services/user.service";
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import {useGeolocation} from "@/map/GeolocationFuctions";
 import StationCard from "@/components/StationCard";
+import { useStore } from 'vuex'
 
 const {coords} = useGeolocation()
 const currPos = computed(() => ({
   lat: coords.value.latitude,
   lng: coords.value.longitude
 }))
+
+const store = useStore()
+const user = computed(() => store.state.auth.user);
 
 const state = reactive({
     showStationCard: false,
@@ -73,9 +78,11 @@ StationService.getStation().then(
         state.station.title = station.address
         state.station.availability = station.usedTowers + "/" + station.totalTowers
         state.station.address = "not a second address"
-        state.station.favorite = true
-        // StationService.getStation().then((response) => state.station.favorite = response.data)
 
+        UserService.getFavouriteStations(user.value.id).then((response) => {
+          var favStations = response.data
+          state.station.favorite = favStations.indexOf(station._id) > -1
+        })
       })
     })
   })

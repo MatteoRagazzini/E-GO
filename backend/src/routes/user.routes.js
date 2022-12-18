@@ -1,8 +1,8 @@
-const { authJwt } = require("../middlewares");
+const {authJwt} = require("../middlewares");
 const controller = require("../controllers/user.controller");
 
-module.exports = function(app) {
-    app.use(function(req, res, next) {
+module.exports = function (app) {
+    app.use(function (req, res, next) {
         res.header(
             "Access-Control-Allow-Headers",
             "x-access-token, Origin, Content-Type, Accept"
@@ -26,7 +26,9 @@ module.exports = function(app) {
         controller.adminBoard
     );
 
-    app.post("/api/user/addVehicle", controller.addVehicle);
+    app.post("/api/user/addVehicle", [authJwt.verifyToken], controller.addVehicle);
 
-    app.post("/api/user/addVehicle", controller.addFavouriteStation);
-};
+    app.post("/api/user/addFavouriteStation", [authJwt.verifyToken], controller.addFavouriteStation);
+
+    app.get("/api/user/favouriteStations/:id", [authJwt.verifyToken], controller.getFavouriteStations);
+}

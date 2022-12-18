@@ -49,7 +49,8 @@ exports.addVehicle = (req, res) => {
         }
     });
 }
-    exports.addFavouriteStation = (req, res) => {
+
+exports.addFavouriteStation = (req, res) => {
 
 
         User.findOneAndUpdate({_id: req.body.user_id},{$push: {'favouriteStations':
@@ -67,4 +68,40 @@ exports.addVehicle = (req, res) => {
                 }
             }
         });
+}
+
+exports.getFavouriteStations = (req, res) => {
+    console.log(req.params.id)
+
+    User.findById(req.params.id, function(err, user) {
+        if (err)
+            res.send(err);
+        else{
+            if(user==null){
+                console.log(req.params.id)
+                res.status(404).send({
+                    description: 'User not found'
+                });
+            }
+            else{
+                res.json(user.favouriteStations);
+            }
+        }
+    });
+
+    //
+    // User.findOne({_id: req.params.user_id}, function(err, user) {
+    //     if (err)
+    //         res.send(err);
+    //     else{
+    //         if(user==null){
+    //             res.status(404).send({
+    //                 description: 'user not found'
+    //             });
+    //         }
+    //         else{
+    //             res.status(200).json(user.favouriteStations());
+    //         }
+    //     }
+    // });
 }

@@ -70,7 +70,6 @@ export default {
     alertType: "success",
     showAlert: false,
   }),
-
   methods: {
     reserve () {
       this.loading = true

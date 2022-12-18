@@ -1,5 +1,6 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import {auth} from "@/store/auth.module";
 
 const API_URL = 'http://localhost:3000/api/test/';
 
@@ -22,10 +23,9 @@ class UserService {
   }
 
   // This should return the favourite stations of the user
-  // getFavouriteStations(){
-  //   return axios.get('http://localhost:3000/api/user/' + 'favouriteStations', { headers: authHeader() });
-  // }
+  getFavouriteStations(user_id){
+    return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });
+  }
 }
-
 
 export default new UserService();

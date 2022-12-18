@@ -27,11 +27,7 @@
     </v-app-bar>
     <v-container>
     <v-main>
-<!--        <div class="m-auto">-->
-<!--          <h4>Your position</h4>-->
-<!--          Latitude : {{currentPos.lat.toFixed(2)}}, Longitude: {{currentPos.lng.toFixed(2)}}-->
-<!--        </div>-->
-<!--      <div ref="mapDiv" style="width: 100%; height: 80vh"/>-->
+<!--      This is the main of the application where the pages changes based on the router map/charger-->
       <router-view></router-view>
     </v-main>
     </v-container>
@@ -42,10 +38,10 @@
         Recent
       </v-btn>
 
-      <v-btn to="/userLocation" value="favorites" @click="showLocationSearch">
-        <v-icon>mdi-heart</v-icon>
+      <v-btn to="/map" value="Map" @click="showLocationSearch">
+        <v-icon>mdi-map</v-icon>
 
-        Favorites
+        Map
       </v-btn>
       <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">
         <v-badge
@@ -64,44 +60,14 @@
   </v-app>
 </template>
 <script>
-/* eslint-disable no-undef */
-import {useGeolocation} from "@/map/GeolocationFuctions";
-import {computed, onMounted, ref} from "vue";
-// import {Loader} from '@googlemaps/js-api-loader'
 import AutocompleteComponent from "@/components/AutocompleteComponent";
-import ChargingStatus from "@/components/ChargingStatus";
-import MapNew from "@/components/MapNew";
-import StationService from "@/services/station.service";
-
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI'
 export default {
   name: "Home",
   data () {
-    return{
+    return {
       isHidden: false,
       infoCharged: false,
     }
-  },
-
-  setup() {
-    //  const currentPos = computed(()=>({
-    //    lat: coords.value.latitude,
-    //    lng: coords.value.longitude
-    //  }))
-    //
-    // const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-    // const mapDiv = ref(null)
-    // onMounted(async ()=>{
-    //   await loader.load()
-    //   new google.maps.Map(mapDiv.value,{
-    //     center: {
-    //       lat: 48.17,
-    //       lng: 11.59
-    //     },
-    //     zoom: 15
-    //   })
-    // })
-    // return {currentPos, mapDiv}
   },
   methods: {
     logOut() {
@@ -118,8 +84,6 @@ export default {
     },
   },
   components:{
-    ChargingStatus,
-    MapNew,
     autocompleteComponent: AutocompleteComponent
   }
 }

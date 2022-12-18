@@ -20,6 +20,12 @@ class UserService {
   getAdminBoard() {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
+
+  // This should return the favourite stations of the user
+  // getFavouriteStations(){
+  //   return axios.get('http://localhost:3000/api/user/' + 'favouriteStations', { headers: authHeader() });
+  // }
 }
+
 
 export default new UserService();

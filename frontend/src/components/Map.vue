@@ -6,7 +6,7 @@
   <div ref="mapDiv" style="width:100%; height:80vh"/>
   <StationCard
     v-model="state.showStationCard"
-    :station ="state.station"/>
+    :station="state.station"/>
 </template>
 
 
@@ -65,21 +65,20 @@ StationService.getStation().then(
       new google.maps.Marker({
         position: new google.maps.LatLng(station.latitude, station.longitude),
         // content: availabilityTag,
-        label: "" + station.usedSpaces,
+        label: "" + (station.totalTowers - station.usedTowers),
         map: map.value
       }).addListener("click", () => {
         state.showStationCard = true
         state.station.id = station._id
-       // state.station.title = station.title
-        state.station.title = "Münchner Freiheit"
-        state.station.availability = station.usedSpaces + "/" + station.maxSpaces
-        //state.station.address = station.address
-        state.station.address = "Leopoldstraße 34, 80804 Munich"
+        state.station.title = station.address
+        state.station.availability = station.usedTowers + "/" + station.totalTowers
+        state.station.address = "not a second address"
         state.station.favorite = true
+        // StationService.getStation().then((response) => state.station.favorite = response.data)
+
       })
     })
   })
-
 var locationMarker = null;
 var locationMarkerIsSet = false;
 

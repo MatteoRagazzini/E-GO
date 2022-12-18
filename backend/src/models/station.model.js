@@ -5,14 +5,15 @@ const Station = mongoose.model(
     new mongoose.Schema({
         latitude: Number,
         longitude: Number,
-        maxSpaces: Number,
-        usedSpaces: Number
-        // connectedVehicles: [
-        //     {
-        //         type: mongoose.Schema.Types.ObjectId,
-        //         ref: "Vehicles"
-        //     }
-        // ]
+        address: String,
+        totalTowers: Number,
+        usedTowers: Number,
+        towers : [{
+            id: Number,
+            isAvailable: Boolean,
+            charging_vehicle_id: String
+        }],
+
     })
 );
 

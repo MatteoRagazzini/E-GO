@@ -5,7 +5,7 @@
   <!--  </v-card>-->
   <div ref="mapDiv" style="width:100%; height:80vh"/>
   <StationCard
-    v-model="state.dialog"
+    v-model="state.showStationCard"
     :station ="state.station"/>
 </template>
 
@@ -26,8 +26,7 @@ const currPos = computed(() => ({
 }))
 
 const state = reactive({
-    dialogText: "",
-    dialog: false,
+    showStationCard: false,
     station: {
       id: 1,
       ratings: 4.5,
@@ -69,8 +68,8 @@ StationService.getStation().then(
         label: "" + station.usedSpaces,
         map: map.value
       }).addListener("click", () => {
-        state.dialog = true
-        state.dialogText = station._id
+        state.showStationCard = true
+        state.station.title = station._id
       })
     })
   })

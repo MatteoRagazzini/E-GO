@@ -31,7 +31,7 @@ export default {
       lng: coords.value.longitude
     }))
 
-    const state = reactive({dialogText:"", dialog:false, currLocationMarker:null, currLocationSet:false});
+    const state = reactive({dialogText:"", dialog:false});
 
     const mapDiv = ref(null)
     let map = ref(null)
@@ -70,15 +70,20 @@ export default {
           })
         })
 
+    var locationMarker = null;
+    var locationMarkerIsSet = false;
+
     watch([currPos], () => {
       map.value.setCenter(currPos.value)
       map.value.setZoom(15)
-      // if(state.currLocationSet) state.currLocationMarker.setMap(null)
-      // state.currLocationSet = true
-      state.currLocationMarker = new google.maps.Marker({
+      if(locationMarkerIsSet){
+        console.log("inside the location isSet")
+        locationMarker.setMap(null);
+      }
+      locationMarkerIsSet = true;
+      locationMarker= new google.maps.Marker({
         position: new google.maps.LatLng(currPos.value),
         map:map.value
-
     })
     })
 

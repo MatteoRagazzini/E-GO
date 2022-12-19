@@ -13,11 +13,12 @@ export const auth = {
       return AuthService.login(user).then(
         user => {
           commit('loginSuccess', user);
+          console.log("promise resolved")
           return Promise.resolve(user);
         },
         error => {
           commit('loginFailure');
-          return Promise.reject(error);
+          return Promise.reject(error.message);
         }
       );
     },

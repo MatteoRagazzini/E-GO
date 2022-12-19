@@ -14,13 +14,13 @@ class AuthService {
         password: user.password
       })
       .then(response => {
-        if (response.data.accessToken) {
-          localStorage.setItem('user', JSON.stringify(response.data));
-        }
-
-        return response.data;
+          if (response.data.accessToken) {
+            localStorage.setItem('user', JSON.stringify(response.data));
+          }
+          return response.data;
       }).catch(function (error){
-        console.log(error);
+        console.log(error)
+        throw new Error(error.response.data.message)
       });
   }
 

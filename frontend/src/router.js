@@ -9,6 +9,7 @@ import Register from "@/components/Register";
 import Home from "@/components/Home";
 import ChargingStatus from "@/components/ChargingStatus";
 import Map from "@/components/Map";
+import VehicleOverview from "@/components/VehicleOverview";
 
 
 const routes = [
@@ -63,6 +64,11 @@ const routes = [
     name: "map",
     component: Map,
   },
+  {
+    path: "/vehicles",
+    name: "vehicles",
+    component: VehicleOverview,
+  }
 ];
 
 const router = createRouter({

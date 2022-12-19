@@ -32,10 +32,10 @@
     </v-main>
     </v-container>
     <v-bottom-navigation>
-      <v-btn value="recent">
-        <v-icon>mdi-history</v-icon>
+      <v-btn to="/vehicles" value="VehicleOverview" @click="hideLocationSearch">
+        <v-icon>mdi-bicycle</v-icon>
 
-        Recent
+        Vehicles
       </v-btn>
 
       <v-btn to="/map" value="Map" @click="showLocationSearch">

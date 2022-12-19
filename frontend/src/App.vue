@@ -2,20 +2,20 @@
   <div id="app">
     <v-app>
     <div v-if="!currentUser">
-        <v-carousel
-          height="auto"
-        >
-          <v-carousel-item
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-            cover
-          ></v-carousel-item>
+<!--        <v-carousel-->
+<!--          height="auto"-->
+<!--        >-->
+<!--          <v-carousel-item-->
+<!--            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"-->
+<!--            cover-->
+<!--          ></v-carousel-item>-->
 
-          <v-carousel-item
-            src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-            cover
-          ></v-carousel-item>
+<!--          <v-carousel-item-->
+<!--            src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"-->
+<!--            cover-->
+<!--          ></v-carousel-item>-->
 
-          <v-carousel-item>
+<!--          <v-carousel-item>-->
             <v-container>
               <br>
               <v-row align="center"
@@ -30,9 +30,9 @@
               </v-row>
             </v-container>
             <router-view></router-view>
-            <br>
-          </v-carousel-item>
-        </v-carousel>
+<!--            <br>-->
+<!--          </v-carousel-item>-->
+<!--        </v-carousel>-->
     </div>
     <div v-if="user">
       <home></home>

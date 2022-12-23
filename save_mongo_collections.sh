@@ -1,0 +1,1 @@
+mongodump -d bezkoder_db -o .

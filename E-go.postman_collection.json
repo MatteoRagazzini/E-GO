@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "fcaf9b3b-9614-4c92-8d4c-368d4837c996",
+		"name": "E-go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23882363"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/station/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\n  \"latitude\": 48.16164036317375,\n   \"longitude\": 11.586378592060333,\n    \"address\": \"Münchener Freiheit, Munich\",\n    \"totalTowers\": 3,\n     \"usedTowers\": 0,\n     \"towers\" : [{\n            \"id\": 1,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 2,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 3,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        }\n        ]\n  }     ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/station/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"station",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/test/all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/test/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"test",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/user/favouriteStations?id=639f3e9c29a8a26bac492c5f",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MTM3ODEzOSwiZXhwIjoxNjcxNDY0NTM5fQ.lukQAG3okT8rosLwkuMvmeP8UvCLLGBbwrB6Lvzn9uI",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/user/favouriteStations?id=639f3e9c29a8a26bac492c5f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"favouriteStations"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "639f3e9c29a8a26bac492c5f"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/auth/signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"alice\",\n    \"email\":\"alice@gmail.com\",\n    \"password\": \"bob\",\n    \"roles\":[\"user\"],\n    \"profilePicture\": \"\",\n    \"favouriteStations\" : [],\n    \"vehicles\" : [],\n    \"chargeHistory\": []\n    \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/auth/signin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"alice\",\n    \"password\": \"bob\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/user/addVehicle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MTM3ODEzOSwiZXhwIjoxNjcxNDY0NTM5fQ.lukQAG3okT8rosLwkuMvmeP8UvCLLGBbwrB6Lvzn9uI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"user_id\": \"639f31dae156cbe13bb8fd53\",\n\"name\": \"scooter\",\n\"img\": \"\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/addVehicle",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"addVehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/user/addFavouriteStation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MTM3ODEzOSwiZXhwIjoxNjcxNDY0NTM5fQ.lukQAG3okT8rosLwkuMvmeP8UvCLLGBbwrB6Lvzn9uI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"user_id\": \"639f31dae156cbe13bb8fd53\",\n\"name\": \"scooter\",\n\"img\": \"\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/addVehicle",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"addVehicle"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

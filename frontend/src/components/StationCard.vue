@@ -72,6 +72,12 @@ export default {
     alertType: "success",
     showAlert: false,
   }),
+  computed:{
+    currentUser() {
+      this.user = this.$store.state.auth.user;
+      return this.user
+    }
+  },
   methods: {
     reserve () {
       this.loading = true
@@ -103,9 +109,10 @@ export default {
     changeFavorite () {
       if (!this.station.favorite) {
         this.station.favorite = true
-        userService.addFavouriteStation()
+        userService.addFavouriteStation(this.currentUser['id'],this.station.id)
       }else{
         this.station.favorite = false
+        userService.removeFavouriteStation(this.currentUser['id'],this.station.id)
       }
       // update favorite
       // send favorite to backend

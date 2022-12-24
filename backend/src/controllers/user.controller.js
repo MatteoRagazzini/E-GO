@@ -51,9 +51,7 @@ exports.addVehicle = (req, res) => {
 }
 
 exports.addFavouriteStation = (req, res) => {
-
-
-        User.findOneAndUpdate({_id: req.body.user_id},{$push: {'favouriteStations':
+    User.findOneAndUpdate({_id: req.body.user_id},{$push: {'favouriteStations':
                 req.body.station_id}}, {new: true}, function(err, user) {
             if (err)
                 res.send(err);
@@ -64,6 +62,7 @@ exports.addFavouriteStation = (req, res) => {
                     });
                 }
                 else{
+                    console.log("station successfully added to the user")
                     res.status(200).send("station successfully added to the user");
                 }
             }
@@ -82,21 +81,20 @@ exports.removeFavouriteStation = (req, res) => {
                 });
             }
             else{
-                res.status(200).send("station successfully added to the user");
+                console.log("station successfully removed from the user")
+                res.status(200).send("station successfully removed from the user");
             }
         }
     });
 }
 
 exports.getFavouriteStations = (req, res) => {
-    console.log(req.params.id)
 
     User.findById(req.params.id, function(err, user) {
         if (err)
             res.send(err);
         else{
             if(user==null){
-                console.log(req.params.id)
                 res.status(404).send({
                     description: 'User not found'
                 });

@@ -28,12 +28,32 @@ class UserService {
   }
 
   addFavouriteStation(user_id, station_id){
+    console.log(user_id +","+station_id)
     return axios
-      .post('http://localhost:3000/api/user/addFavouriteStation/', {
+      .post('http://localhost:3000/api/user/addFavouriteStation', {
         user_id: user_id,
-        station_id: station_id
-      })
+        station_id: station_id,
+        img:""
+      },{ headers: authHeader() })
       .then(response => {
+        console.log(response.data)
+        return response.data;
+      }).catch(function (error){
+        console.log(error)
+        throw new Error(error.response.data.message)
+      });
+  }
+
+  removeFavouriteStation(user_id, station_id){
+    console.log(user_id +","+station_id)
+    return axios
+      .post('http://localhost:3000/api/user/removeFavouriteStation', {
+        user_id: user_id,
+        station_id: station_id,
+        img:""
+      },{ headers: authHeader() })
+      .then(response => {
+        console.log(response.data)
         return response.data;
       }).catch(function (error){
         console.log(error)

@@ -20,4 +20,5 @@ module.exports = function(app) {
         "/api/station/register",
         controller.registerStation
     );
+
 };

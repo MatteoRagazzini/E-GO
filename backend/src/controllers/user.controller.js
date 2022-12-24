@@ -70,6 +70,24 @@ exports.addFavouriteStation = (req, res) => {
         });
 }
 
+exports.removeFavouriteStation = (req, res) => {
+    User.findOneAndUpdate({_id: req.body.user_id},{$pull: {'favouriteStations':
+            req.body.station_id}}, function(err, user) {
+        if (err)
+            res.send(err);
+        else{
+            if(user==null){
+                res.status(404).send({
+                    description: 'user not found'
+                });
+            }
+            else{
+                res.status(200).send("station successfully added to the user");
+            }
+        }
+    });
+}
+
 exports.getFavouriteStations = (req, res) => {
     console.log(req.params.id)
 

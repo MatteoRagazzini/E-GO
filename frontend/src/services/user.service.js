@@ -26,6 +26,20 @@ class UserService {
   getFavouriteStations(user_id){
     return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });
   }
+
+  addFavouriteStation(user_id, station_id){
+    return axios
+      .post('http://localhost:3000/api/user/addFavouriteStation/', {
+        user_id: user_id,
+        station_id: station_id
+      })
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        console.log(error)
+        throw new Error(error.response.data.message)
+      });
+  }
 }
 
 export default new UserService();

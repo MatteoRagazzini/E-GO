@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import userService from "@/services/user.service";
+
 export default {
   data: () => ({
     loading: false,
@@ -101,6 +103,7 @@ export default {
     changeFavorite () {
       if (!this.station.favorite) {
         this.station.favorite = true
+        userService.addFavouriteStation()
       }else{
         this.station.favorite = false
       }

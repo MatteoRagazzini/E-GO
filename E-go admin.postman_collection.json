@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "c3a4e0fe-b838-4a65-bd83-aa55a3188b54",
+		"name": "E-go admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24868085"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/admin/freeAllStation",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYWEwNTg0OWZiNDdlN2Q5ZWU0YmZjNSIsImlhdCI6MTY3MjA4NjkzNCwiZXhwIjoxNjcyMTczMzM0fQ.kAkQaDgeb24Cnacem_yBFaYfYuFxTprE0C8XezDYIDk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/admin/freeAllStation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"freeAllStation"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

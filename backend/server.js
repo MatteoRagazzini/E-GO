@@ -9,10 +9,6 @@ const port = 3000
 
 global.appRoot = path.resolve(__dirname);
 
-// mongoose.connect('mongodb://localhost/e-go', { useNewUrlParser: true})
-//     .then(() => console.log("Connected"))
-//     .catch(err => console.log(err));
-
 const db = require("./src/models");
 const Role = db.role;
 
@@ -47,6 +43,7 @@ require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
 require('./src/routes/user.routes')(app);
 require('./src/routes/station.routes')(app);
+require('./src/routes/admin.routes')(app);
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'})

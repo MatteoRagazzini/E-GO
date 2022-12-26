@@ -117,7 +117,8 @@ exports.occupyTower = (req,res) => {
                     })
                 }
                 firstFreeTower.isAvailable = false;
-                firstFreeTower.charging_vehicle_id = req.body.vehicle_id
+                // Here I want to insert the current vehicle id of the user, an idea is that I keep it in the store
+                firstFreeTower.charging_vehicle_id = "test"
                 station.usedTowers = station.towers.filter(s => !s.isAvailable).length
                 station.save().then(
                     res.status(200).send(firstFreeTower)

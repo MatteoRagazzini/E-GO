@@ -43,7 +43,7 @@
           @click="connect"
           :disabled="connected"
         >
-          Connect
+          {{ status }}
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
@@ -61,6 +61,7 @@
 
 <script>
 import userService from "@/services/user.service";
+import StationService from "@/services/station.service";
 
 export default {
   data: () => ({
@@ -68,6 +69,7 @@ export default {
     heartColor: "white",
     reserved: false,
     connected: false,
+    status:"connect",
     alertText: "",
     alertType: "success",
     showAlert: false,
@@ -94,11 +96,23 @@ export default {
     },
     connect () {
       this.loading = true
-      setTimeout(() => (this.loading = false), 2000)
-      this.connected = true
-      this.alertType = "success"
-      this.alertText = "Vehicle successfully connected"
-      this.showAlert = true
+      StationService.occupyStation(this.currentUser['id'], this.station.id).then(
+        (tower) => {
+          // this is working we will need to change the button to unconnect and disable the book
+          this.loading = false
+          console.log(tower)
+          this.alertType = "success"
+          this.alertText = "Vehicle successfully connected"
+          // try not to change the name of the properties, this should be colled disable not connected
+         // this.connected = true
+          // should we keep an internal status of the application?
+          // Because in this case after we connect, we would like to see realtime that the status
+          // of the application changes
+          this.status = "Disconnect"
+          this.showAlert = true
+        }
+        )
+
 
 
       // create charge

@@ -29,6 +29,7 @@ module.exports = function(app) {
 
     app.put(
         "/api/station/tower/free",
+        [authJwt.verifyToken],
         controller.freeTower
     )
 

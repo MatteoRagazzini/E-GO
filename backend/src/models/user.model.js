@@ -18,6 +18,7 @@ const User = mongoose.model(
             img: String,
             batteryLevel: Number,
             isCharging: Boolean,
+            isCurrent: Boolean,
         }],
         roles: [
             {

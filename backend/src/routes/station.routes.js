@@ -21,4 +21,13 @@ module.exports = function(app) {
         controller.registerStation
     );
 
+    app.put(
+        "api/station/tower/occupy",
+        controller.occupyTower
+    )
+
+    app.put(
+        "api/station/tower/free",
+        controller.freeTower
+    )
 };

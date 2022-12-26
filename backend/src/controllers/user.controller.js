@@ -27,7 +27,8 @@ exports.addVehicle = (req, res) => {
         name: req.name,
         batteryLevel: 30,
         img: req.img,
-        isCharging: false
+        isCharging: false,
+        isCurrent: false
     });
 
     User.findOneAndUpdate({_id: req.body.user_id}, {
@@ -50,37 +51,75 @@ exports.addVehicle = (req, res) => {
     });
 }
 
-exports.addFavouriteStation = (req, res) => {
-    User.findOneAndUpdate({_id: req.body.user_id},{$push: {'favouriteStations':
-                req.body.station_id}}, {new: true}, function(err, user) {
-            if (err)
-                res.send(err);
-            else{
-                if(user==null){
-                    res.status(404).send({
-                        description: 'user not found'
-                    });
-                }
-                else{
-                    console.log("station successfully added to the user")
-                    res.status(200).send("station successfully added to the user");
-                }
-            }
-        });
-}
-
-exports.removeFavouriteStation = (req, res) => {
-    User.findOneAndUpdate({_id: req.body.user_id},{$pull: {'favouriteStations':
-            req.body.station_id}}, function(err, user) {
-        if (err)
-            res.send(err);
-        else{
-            if(user==null){
+exports.removeVehicle = (req, res) => {
+    User.findById(req.body.user_id, function (err, user) {
+        if (err) {
+            console.log(err)
+            res.send(err)
+        } else {
+            if (user == null) {
                 res.status(404).send({
                     description: 'user not found'
                 });
+            } else {
+                const index = user.vehicles.find(v => v._id = req.body.vehicle_id);
+                if (index == null) {
+                    res.status(404).send({
+                        description: 'vehicle not found'
+                    });
+                } else {
+                    user.vehicles.splice(index, 1)
+                    user.save().then(
+                        res.status(200).send("vehicle successfully removed")
+                    ).catch(e=>{
+                            res.status(404).send({
+                                description: 'save not completed'
+                            });
+                    }
+                    )
+
+                }
             }
-            else{
+        }
+    });
+}
+
+exports.addFavouriteStation = (req, res) => {
+    User.findOneAndUpdate({_id: req.body.user_id}, {
+        $push: {
+            'favouriteStations':
+            req.body.station_id
+        }
+    }, {new: true}, function (err, user) {
+        if (err)
+            res.send(err);
+        else {
+            if (user == null) {
+                res.status(404).send({
+                    description: 'user not found'
+                });
+            } else {
+                console.log("station successfully added to the user")
+                res.status(200).send("station successfully added to the user");
+            }
+        }
+    });
+}
+
+exports.removeFavouriteStation = (req, res) => {
+    User.findOneAndUpdate({_id: req.body.user_id}, {
+        $pull: {
+            'favouriteStations': req.body.station_id
+        }
+    }, function (err, user) {
+        if (err)
+            res.send(err);
+        else {
+            if (user == null) {
+                res.status(404).send({
+                    description: 'user not found'
+                });
+            } else {
                 console.log("station successfully removed from the user")
                 res.status(200).send("station successfully removed from the user");
             }
@@ -90,16 +129,15 @@ exports.removeFavouriteStation = (req, res) => {
 
 exports.getFavouriteStations = (req, res) => {
 
-    User.findById(req.params.id, function(err, user) {
+    User.findById(req.params.id, function (err, user) {
         if (err)
             res.send(err);
-        else{
-            if(user==null){
+        else {
+            if (user == null) {
                 res.status(404).send({
                     description: 'User not found'
                 });
-            }
-            else{
+            } else {
                 res.json(user.favouriteStations);
             }
         }

@@ -32,3 +32,30 @@ exports.retrieveStations = (req, res) => {
         res.json(station);
     });
 };
+
+// 1) user click on reserve
+
+
+
+exports.occupyTower = (req,res) =>{
+    Station.findById(req.params.id, function(err, station) {
+        if (err)
+            res.send(err);
+        else{
+
+            station.towers.find(s => s.isAvailable())
+            if(user==null){
+                res.status(404).send({
+                    description: 'User not found'
+                });
+            }
+            else{
+                res.json(user.favouriteStations);
+            }
+        }
+    });
+}
+
+exports.freeTower= (req,res) =>{
+
+}

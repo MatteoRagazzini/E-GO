@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "fcaf9b3b-9614-4c92-8d4c-368d4837c996",
+		"_postman_id": "64627359-7c32-401b-8de3-d52153917a10",
 		"name": "E-go",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23882363"
+		"_exporter_id": "24868085"
 	},
 	"item": [
 		{
@@ -181,6 +181,42 @@
 						"api",
 						"user",
 						"addVehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/user/removeVehicle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"user_id\": \"639f31dae156cbe13bb8fd53\",\n\"vehicle_id\": \"639f3c6dc4a3ee33b7209759\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/removeVehicle",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"removeVehicle"
 					]
 				}
 			},

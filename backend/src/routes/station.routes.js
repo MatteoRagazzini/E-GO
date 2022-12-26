@@ -12,7 +12,7 @@ module.exports = function(app) {
 
     app.get(
         "/api/station/retrieve",
-        // [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken],
         controller.retrieveStations
     );
 
@@ -22,12 +22,13 @@ module.exports = function(app) {
     );
 
     app.put(
-        "api/station/tower/occupy",
+        "/api/station/tower/occupy",
+        [authJwt.verifyToken],
         controller.occupyTower
     )
 
     app.put(
-        "api/station/tower/free",
+        "/api/station/tower/free",
         controller.freeTower
     )
 };

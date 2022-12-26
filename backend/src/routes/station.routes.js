@@ -31,4 +31,9 @@ module.exports = function(app) {
         "/api/station/tower/free",
         controller.freeTower
     )
+
+    // app.post(
+    //     "/api/station/tower/connect",
+    //     controller.connect
+    // )
 };

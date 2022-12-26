@@ -58,6 +58,27 @@
 			"response": []
 		},
 		{
+			"name": "http://localhost:3000/api/station/retrieve",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/test/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"test",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "http://localhost:3000/api/user/favouriteStations?id=639f3e9c29a8a26bac492c5f",
 			"request": {
 				"method": "GET",
@@ -217,6 +238,80 @@
 						"api",
 						"user",
 						"removeVehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/station/tower/occupy",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"id\": \"639f3e9c29a8a26bac492c5f\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/station/tower/occupy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"station",
+						"tower",
+						"occupy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/station/tower/free",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"station_id\": \"63a6d09bd1080075f534305c\",\n\"tower_id\": \"2\"\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/station/tower/free",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"station",
+						"tower",
+						"free"
 					]
 				}
 			},

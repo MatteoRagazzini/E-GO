@@ -35,4 +35,6 @@ module.exports = function (app) {
     app.post("/api/user/removeFavouriteStation", [authJwt.verifyToken], controller.removeFavouriteStation);
 
     app.get("/api/user/favouriteStations/:id", [authJwt.verifyToken], controller.getFavouriteStations);
+
+    app.post("/api/user/connect", [authJwt.verifyToken], controller.connect);
 }

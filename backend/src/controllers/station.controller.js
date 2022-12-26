@@ -34,35 +34,36 @@ exports.retrieveStations = (req, res) => {
 };
 
 
-exports.occupyTower = (req, res) => {
-    console.log("here")
-    Station.findById(req.body.station_id, function (err, station) {
-        if (err)
-            res.send(err);
-        else {
-            if (station == null) {
-                res.status(404).send({
-                    description: 'station not found'
-                });
-            } else {
-                const firstFreeTower = station.towers.find(s => s.isAvailable)
-                if(firstFreeTower==null){
-                    res.status(500).send({
-                        description: 'All towers occupied'
-                    })
-                }
-                firstFreeTower.isAvailable = false;
-                station.usedTowers = station.towers.filter(s => s.isAvailable).length
-                station.save().then(
-                    res.status(200).send(firstFreeTower)
-                ).catch(er => {
-                        res.status(500).send(er)
-                    }
-                )
-            }
-        }
-    });
-}
+// exports.occupyTower = (req, res) => {
+//     console.log("here")
+//     Station.findById(req.body.station_id, function (err, station) {
+//         if (err)
+//             res.send(err);
+//         else {
+//             if (station == null) {
+//                 res.status(404).send({
+//                     description: 'station not found'
+//                 });
+//             } else {
+//                 const firstFreeTower = station.towers.find(s => s.isAvailable)
+//                 if(firstFreeTower==null){
+//                     res.status(500).send({
+//                         description: 'All towers occupied'
+//                     })
+//                 }
+//                 firstFreeTower.isAvailable = false;
+//                 firstFreeTower.charging_vehicle_id = req.body.vehicle_id
+//                 station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+//                 station.save().then(
+//                     res.status(200).send(firstFreeTower)
+//                 ).catch(er => {
+//                         res.status(500).send(er)
+//                     }
+//                 )
+//             }
+//         }
+//     });
+// }
 
 exports.freeTower = (req, res) => {
     Station.findById(req.body.station_id, function (err, station) {
@@ -85,6 +86,7 @@ exports.freeTower = (req, res) => {
                 }
                 else{
                     towerToFree.isAvailable = true
+                    towerToFree.charging_vehicle_id = ""
                     station.usedTowers = station.towers.filter(s => !s.isAvailable).length
                     station.save().then(
                         res.status(200).send("Tower correctly freed")
@@ -97,3 +99,35 @@ exports.freeTower = (req, res) => {
         }
     });
 }
+
+exports.occupyTower = (req,res) => {
+    Station.findById(req.body.station_id, function (err, station) {
+        if (err)
+            res.send(err);
+        else {
+            if (station == null) {
+                res.status(404).send({
+                    description: 'station not found'
+                });
+            } else {
+                const firstFreeTower = station.towers.find(s => s.isAvailable)
+                if(firstFreeTower==null){
+                    res.status(500).send({
+                        description: 'All towers occupied'
+                    })
+                }
+                firstFreeTower.isAvailable = false;
+                firstFreeTower.charging_vehicle_id = req.body.vehicle_id
+                station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                station.save().then(
+                    res.status(200).send(firstFreeTower)
+                ).catch(er => {
+                        res.status(500).send(er)
+                    }
+                )
+            }
+        }
+    });
+}
+
+

@@ -1,6 +1,7 @@
 const config = require("../config/auth.config");
 const db = require("../models");
 const mongoose = require("mongoose");
+const stationController = require("../controllers/station.controller")
 const User = db.user;
 const Role = db.role;
 const Vehicle = db.vehicle;
@@ -158,4 +159,21 @@ exports.getFavouriteStations = (req, res) => {
     //         }
     //     }
     // });
+}
+
+exports.connect = (req, res) => {
+    User.findById(req.params.user_id, function (err, user) {
+        if (err)
+            res.send(err);
+        else {
+            if (user == null) {
+                res.status(404).send({
+                    description: 'User not found'
+                });
+            } else {
+                const currentVehicle = user.vehicles.find(v => v.isCurrent)
+                stationController.occupyTower()
+            }
+        }
+    });
 }

@@ -1,11 +1,56 @@
-const express = require('express')
+
+const express = require('express');
+const cors = require('cors')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const cors = require('cors')
+
+const {createServer} = require('http');
+const {Server} = require("socket.io");
+const app = express();
+const port = 3000
+const socketPort = 3002
 const path = require('path')
 
-const app = express()
-const port = 3000
+//Per gestire i parametri passati nel corpo della richiesta http.
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors())
+
+
+
+
+
+app.use('/static', express.static(__dirname + '/public'));
+
+// app.use(function(req, res) {
+//     res.status(404).send({url: req.originalUrl + ' not found'})
+// });
+
+require('./src/routes/router')(app)
+require('./src/routes/auth.routes')(app);
+require('./src/routes/user.routes')(app);
+require('./src/routes/station.routes')(app);
+require('./src/routes/admin.routes')(app);
+
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+    cors: {
+        origins: ['http://localhost:8080'],
+        method: ["GET","POST"]
+    }
+});
+
+
+//Whenever someone connects this gets executed
+io.on('connection', function(socket) {
+    console.log('A user connected');
+
+    //Whenever someone disconnects this piece of code executed
+    socket.on('disconnect', function () {
+        console.log('A user disconnected');
+    });
+});
 
 global.appRoot = path.resolve(__dirname);
 
@@ -27,31 +72,20 @@ db.mongoose
         process.exit();
     });
 
-var corsOptions = {
-    origin: "http://localhost:8081"
-};
 
-app.use(cors(corsOptions))
 
-//Per gestire i parametri passati nel corpo della richiesta http.
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
-app.use('/static', express.static(__dirname + '/public'));
 
-require('./src/routes/router')(app)
-require('./src/routes/auth.routes')(app);
-require('./src/routes/user.routes')(app);
-require('./src/routes/station.routes')(app);
-require('./src/routes/admin.routes')(app);
 
-app.use(function(req, res) {
-    res.status(404).send({url: req.originalUrl + ' not found'})
-});
 
-app.listen(port, () => {
+
+httpServer.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+
+
+app.listen(3000, () => {
     console.log(`Example app listening on port ${port}`)
 })
+
 
 function initial() {
     Role.estimatedDocumentCount((err, count) => {
@@ -88,3 +122,5 @@ function initial() {
         }
     });
 }
+
+

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const controller = require("./src/controllers/station.controller");
 
 const {createServer} = require('http');
 const {Server} = require("socket.io");
@@ -41,16 +42,20 @@ const io = new Server(httpServer, {
     }
 });
 
-
-//Whenever someone connects this gets executed
 io.on('connection', function(socket) {
     console.log('A user connected');
-
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
         console.log('A user disconnected');
     });
+
+    socket.on("marker", (data) => {
+        const avSpaces = controller.getAvailableSpaces();
+        console.log("on connect clicked " + avSpaces)
+        io.sockets.emit("welcome");
+    })
 });
+//Whenever someone connects this gets executed
 
 global.appRoot = path.resolve(__dirname);
 

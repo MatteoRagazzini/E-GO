@@ -73,7 +73,10 @@ export default {
   },
   methods: {
     updateLocation(newLocation){
-      this.location = newLocation
+      console.log("updating location in response of the emit from the AutocompleteComponent")
+      this.coords.lat = newLocation.lat;
+      this.coords.lng = newLocation.lng;
+      console.log(this.coords)
     },
     logOut() {
       this.$store.dispatch('auth/logout');

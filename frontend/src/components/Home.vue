@@ -29,21 +29,32 @@
       <v-main>
         <!--      This is the main of the application where the pages changes based on the router map/charger-->
         <googleMap :coords="this.coords"></googleMap>
-        <!--      <router-view></router-view>-->
+<!--              <router-view></router-view>-->
       </v-main>
     </v-container>
     <v-bottom-navigation>
+
       <v-btn to="/vehicles" value="VehicleOverview" @click="hideLocationSearch">
         <v-icon>mdi-bicycle</v-icon>
 
         Vehicles
       </v-btn>
 
-      <v-btn to="/map" value="Map">
-        <v-icon>mdi-map</v-icon>
+<!--      <v-btn :to="{-->
+<!--        name: 'map',-->
+<!--        params: {coords:1},-->
+<!--        }"-->
+<!--             value="Map">-->
+<!--        <v-icon>mdi-map</v-icon>-->
 
+<!--        Map-->
+<!--      </v-btn>-->
+
+      <v-btn @click="goToMap">
+        <v-icon>mdi-map</v-icon>
         Map
       </v-btn>
+
       <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">
         <v-badge
           dot
@@ -72,7 +83,7 @@ export default {
     return {
       isHidden: false,
       infoCharged: false,
-      coords: {},
+      coords: {lat:48.15143929407981,lng:11.580534476878478},
       watcher: null
     }
   },
@@ -90,15 +101,10 @@ export default {
   unmounted() {
     if(this.watcher) navigator.geolocation.clearWatch(this.watcher)
   },
-  computed: {
-    coords() {
-      return {
-        lat: this.geolocation.GeoCoords.latitude,
-        lng: this.geolocation.GeoCoords.longitude
-      }
-    }
-  },
   methods: {
+    // goToMap(){
+    //   this.$router.push({name:"map",params:{coords:1}})
+    // },
     updateLocation(newLocation) {
       console.log("updating location in response of the emit from the AutocompleteComponent")
       this.coords.lat = newLocation.lat;

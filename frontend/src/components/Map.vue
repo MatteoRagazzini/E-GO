@@ -4,7 +4,6 @@
   <!--    Latitude : {{coords.lat.toFixed(2)}} , Longitude: {{coords.lng.toFixed(2)}}-->
   <!--  </v-card>-->
   <div id="mapDiv" style="width:100%; height:80vh"/>
-  <div> {{coords.lat}}</div>
   <StationCard
     v-model="this.showStationCard"
     :station="this.station"/>
@@ -22,7 +21,15 @@ import StationCard from "@/components/StationCard.vue";
 export default {
   name: "Map",
   components: {StationCard},
-  props:['coords'],
+  props:{
+    coords:{
+      type:Object,
+      default(){
+        return {lat:48.15143929407981,lng:11.580534476878478}
+      },
+
+    }
+  },
   data() {
     return {
       socket: useSocketIO(),
@@ -44,7 +51,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.coords)
+    console.log(this.coords);
     this.map = new google.maps.Map(document.getElementById("mapDiv"), {
       center: this.coords,
       zoom: 13,

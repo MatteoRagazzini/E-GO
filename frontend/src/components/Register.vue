@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return thstore.state.auth.status.loggedInis.$;
     },
   },
   mounted() {

@@ -20,7 +20,8 @@
       icon="mdi-map-marker"
       size="small"
       :loading="loadingLocate"
-      @click="onLocate">
+      @click="onLocate"
+    >
     </v-btn>
     <div
       v-if="error"
@@ -37,6 +38,7 @@ import axios from "axios";
 import {useGeolocation, changeLocation, setGeoLocation} from "@/map/GeolocationFuctions";
 import {computed} from "vue";
 export default {
+  emits:['newLocation'],
   name: "UserLocation.vue",
   data() {
     return{
@@ -72,7 +74,8 @@ export default {
       let place = autocomplete.getPlace();
       this.searchedPos.lat = place.geometry.location.lat()
       this.searchedPos.lng = place.geometry.location.lng()
-      changeLocation(this.searchedPos)
+      this.$emit('newLocation',this.searchedPos)
+      // changeLocation(this.searchedPos)
     })
   },
   methods:{

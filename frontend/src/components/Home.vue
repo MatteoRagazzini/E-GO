@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent v-if="!this.isHidden"></autocompleteComponent>
+          <autocompleteComponent @newLocation="updateLocation" v-if="!this.isHidden"></autocompleteComponent>
 <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
@@ -38,7 +38,7 @@
         Vehicles
       </v-btn>
 
-      <v-btn to="/map" value="Map" @click="showLocationSearch">
+      <v-btn to="/map" value="Map">
         <v-icon>mdi-map</v-icon>
 
         Map
@@ -61,15 +61,20 @@
 </template>
 <script>
 import AutocompleteComponent from "@/components/AutocompleteComponent";
+import Map from "@/components/Map.vue";
 export default {
   name: "Home",
   data () {
     return {
       isHidden: false,
       infoCharged: false,
+      coords: {lat:48.1351253, lng: 11.5819806}
     }
   },
   methods: {
+    updateLocation(newLocation){
+      this.location = newLocation
+    },
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');

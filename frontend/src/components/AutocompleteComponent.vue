@@ -74,7 +74,7 @@ export default {
       let place = autocomplete.getPlace();
       this.searchedPos.lat = place.geometry.location.lat()
       this.searchedPos.lng = place.geometry.location.lng()
-      // changeLocation(this.searchedPos)
+      this.$emit('newLocation',this.searchedPos)
     })
   },
   methods:{
@@ -92,7 +92,6 @@ export default {
             console.log(this.address)
           }
           this.$emit('newLocation',this.currPos)
-          // setGeoLocation()
           this.loadingLocate = false;
         }).catch(e =>{
           this.error=  e.message;

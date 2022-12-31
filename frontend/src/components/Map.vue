@@ -1,9 +1,5 @@
 <template>
-  <!--  <v-card class="m-auto" >-->
-  <!--    <h4>Your position</h4>-->
-  <!--    Latitude : {{coords.lat.toFixed(2)}} , Longitude: {{coords.lng.toFixed(2)}}-->
-  <!--  </v-card>-->
-  <div id="mapDiv" style="width:100%; height:80vh"/>
+  <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
     :station="this.station"/>
@@ -126,5 +122,9 @@ export default {
 </script>
 
 <style>
+#mapDiv{
+  width:100%;
+  height: 80vh;
+}
 </style>
 

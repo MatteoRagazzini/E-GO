@@ -27,19 +27,52 @@
     </v-app-bar>
     <v-container>
       <v-main>
-        <!--      This is the main of the application where the pages changes based on the router map/charger-->
-        <googleMap :coords="this.coords"></googleMap>
-<!--              <router-view></router-view>-->
+        <v-window v-model="tab">
+          <v-window-item value="Map"
+          >
+            <v-card>
+              <googleMap :coords="this.coords"></googleMap>
+            </v-card>
+          </v-window-item>
+          <v-window-item value="vehicles"
+          >
+            <v-card>
+              <vehicle-overview></vehicle-overview>
+            </v-card>
+          </v-window-item>
+          <v-window-item value="Charging"
+          >
+            <v-card>
+              <charging-status></charging-status>
+            </v-card>
+          </v-window-item>
+        </v-window>
       </v-main>
     </v-container>
     <v-bottom-navigation>
+      <v-tabs
+        v-model="tab"
+        centered
+        bg-color="transparent"
+        color="green"
+        icons-and-text
+      >
+        <v-tab value="Map">
+          <v-icon>mdi-map</v-icon>
 
-      <v-btn to="/vehicles" value="VehicleOverview" @click="hideLocationSearch">
-        <v-icon>mdi-bicycle</v-icon>
+          Map
+        </v-tab>
+        <v-tab value="vehicles">
+          <v-icon>mdi-bicycle</v-icon>
 
-        Vehicles
-      </v-btn>
+          Vehicles
+        </v-tab>
+        <v-tab value="Charging">
+          <v-icon>mdi-battery</v-icon>
 
+          Charging
+        </v-tab>
+      </v-tabs>
 <!--      <v-btn :to="{-->
 <!--        name: 'map',-->
 <!--        params: {coords:1},-->
@@ -48,26 +81,26 @@
 <!--        <v-icon>mdi-map</v-icon>-->
 
 <!--        Map-->
+<!--&lt;!&ndash;      </v-btn>&ndash;&gt;-->
+
+<!--      <v-btn @click="goToMap">-->
+<!--        <v-icon>mdi-map</v-icon>-->
+<!--        Map-->
 <!--      </v-btn>-->
 
-      <v-btn @click="goToMap">
-        <v-icon>mdi-map</v-icon>
-        Map
-      </v-btn>
+<!--      <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">-->
+<!--        <v-badge-->
+<!--          dot-->
+<!--          avatar-->
+<!--          color="red"-->
+<!--          overlap-->
+<!--          :value="infoCharged"-->
+<!--        >-->
+<!--          <v-icon>mdi-battery</v-icon>-->
+<!--        </v-badge>-->
+<!--        Charging-->
 
-      <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">
-        <v-badge
-          dot
-          avatar
-          color="red"
-          overlap
-          :value="infoCharged"
-        >
-          <v-icon>mdi-battery</v-icon>
-        </v-badge>
-        Charging
-
-      </v-btn>
+<!--      </v-btn>-->
     </v-bottom-navigation>
   </v-app>
 </template>
@@ -76,11 +109,14 @@
 <script>
 import AutocompleteComponent from "@/components/AutocompleteComponent";
 import Map from "@/components/Map.vue";
+import VehicleOverview from "@/components/VehicleOverview.vue";
+import ChargingStatus from "@/components/ChargingStatus.vue";
 
 export default {
   name: "Home",
   data() {
     return {
+      tab: "VehicleOptions",
       isHidden: false,
       infoCharged: false,
       coords: {lat:48.15143929407981,lng:11.580534476878478},
@@ -125,6 +161,9 @@ export default {
     },
   },
   components: {
+    ChargingStatus,
+    Map,
+    VehicleOverview,
     autocompleteComponent: AutocompleteComponent,
     googleMap: Map
   }

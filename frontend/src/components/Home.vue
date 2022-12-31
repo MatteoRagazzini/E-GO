@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent @newLocation="updateLocation" :cords="this.coords" :geoCords="this.geoCords" v-if="!this.isHidden"></autocompleteComponent>
+          <autocompleteComponent @newLocation="updateLocation" :geoCords="this.geoCords" v-if="!this.isHidden"></autocompleteComponent>
           <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">

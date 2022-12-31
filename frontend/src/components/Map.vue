@@ -31,6 +31,8 @@ export default {
       socket: useSocketIO(),
       markers: [],
       showStationCard: false,
+      locationMarker: null,
+      locationMarkerIsSet:false,
       station: {
         id: 1,
         ratings: 4.5,
@@ -47,7 +49,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.coords);
     this.map = new google.maps.Map(document.getElementById("mapDiv"), {
       center: this.coords,
       zoom: 13,
@@ -55,18 +56,14 @@ export default {
     })
     this.clearMarkers();
     this.buildMarkers();
-    console.log(this.markers.length)
   },
   watch:{
     coords: {
       handler(newPos, oldPos) {
         console.log('Prop changed: ', newPos, ' | was: ', oldPos)
-        let locationMarker = null;
-        let locationMarkerIsSet = false;
         this.map.setCenter(newPos)
         this.map.setZoom(15)
         if (locationMarkerIsSet) {
-          console.log("inside the location isSet")
           locationMarker.setMap(null);
         }
         locationMarkerIsSet = true;

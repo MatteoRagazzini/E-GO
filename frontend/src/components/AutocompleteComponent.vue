@@ -37,7 +37,7 @@
 import axios from "axios";
 export default {
   emits:['newLocation'],
-  props:['coords','geoCords'],
+  props:['geoCords'],
   name: "UserLocation.vue",
   data() {
     return{

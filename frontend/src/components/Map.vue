@@ -4,6 +4,7 @@
   <!--    Latitude : {{coords.lat.toFixed(2)}} , Longitude: {{coords.lng.toFixed(2)}}-->
   <!--  </v-card>-->
   <div id="mapDiv" style="width:100%; height:80vh"/>
+  <div> {{coords.lat}}</div>
   <StationCard
     v-model="this.showStationCard"
     :station="this.station"/>
@@ -22,14 +23,9 @@ import StationCard from "@/components/StationCard.vue";
 export default {
   name: "Map",
   components: {StationCard},
-  // props:{
-  //   coords:{
-  //     lat: Number,
-  //     lng: Number}
-  // },
+  props:['coords','boolVal'],
   data() {
     return {
-      coords:{lat:48.1351253, lng: 11.5819806},
       socket: useSocketIO(),
       markers: [],
       showStationCard: false,
@@ -43,15 +39,15 @@ export default {
     }
   },
   computed: {
-    computed_coords() {
-      navigator.geolocation.watchPosition(
-        position => {
-          return  {
-            lat: position.latitude,
-            lng: position.longitude
-          }
-        })
-    },
+    // coords() {
+    //   navigator.geolocation.watchPosition(
+    //     position => {
+    //       return  {
+    //         lat: position.latitude,
+    //         lng: position.longitude
+    //       }
+    //     })
+    // },
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
@@ -68,24 +64,30 @@ export default {
     console.log(this.markers.length)
   },
   watch:{
-    coords(newPos, oldPos) {
-      console.log("someone changed the position")
-      let locationMarker = null;
-      let locationMarkerIsSet = false;
-      this.map.setCenter(newPos)
-      this.map.setZoom(15)
-      if (locationMarkerIsSet) {
-        console.log("inside the location isSet")
-        locationMarker.setMap(null);
-      }
-      locationMarkerIsSet = true;
-      locationMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(coords),
-        map: this.map,
-        icon: {
-          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+    coords: {
+      handler(newPos, oldPos) {
+        console.log('Prop changed: ', newPos, ' | was: ', oldPos)
+        let locationMarker = null;
+        let locationMarkerIsSet = false;
+        this.map.setCenter(newPos)
+        this.map.setZoom(15)
+        if (locationMarkerIsSet) {
+          console.log("inside the location isSet")
+          locationMarker.setMap(null);
         }
-      })
+        locationMarkerIsSet = true;
+        locationMarker = new google.maps.Marker({
+          position: new google.maps.LatLng(this.coords),
+          map: this.map,
+          icon: {
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          }
+        })
+      },
+      deep:true
+    },
+    boolVal: function (newVal, oldVal) {
+      console.log('Prop changed: ', newVal, ' | was: ', oldVal)
     }
   },
   methods: {

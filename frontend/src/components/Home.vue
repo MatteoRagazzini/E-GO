@@ -28,7 +28,8 @@
     <v-container>
     <v-main>
 <!--      This is the main of the application where the pages changes based on the router map/charger-->
-      <router-view></router-view>
+      <googleMap :coords="this.coords" :bool-val="this.boolVal"></googleMap>
+<!--      <router-view></router-view>-->
     </v-main>
     </v-container>
     <v-bottom-navigation>
@@ -59,6 +60,9 @@
     </v-bottom-navigation>
   </v-app>
 </template>
+
+
+
 <script>
 import AutocompleteComponent from "@/components/AutocompleteComponent";
 import Map from "@/components/Map.vue";
@@ -68,7 +72,8 @@ export default {
     return {
       isHidden: false,
       infoCharged: false,
-      coords: {lat:48.1351253, lng: 11.5819806}
+      coords: {lat:48.1351253, lng: 11.5819806},
+      boolVal: false
     }
   },
   methods: {
@@ -76,6 +81,7 @@ export default {
       console.log("updating location in response of the emit from the AutocompleteComponent")
       this.coords.lat = newLocation.lat;
       this.coords.lng = newLocation.lng;
+      this.boolVal = !this.boolVal;
       console.log(this.coords)
     },
     logOut() {
@@ -92,7 +98,8 @@ export default {
     },
   },
   components:{
-    autocompleteComponent: AutocompleteComponent
+    autocompleteComponent: AutocompleteComponent,
+    googleMap: Map
   }
 }
 </script>

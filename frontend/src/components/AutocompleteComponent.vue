@@ -37,7 +37,7 @@
 import axios from "axios";
 export default {
   emits:['newLocation'],
-  props:['coords'],
+  props:['coords','geoCords'],
   name: "UserLocation.vue",
   data() {
     return{
@@ -51,7 +51,7 @@ export default {
   mounted() {
     const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
       bounds: new google.maps.LatLngBounds(
-        new google.maps.LatLng(this.coords)
+        new google.maps.LatLng(this.geoCords)
       )
     });
 
@@ -65,7 +65,7 @@ export default {
   methods:{
     onLocate(){
         this.loadingLocate = true
-        axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.coords.lat + "," +  this.coords.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
+        axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.geoCords.lat + "," +  this.geoCords.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
 
           if(response.data.error_message){
             this.error = response.data.error_message
@@ -73,7 +73,7 @@ export default {
             this.address =  response.data.results[0].formatted_address;
             console.log(this.address)
           }
-          this.$emit('newLocation',this.coords)
+          this.$emit('newLocation',this.geoCords)
           this.loadingLocate = false;
         }).catch(e =>{
           this.error=  e.message;

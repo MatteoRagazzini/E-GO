@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent @newLocation="updateLocation"  :coords="this.coords" v-if="!this.isHidden"></autocompleteComponent>
+          <autocompleteComponent @newLocation="updateLocation" :cords="this.coords" :geoCords="this.geoCords" v-if="!this.isHidden"></autocompleteComponent>
           <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
@@ -120,6 +120,7 @@ export default {
       isHidden: false,
       infoCharged: false,
       coords: {lat:48.15143929407981,lng:11.580534476878478},
+      geoCords: {lat:48.15143929407981,lng:11.580534476878478},
       watcher: null
     }
   },
@@ -128,8 +129,8 @@ export default {
         if(isSupported){
           this.watcher = navigator.geolocation.watchPosition(
             position => {
-              this.coords.lat = position.coords.latitude
-              this.coords.lng = position.coords.longitude
+              this.geoCords.lat = position.coords.latitude
+              this.geoCords.lng = position.coords.longitude
             }
           )
         }

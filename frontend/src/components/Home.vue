@@ -3,8 +3,8 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent @newLocation="updateLocation" v-if="!this.isHidden"></autocompleteComponent>
-<!--         this is a trick which is not nice-->
+          <autocompleteComponent @newLocation="updateLocation"  :coords="this.coords" v-if="!this.isHidden"></autocompleteComponent>
+          <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
             <v-menu>
@@ -26,11 +26,11 @@
       </v-container>
     </v-app-bar>
     <v-container>
-    <v-main>
-<!--      This is the main of the application where the pages changes based on the router map/charger-->
-      <googleMap :coords="this.coords" :bool-val="this.boolVal"></googleMap>
-<!--      <router-view></router-view>-->
-    </v-main>
+      <v-main>
+        <!--      This is the main of the application where the pages changes based on the router map/charger-->
+        <googleMap :coords="this.coords"></googleMap>
+        <!--      <router-view></router-view>-->
+      </v-main>
     </v-container>
     <v-bottom-navigation>
       <v-btn to="/vehicles" value="VehicleOverview" @click="hideLocationSearch">
@@ -52,7 +52,7 @@
           overlap
           :value="infoCharged"
         >
-        <v-icon>mdi-battery</v-icon>
+          <v-icon>mdi-battery</v-icon>
         </v-badge>
         Charging
 
@@ -62,42 +62,63 @@
 </template>
 
 
-
 <script>
 import AutocompleteComponent from "@/components/AutocompleteComponent";
 import Map from "@/components/Map.vue";
+
 export default {
   name: "Home",
-  data () {
+  data() {
     return {
       isHidden: false,
       infoCharged: false,
-      coords: {lat:48.1351253, lng: 11.5819806},
-      boolVal: false
+      coords: {},
+      watcher: null
+    }
+  },
+  mounted() {
+    const isSupported = 'navigator' in window && 'geolocation' in navigator
+        if(isSupported){
+          this.watcher = navigator.geolocation.watchPosition(
+            position => {
+              this.coords.lat = position.coords.latitude
+              this.coords.lng = position.coords.longitude
+            }
+          )
+        }
+  },
+  unmounted() {
+    if(this.watcher) navigator.geolocation.clearWatch(this.watcher)
+  },
+  computed: {
+    coords() {
+      return {
+        lat: this.geolocation.GeoCoords.latitude,
+        lng: this.geolocation.GeoCoords.longitude
+      }
     }
   },
   methods: {
-    updateLocation(newLocation){
+    updateLocation(newLocation) {
       console.log("updating location in response of the emit from the AutocompleteComponent")
       this.coords.lat = newLocation.lat;
       this.coords.lng = newLocation.lng;
-      this.boolVal = !this.boolVal;
       console.log(this.coords)
     },
     logOut() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
-    hideLocationSearch(){
-      if (this.isHidden !== true){
-          this.isHidden = true
+    hideLocationSearch() {
+      if (this.isHidden !== true) {
+        this.isHidden = true
       }
     },
-    showLocationSearch(){
+    showLocationSearch() {
       this.isHidden = false
     },
   },
-  components:{
+  components: {
     autocompleteComponent: AutocompleteComponent,
     googleMap: Map
   }

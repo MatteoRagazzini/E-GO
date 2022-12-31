@@ -35,10 +35,9 @@
 
 <script>
 import axios from "axios";
-import {useGeolocation, changeLocation, setGeoLocation} from "@/map/GeolocationFuctions";
-import {computed} from "vue";
 export default {
   emits:['newLocation'],
+  props:['coords'],
   name: "UserLocation.vue",
   data() {
     return{
@@ -46,27 +45,13 @@ export default {
       error: null,
       address: null,
       successful:true,
-      currPos: {},
-      currPosIsSet: false,
       searchedPos: {},
     }
   },
- created(){
-   const {GeoCoords} = useGeolocation()
-      const currPos = computed(()=>({
-        lat: GeoCoords.value.latitude, lng:GeoCoords.value.longitude
-      }))
-   this.currPos = currPos
-   // this is not working as expected
-   if(currPos!= null) this.currPosIsSet = true
-   return {currPos}
-
-  },
   mounted() {
-
     const autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"), {
       bounds: new google.maps.LatLngBounds(
-        new google.maps.LatLng(48.137154, 11.576124)
+        new google.maps.LatLng(this.coords)
       )
     });
 
@@ -79,11 +64,8 @@ export default {
   },
   methods:{
     onLocate(){
-      // this is not working as expected
-      if(!this.currPosIsSet)console.log("position not ready")
-      else{
         this.loadingLocate = true
-        axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.currPos.lat + "," +  this.currPos.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
+        axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.coords.lat + "," +  this.coords.lng + "&key=AIzaSyD3C3y44zQkaTFoaVzuQRW8a2g6-11Q1tI").then(response=>{
 
           if(response.data.error_message){
             this.error = response.data.error_message
@@ -91,14 +73,13 @@ export default {
             this.address =  response.data.results[0].formatted_address;
             console.log(this.address)
           }
-          this.$emit('newLocation',this.currPos)
+          this.$emit('newLocation',this.coords)
           this.loadingLocate = false;
         }).catch(e =>{
           this.error=  e.message;
         })
       }
-    },
-  }
+    }
 }
 </script>
 

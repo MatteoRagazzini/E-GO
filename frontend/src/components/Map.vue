@@ -14,7 +14,6 @@
 <!--This is a component realized with the composition API. Which means no return.-->
 <!--I would like to write this component like a normal vue component because it's more readable I think-->
 <script>
-import {useGeolocation} from "@/map/GeolocationFuctions";
 import {useSocketIO} from "@/map/socketComposable";
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
@@ -23,7 +22,7 @@ import StationCard from "@/components/StationCard.vue";
 export default {
   name: "Map",
   components: {StationCard},
-  props:['coords','boolVal'],
+  props:['coords'],
   data() {
     return {
       socket: useSocketIO(),
@@ -39,21 +38,13 @@ export default {
     }
   },
   computed: {
-    // coords() {
-    //   navigator.geolocation.watchPosition(
-    //     position => {
-    //       return  {
-    //         lat: position.latitude,
-    //         lng: position.longitude
-    //       }
-    //     })
-    // },
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
     }
   },
   mounted() {
+    console.log(this.coords)
     this.map = new google.maps.Map(document.getElementById("mapDiv"), {
       center: this.coords,
       zoom: 13,
@@ -85,9 +76,6 @@ export default {
         })
       },
       deep:true
-    },
-    boolVal: function (newVal, oldVal) {
-      console.log('Prop changed: ', newVal, ' | was: ', oldVal)
     }
   },
   methods: {

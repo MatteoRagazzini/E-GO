@@ -162,7 +162,6 @@ export default {
       this.snackbarColor = "green"
       this.showSnackbar = true
     }
-
   }
 }
 </script>

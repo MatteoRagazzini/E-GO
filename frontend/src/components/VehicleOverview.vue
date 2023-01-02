@@ -20,7 +20,6 @@
         color="white"
         flat
       >
-
         <v-list
           lines = "two"
         >
@@ -36,11 +35,19 @@
         <div class="d-flex justify-space-around">
           <v-btn
             color="green"
-            @click="addVehicle">
+            @click="showDialog"
+          >
             Add
-          </v-btn>
-        </div>
 
+            <v-dialog
+              v-model="dialog">
+              <AddVehicleDialog
+              @save="closeDialog"
+              ></AddVehicleDialog>
+            </v-dialog>
+          </v-btn>
+
+        </div>
       </v-card>
     </v-window-item>
     <v-window-item value="history"
@@ -52,18 +59,23 @@
       </v-card>
     </v-window-item>
   </v-window>
+    <v-snackbar
+      v-model="hasSaved"
+      :timeout="3000"
+      absolute
+      location="bottom right"
+    >
+      Your vehicle has been added successfully
+    </v-snackbar>
 </template>
 
 <script>
 import VehicleCard from "@/components/VehicleCard";
+import AddVehicleDialog from "@/components/AddVehicleDialog";
 export default {
   name: "VehicleOverview",
-  components: {VehicleCard},
-  methods:{
-      addVehicle(){
+  components: {AddVehicleDialog, VehicleCard},
 
-      },
-  },
   data() {
     return {
       tab: "VehicleOptions",
@@ -79,6 +91,20 @@ export default {
           logo: "mdi-bicycle"
         },
       ],
+      dialog: false,
+      hasSaved: false,
+    }
+  },
+  methods: {
+    showDialog(){
+      this.dialog = true
+    },
+
+    closeDialog(newVehicle) {
+      this.dialog = false
+      this.vehicles.push(newVehicle)
+      this.hasSaved = true
+      console.log(this.vehicles)
     }
   }
 }

@@ -178,13 +178,13 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MTM3ODEzOSwiZXhwIjoxNjcxNDY0NTM5fQ.lukQAG3okT8rosLwkuMvmeP8UvCLLGBbwrB6Lvzn9uI",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJjMDNmNTQ2Mzg5ZmYxM2UzNWM5MiIsImlhdCI6MTY3MjY1OTA1NSwiZXhwIjoxNjcyNzQ1NDU1fQ.2LGSdHxcLGXSTSGuWo2SID0fqzCNquMf3TKhuyxD9u8",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"639f31dae156cbe13bb8fd53\",\n\"name\": \"scooter\",\n\"img\": \"\"\n} ",
+					"raw": "{\n\"user_id\": \"63b2c03f546389ff13e35c92\",\n\"name\": \"scooter\",\n\"type\": \"e-scooter\",\n\"icon\": \"mdi-scooter\",\n\"batteryLevel\": 30,\n\"isCharging\": false,\n\"isCurrent\": true\n} ",
 					"options": {
 						"raw": {
 							"language": "json"

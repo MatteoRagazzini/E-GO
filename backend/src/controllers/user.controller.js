@@ -27,7 +27,7 @@ exports.addVehicle = (req, res) => {
     const newVehicle = {
         name: req.body.name,
         vehicleType: req.body.vehicleType,
-        icon: req.body.img,
+        icon: req.body.icon,
         batteryLevel: req.body.batteryLevel,
         isCharging: req.body.isCharging,
         isCurrent: req.body.isCurrent

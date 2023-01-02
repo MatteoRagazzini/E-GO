@@ -76,7 +76,6 @@
 <script>
 import VehicleCard from "@/components/VehicleCard";
 import AddVehicleDialog from "@/components/AddVehicleDialog";
-import StationService from "@/services/station.service";
 import UserService from "@/services/user.service";
 export default {
   name: "VehicleOverview",
@@ -129,7 +128,10 @@ export default {
 
     closeDialog(newVehicle) {
       this.dialog = false
-      this.vehicles.push(newVehicle)
+      UserService.addVehicle(this.currentUser['id'], newVehicle)
+      this.loadVehicles()
+      console.log(this.vehicles)
+      //this.vehicles.push(newVehicle)
       this.snackbarColor = "green"
       this.snackbarText = "Your new vehicle has been added successfully"
       this.showSnackbar = true

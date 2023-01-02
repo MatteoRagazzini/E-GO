@@ -16,7 +16,7 @@ const User = mongoose.model(
         vehicles : [{
             name: String,
             vehicleType: String,
-            icon: Number,
+            icon: String,
             batteryLevel: Number,
             isCharging: Boolean,
             isCurrent: Boolean,

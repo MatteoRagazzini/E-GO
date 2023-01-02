@@ -80,10 +80,10 @@ export default {
       }
 
       let newVehicle = {
-        id: 3, //tbd real id from db?
         name: this.vehicleName,
         type: this.vehicleTypeValue,
         icon: this.icon,
+        batteryLevel: null,
         isCharging: false,
         isCurrent: false,
       }

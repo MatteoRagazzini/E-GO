@@ -27,6 +27,27 @@ class UserService {
     return axios.get('http://localhost:3000/api/user/vehicles/'+ user_id, { headers: authHeader() });
   }
 
+  addVehicle(user_id, vehicle){
+    console.log(user_id +","+ vehicle)
+    return axios
+      .post('http://localhost:3000/api/user/addVehicle', {
+        user_id: user_id,
+        name: vehicle.name,
+        vehicleType: vehicle.type,
+        icon: vehicle.icon,
+        batteryLevel: vehicle.batteryLevel,
+        isCharging: vehicle.isCharging,
+        isCurrent: vehicle.isCurrent,
+      },{ headers: authHeader() })
+      .then(response => {
+        console.log(response.data)
+        return response.data;
+      }).catch(function (error){
+        console.log(error)
+        throw new Error(error.response.data.message)
+      });
+  }
+
   // This should return the favourite stations of the user
   getFavouriteStations(user_id){
     return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });

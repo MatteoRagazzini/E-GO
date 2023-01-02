@@ -14,6 +14,12 @@ import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
 
+let locationMarker =  null;
+let locationMarkerIsSet = false;
+
+
+
+
 export default {
   name: "Map",
   components: {StationCard},
@@ -31,8 +37,6 @@ export default {
       socket: useSocketIO(),
       markers: [],
       showStationCard: false,
-      locationMarker: null,
-      locationMarkerIsSet:false,
       station: {
         id: 1,
         ratings: 4.5,
@@ -64,7 +68,9 @@ export default {
         this.map.setCenter(newPos)
         this.map.setZoom(15)
         if (locationMarkerIsSet) {
+          console.log("entering in marker is set")
           locationMarker.setMap(null);
+          locationMarker = null;
         }
         locationMarkerIsSet = true;
         locationMarker = new google.maps.Marker({
@@ -112,7 +118,15 @@ export default {
 
             this.markers.push(marker)
           })
-        })
+        //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
+        //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
+        }).catch(error=>{
+          console.log(error)
+          if(error.response.status===401){
+            console.log("trying to push")
+            this.$router.push('/login')
+          }
+      })
     }
   }
 }

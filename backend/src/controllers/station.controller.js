@@ -101,7 +101,3 @@ exports.occupyTower = (req,res) => {
     });
 }
 
-exports.getAvailableSpaces =  () => {
-    return 3
-}
-

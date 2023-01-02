@@ -13,9 +13,11 @@ import {useSocketIO} from "@/map/socketComposable";
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
+import stationCard from "@/components/StationCard.vue";
 
 let locationMarker =  null;
 let locationMarkerIsSet = false;
+let markers = [];
 
 
 
@@ -34,16 +36,33 @@ export default {
   },
   data() {
     return {
-      socket: useSocketIO(),
-      markers: [],
       showStationCard: false,
+      // to be passed to the station card
       station: {
         id: 1,
+        totalTowers: 2,
+        usedTowers:1,
         ratings: 4.5,
         title: "Station example",
         reviews: 400,
       },
       map: null
+    }
+  },
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    ChangeMarker: function (data) {
+      console.log("[MAP] receive ChangeMarker: ", data )
+      console.log(markers)
+      let markerToChange = markers.find(m=>m.id === data.station)
+      console.log(markerToChange)
+      markerToChange.usedTowers ++;
+      // markerToChange.marker.setMap(null)
+      // this.clearMarkers()
+      this.station.usedTowers++
+      this.buildMarkers()
     }
   },
   computed: {
@@ -86,19 +105,18 @@ export default {
   },
   methods: {
     clearMarkers() {
-      console.log("entering in clean markers")
-      console.log(this.markers.length)
-      for (let i = 0; this.markers.length; i++) {
-        this.markers[i].setMap(null)
+      console.log("[CLEAN MARKERS]: number markers " + markers.length)
+      for (let i = 0; markers.length; i++) {
+        markers[i].marker.setMap(null)
       }
     },
     buildMarkers() {
+      markers = []
       StationService.getStation().then(
         (response) => {
           var stations = response.data
-          this.markers = [];
           stations.forEach(station => {
-            var marker = new google.maps.Marker({
+            const marker = new google.maps.Marker({
               position: new google.maps.LatLng(station.latitude, station.longitude),
               // content: availabilityTag,
               label: "" + (station.totalTowers - station.usedTowers),
@@ -107,7 +125,8 @@ export default {
               this.showStationCard = true
               this.station.id = station._id
               this.station.title = station.address
-              this.station.availability = station.usedTowers + "/" + station.totalTowers
+              this.station.totalTowers = station.totalTowers
+              this.station.usedTowers = station.usedTowers
               this.station.address = "not a second address"
 
               UserService.getFavouriteStations(this.currentUser.id).then((response) => {
@@ -115,8 +134,13 @@ export default {
                 this.station.favorite = favStations.indexOf(station._id) > -1
               })
             });
-
-            this.markers.push(marker)
+            const stationMarker = {
+              id: station._id,
+              usedTowers: station.usedTowers,
+              totalTowers: station.totalTowers,
+              marker : marker
+            }
+            markers.push(stationMarker)
           })
         //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
         //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES

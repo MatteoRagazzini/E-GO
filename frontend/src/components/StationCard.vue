@@ -32,7 +32,7 @@
 
       <v-card-text>
 
-        <div>Availability: {{this.station.availability }}</div>
+        <div>Availability: {{this.stationAvailability}}</div>
 
       </v-card-text>
 
@@ -78,14 +78,9 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
-    }
-  },
-  sockets: {
-    connect: function () {
-      console.log('socket connected')
     },
-    customEmit: function (data) {
-      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    stationAvailability(){
+      return (this.station.totalTowers - this.station.usedTowers)+ "/"+ this.station.totalTowers
     }
   },
   methods: {
@@ -104,12 +99,12 @@ export default {
     },
     connect () {
       this.loading = true
-      this.$socket.emit('marker', "connect")
       StationService.occupyStation(this.currentUser['id'], this.station.id).then(
         (tower) => {
           // this is working we will need to change the button to unconnect and disable the book
           this.loading = false
-          console.log(tower)
+          console.log("[STATION]: connected to ", tower)
+          this.$socket.emit('station',{station:this.station.id, tower:tower.id})
           this.alertType = "success"
           this.alertText = "Vehicle successfully connected"
           // try not to change the name of the properties, this should be colled disable not connected
@@ -149,7 +144,8 @@ export default {
       title:String,
       //reviews: Number,
       address: String,
-      availability: String,
+      usedTowers: Number,
+      totalTowers: Number,
       favorite: Boolean,
     }
   }

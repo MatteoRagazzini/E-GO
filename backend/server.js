@@ -49,10 +49,9 @@ io.on('connection', function(socket) {
         console.log('A user disconnected');
     });
 
-    socket.on("marker", (data) => {
-        const avSpaces = controller.getAvailableSpaces();
-        console.log("on connect clicked " + avSpaces)
-        io.sockets.emit("welcome");
+    socket.on("station", (data) => {
+        console.log(data)
+        io.emit("ChangeMarker",data);
     })
 });
 //Whenever someone connects this gets executed

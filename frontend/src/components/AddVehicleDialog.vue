@@ -76,20 +76,18 @@ export default {
           this.logo = "mdi-scooter"
           break;
         default:
-          this.logo = "mdi-arrow-right-bold-circle"
+          this.logo = "mdi-alpha-e-circle"
       }
 
       let newVehicle = {
-        id: 3, //tbd real id from db
+        id: 3, //tbd real id from db?
         description: this.vehicleDescription,
         type: this.vehicleTypeValue,
         logo: this.logo
       }
 
-      //add vehicle to database
-      //add vehicle to parent component
+      //tbd: add vehicle to database
 
-     // this.$emit("save")
       this.$emit("save", newVehicle)
     },
   },

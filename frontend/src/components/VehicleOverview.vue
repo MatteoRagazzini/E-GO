@@ -104,7 +104,6 @@ export default {
       this.dialog = false
       this.vehicles.push(newVehicle)
       this.hasSaved = true
-      console.log(this.vehicles)
     }
   }
 }

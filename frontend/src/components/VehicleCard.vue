@@ -37,19 +37,18 @@
         color="green"
         variant="outlined"
         v-if="!vehicle.isCurrent"
-        @click="useVehicle(vehicle.id)">
+        @click="useVehicle(vehicle._id)">
           Use
         </v-btn>
 
       <v-btn
         color="red"
         variant="outlined"
-        @click="deleteVehicle(vehicle.id)">
+        @click="deleteVehicle(vehicle._id)">
         Delete
       </v-btn>
     </v-card-actions>
   </v-card>
-<!--  <v-alert type="error" v-if="displayError">Vehicle cannot be deleted</v-alert>-->
 </template>
 
 <script>

@@ -16,12 +16,7 @@
   <v-window v-model="tab">
     <v-window-item value="vehicles"
     >
-      <v-card
-        color="white"
-        flat
-      >
         <v-list
-          lines = "two"
         >
           <v-list-subheader>Your vehicles</v-list-subheader>
           <v-list-item
@@ -51,7 +46,6 @@
           </v-btn>
 
         </div>
-      </v-card>
     </v-window-item>
     <v-window-item value="history"
     >
@@ -130,8 +124,6 @@ export default {
       this.dialog = false
       UserService.addVehicle(this.currentUser['id'], newVehicle)
       this.loadVehicles()
-      console.log(this.vehicles)
-      //this.vehicles.push(newVehicle)
       this.snackbarColor = "green"
       this.snackbarText = "Your new vehicle has been added successfully"
       this.showSnackbar = true
@@ -139,8 +131,10 @@ export default {
 
     removeVehicle(vehicleID) {
       if (this.currentVehicle != vehicleID){
-        //tbd: remove in backend
-        const vehicleToRemoveID = this.vehicles.findIndex((obj) => obj.id === vehicleID);
+
+        UserService.removeVehicle(this.currentUser['id'], vehicleID)
+
+        const vehicleToRemoveID = this.vehicles.findIndex((obj) => obj._id === vehicleID);
 
          if (vehicleToRemoveID > -1) {
            this.vehicles.splice(vehicleToRemoveID, 1);

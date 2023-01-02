@@ -48,7 +48,23 @@ class UserService {
       });
   }
 
-  // This should return the favourite stations of the user
+  removeVehicle(user_id, vehicle_id) {
+    console.log(user_id + "," + vehicle_id)
+    return axios
+      .post('http://localhost:3000/api/user/removeVehicle', {
+        user_id: user_id,
+        vehicle_id: vehicle_id,
+      }, {headers: authHeader()})
+      .then(response => {
+        console.log(response.data)
+        return response.data;
+      }).catch(function (error) {
+        console.log(error)
+        throw new Error(error.response.data.message)
+      });
+  }
+
+    // This should return the favourite stations of the user
   getFavouriteStations(user_id){
     return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });
   }

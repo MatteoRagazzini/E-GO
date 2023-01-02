@@ -7,19 +7,14 @@
 </template>
 
 
-<!--This is a component realized with the composition API. Which means no return.-->
-<!--I would like to write this component like a normal vue component because it's more readable I think-->
 <script>
-import {useSocketIO} from "@/map/socketComposable";
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
-import stationCard from "@/components/StationCard.vue";
 
 let locationMarker = null;
 let locationMarkerIsSet = false;
-let markers = [];
-let markers2 = [];
+let StationsMarkers = [];
 
 
 export default {
@@ -55,7 +50,6 @@ export default {
     },
     ChangeMarker: function (data) {
       console.log("[MAP] receive ChangeMarker: ", data)
-      console.log(markers)
       // let markerToChange = markers.find(m=>m.id === data.station)
       // console.log(markerToChange)
       // markerToChange.usedTowers ++;
@@ -105,8 +99,8 @@ export default {
   },
   methods: {
     clearMarkers() {
-      console.log("[CLEAN MARKERS]: number markers " + markers2.length)
-      markers2.forEach(m => m.marker.setMap(null))
+      console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
+      StationsMarkers.forEach(m => m.marker.setMap(null))
     },
     buildMarkers() {
       StationService.getStation().then(
@@ -121,25 +115,25 @@ export default {
               map: this.map
             })
 
-            markers2.push({station: station, marker: marker});
+            StationsMarkers.push({station: station, marker: marker})})
 
-            markers2.forEach(m => m.marker.addListener("click", () => {
+            StationsMarkers.forEach(m => m.marker.addListener("click", () => {
               this.showStationCard = true
-              this.station.id = station._id
-              this.station.title = station.address
-              this.station.totalTowers = station.totalTowers
-              this.station.usedTowers = station.usedTowers
+              this.station.id = m.station._id
+              this.station.title = m.station.address
+              this.station.totalTowers = m.station.totalTowers
+              this.station.usedTowers = m.station.usedTowers
               this.station.address = "not a second address"
 
               UserService.getFavouriteStations(this.currentUser.id).then((response) => {
                 let favStations = response.data
-                this.station.favorite = favStations.indexOf(station._id) > -1
+                this.station.favorite = favStations.indexOf(m.station._id) > -1
               })
             }))
           })
           //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
           //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
-        }).catch(error => {
+    .catch(error => {
         console.log(error)
         if (error.response.status === 401) {
           console.log("trying to push")

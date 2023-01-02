@@ -1,4 +1,5 @@
 <template>
+  <v-btn @click="this.clearMarkers">delete</v-btn>
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
@@ -15,21 +16,20 @@ import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
 import stationCard from "@/components/StationCard.vue";
 
-let locationMarker =  null;
+let locationMarker = null;
 let locationMarkerIsSet = false;
 let markers = [];
-
-
+let markers2 = [];
 
 
 export default {
   name: "Map",
   components: {StationCard},
-  props:{
-    coords:{
-      type:Object,
-      default(){
-        return {lat:48.15143929407981,lng:11.580534476878478}
+  props: {
+    coords: {
+      type: Object,
+      default() {
+        return {lat: 48.15143929407981, lng: 11.580534476878478}
       },
 
     }
@@ -41,7 +41,7 @@ export default {
       station: {
         id: 1,
         totalTowers: 2,
-        usedTowers:1,
+        usedTowers: 1,
         ratings: 4.5,
         title: "Station example",
         reviews: 400,
@@ -54,13 +54,13 @@ export default {
       console.log('socket connected')
     },
     ChangeMarker: function (data) {
-      console.log("[MAP] receive ChangeMarker: ", data )
+      console.log("[MAP] receive ChangeMarker: ", data)
       console.log(markers)
-      let markerToChange = markers.find(m=>m.id === data.station)
-      console.log(markerToChange)
-      markerToChange.usedTowers ++;
+      // let markerToChange = markers.find(m=>m.id === data.station)
+      // console.log(markerToChange)
+      // markerToChange.usedTowers ++;
       // markerToChange.marker.setMap(null)
-      // this.clearMarkers()
+      this.clearMarkers()
       this.station.usedTowers++
       this.buildMarkers()
     }
@@ -80,7 +80,7 @@ export default {
     this.clearMarkers();
     this.buildMarkers();
   },
-  watch:{
+  watch: {
     coords: {
       handler(newPos, oldPos) {
         console.log('Prop changed: ', newPos, ' | was: ', oldPos)
@@ -100,18 +100,15 @@ export default {
           }
         })
       },
-      deep:true
+      deep: true
     }
   },
   methods: {
     clearMarkers() {
-      console.log("[CLEAN MARKERS]: number markers " + markers.length)
-      for (let i = 0; markers.length; i++) {
-        markers[i].marker.setMap(null)
-      }
+      console.log("[CLEAN MARKERS]: number markers " + markers2.length)
+      markers2.forEach(m => m.marker.setMap(null))
     },
     buildMarkers() {
-      markers = []
       StationService.getStation().then(
         (response) => {
           var stations = response.data
@@ -119,9 +116,14 @@ export default {
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(station.latitude, station.longitude),
               // content: availabilityTag,
+              // animation: google.maps.Animation.DROP,
               label: "" + (station.totalTowers - station.usedTowers),
               map: this.map
-            }).addListener("click", () => {
+            })
+
+            markers2.push({station: station, marker: marker});
+
+            markers2.forEach(m => m.marker.addListener("click", () => {
               this.showStationCard = true
               this.station.id = station._id
               this.station.title = station.address
@@ -133,23 +135,16 @@ export default {
                 let favStations = response.data
                 this.station.favorite = favStations.indexOf(station._id) > -1
               })
-            });
-            const stationMarker = {
-              id: station._id,
-              usedTowers: station.usedTowers,
-              totalTowers: station.totalTowers,
-              marker : marker
-            }
-            markers.push(stationMarker)
+            }))
           })
-        //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
-        //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
-        }).catch(error=>{
-          console.log(error)
-          if(error.response.status===401){
-            console.log("trying to push")
-            this.$router.push('/login')
-          }
+          //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
+          //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
+        }).catch(error => {
+        console.log(error)
+        if (error.response.status === 401) {
+          console.log("trying to push")
+          this.$router.push('/login')
+        }
       })
     }
   }
@@ -157,8 +152,8 @@ export default {
 </script>
 
 <style>
-#mapDiv{
-  width:100%;
+#mapDiv {
+  width: 100%;
   height: 80vh;
 }
 </style>

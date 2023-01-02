@@ -30,6 +30,8 @@ module.exports = function (app) {
 
     app.post("/api/user/removeVehicle", [authJwt.verifyToken], controller.removeVehicle);
 
+    app.get("/api/user/vehicles/:id", [authJwt.verifyToken], controller.getVehicles);
+
     app.post("/api/user/addFavouriteStation", [authJwt.verifyToken], controller.addFavouriteStation);
 
     app.post("/api/user/removeFavouriteStation", [authJwt.verifyToken], controller.removeFavouriteStation);

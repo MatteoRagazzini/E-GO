@@ -26,7 +26,7 @@
           <v-list-subheader>Your vehicles</v-list-subheader>
           <v-list-item
               v-for="vehicle in this.vehicles"
-              :key="vehicle.id"
+              :key="vehicle._id"
               :items="vehicles"
           >
             <VehicleCard
@@ -76,6 +76,8 @@
 <script>
 import VehicleCard from "@/components/VehicleCard";
 import AddVehicleDialog from "@/components/AddVehicleDialog";
+import StationService from "@/services/station.service";
+import UserService from "@/services/user.service";
 export default {
   name: "VehicleOverview",
   components: {AddVehicleDialog, VehicleCard},
@@ -83,34 +85,44 @@ export default {
   data() {
     return {
       tab: "VehicleOptions",
-      vehicles: [
-        {
-          id: 1,
-          name: "Scooter 1",
-          type: "e-scooter",
-          icon: "mdi-scooter",
-          isCurrent: false,
-          isCharging: false,
-          batteryLevel: null,
-        },
-        {
-          id: 2,
-          name: "Bike 1",
-          type: "e-bike",
-          icon: "mdi-bicycle",
-          isCurrent: true,
-          isCharging: true,
-          batteryLevel: 40,
-        },
-      ],
-      currentVehicle: 2,
+      vehicles: null,
+      currentVehicle: null,
       dialog: false,
       showSnackbar: false,
       snackbarText: "",
       snackbarColor: "",
     }
   },
+  computed: {
+    currentUser() {
+      this.user = this.$store.state.auth.user;
+      return this.user
+    }
+  },
+  mounted() {
+    this.loadVehicles()
+  },
+
   methods: {
+
+    loadVehicles(){
+      UserService.getVehicles(this.currentUser.id).then(
+        (response) => {
+          this.vehicles = response.data
+          this.vehicles.forEach(vehicle =>{
+            if (vehicle.isCurrent)
+              this.currentVehicle = vehicle._id
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          if (error.response.status === 401) {
+            console.log("trying to push")
+            this.$router.push('/login')
+          }
+        })
+    },
+
     showDialog(){
       this.dialog = true
     },

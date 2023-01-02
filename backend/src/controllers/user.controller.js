@@ -27,7 +27,7 @@ exports.addVehicle = (req, res) => {
     const newVehicle = {
         name: req.body.name,
         vehicleType: req.body.vehicleType,
-        img: req.body.img,
+        icon: req.body.img,
         batteryLevel: req.body.batteryLevel,
         isCharging: req.body.isCharging,
         isCurrent: req.body.isCurrent
@@ -124,6 +124,23 @@ exports.removeFavouriteStation = (req, res) => {
             } else {
                 console.log("station successfully removed from the user")
                 res.status(200).send("station successfully removed from the user");
+            }
+        }
+    });
+}
+
+exports.getVehicles = (req, res) => {
+
+    User.findById(req.params.id, function (err, user) {
+        if (err)
+            res.send(err);
+        else {
+            if (user == null) {
+                res.status(404).send({
+                    description: 'User not found'
+                });
+            } else {
+                res.json(user.vehicles);
             }
         }
     });

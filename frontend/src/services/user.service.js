@@ -22,6 +22,11 @@ class UserService {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
 
+
+  getVehicles(user_id){
+    return axios.get('http://localhost:3000/api/user/vehicles/'+ user_id, { headers: authHeader() });
+  }
+
   // This should return the favourite stations of the user
   getFavouriteStations(user_id){
     return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });

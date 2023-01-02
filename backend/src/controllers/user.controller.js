@@ -24,13 +24,14 @@ exports.moderatorBoard = (req, res) => {
 
 exports.addVehicle = (req, res) => {
 
-    const newVehicle = new Vehicle({
-        name: req.name,
-        batteryLevel: 30,
-        img: req.img,
-        isCharging: false,
-        isCurrent: false
-    });
+    const newVehicle = {
+        name: req.body.name,
+        vehicleType: req.body.vehicleType,
+        img: req.body.img,
+        batteryLevel: req.body.batteryLevel,
+        isCharging: req.body.isCharging,
+        isCurrent: req.body.isCurrent
+    };
 
     User.findOneAndUpdate({_id: req.body.user_id}, {
         $push: {

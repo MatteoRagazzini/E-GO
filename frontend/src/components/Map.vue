@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="this.clearMarkers">delete</v-btn>
+<!--  <v-btn @click="this.clearMarkers">delete</v-btn>-->
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"

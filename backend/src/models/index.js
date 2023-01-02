@@ -8,8 +8,7 @@ db.mongoose = mongoose;
 db.user = require("./user.model");
 db.role = require("./role.model");
 db.station =  require("./station.model");
-db.charge = require("./charge.model")
-db.vehicle = require("./vehicle.model")
+db.charge = require("./charge.model");
 
 db.ROLES = ["user", "admin", "moderator"];
 

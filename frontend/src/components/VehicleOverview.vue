@@ -23,13 +23,16 @@
         <v-list
           lines = "two"
         >
-          <v-list-subheader inset>Your vehicles</v-list-subheader>
+          <v-list-subheader>Your vehicles</v-list-subheader>
           <v-list-item
               v-for="vehicle in this.vehicles"
               :key="vehicle.id"
               :items="vehicles"
-            >
-            <VehicleCard :vehicle="vehicle"></VehicleCard>
+          >
+            <VehicleCard
+              :vehicle="vehicle"
+              @useVehicle="useVehicle"
+              @removeVehicle="removeVehicle"></VehicleCard>
             </v-list-item>
         </v-list>
         <div class="d-flex justify-space-around">
@@ -60,12 +63,13 @@
     </v-window-item>
   </v-window>
     <v-snackbar
-      v-model="hasSaved"
+      v-model="showSnackbar"
       :timeout="3000"
       absolute
       location="bottom right"
+      :color="snackbarColor"
     >
-      Your vehicle has been added successfully
+      {{ this.snackbarText }}
     </v-snackbar>
 </template>
 
@@ -81,18 +85,29 @@ export default {
       tab: "VehicleOptions",
       vehicles: [
         {
-          id: '1',
-          description: "Scooter 1",
-          logo: "mdi-scooter"
+          id: 1,
+          name: "Scooter 1",
+          type: "e-scooter",
+          icon: "mdi-scooter",
+          isCurrent: false,
+          isCharging: false,
+          batteryLevel: null,
         },
         {
-          id: '2',
-          description: "Bike 1",
-          logo: "mdi-bicycle"
+          id: 2,
+          name: "Bike 1",
+          type: "e-bike",
+          icon: "mdi-bicycle",
+          isCurrent: true,
+          isCharging: true,
+          batteryLevel: 40,
         },
       ],
+      currentVehicle: 2,
       dialog: false,
-      hasSaved: false,
+      showSnackbar: false,
+      snackbarText: "",
+      snackbarColor: "",
     }
   },
   methods: {
@@ -103,8 +118,51 @@ export default {
     closeDialog(newVehicle) {
       this.dialog = false
       this.vehicles.push(newVehicle)
-      this.hasSaved = true
+      this.snackbarColor = "green"
+      this.snackbarText = "Your new vehicle has been added successfully"
+      this.showSnackbar = true
+    },
+
+    removeVehicle(vehicleID, success) {
+      if (success){
+        //tbd: remove in backend
+        const vehicleToRemoveID = this.vehicles.findIndex((obj) => obj.id === vehicleID);
+
+         if (vehicleToRemoveID > -1) {
+           this.vehicles.splice(vehicleToRemoveID, 1);
+         }
+        this.snackbarColor = "green"
+        this.snackbarText = "Your vehicle has been removed successfully"
+
+      }else{
+        this.snackbarColor = "red"
+        this.snackbarText = "This vehicle cannot be removed"
+      }
+      this.showSnackbar = true
+    },
+
+    useVehicle(vehicleID) {
+      if (this.currentVehicle != vehicleID){
+
+        //tbd: change use in backend
+
+        const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj.id === vehicleID)
+        const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj.id === this.currentVehicle)
+
+        this.vehicles[vehicleToUseIndexOld].isCurrent = false
+        this.vehicles[vehicleToUseIndex].isCurrent = true
+
+        this.currentVehicle = vehicleID
+        this.snackbarText = "Vehicle in use has been changed successfully"
+      }else {
+        this.snackbarText = "This vehicle is already in use"
+
+      }
+
+      this.snackbarColor = "green"
+      this.showSnackbar = true
     }
+
   }
 }
 </script>

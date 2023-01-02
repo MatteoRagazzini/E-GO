@@ -18,10 +18,10 @@
           <v-row>
             <v-col cols="12">
             <v-text-field
-              v-model="vehicleDescription"
-              :rules="descriptionRules"
+              v-model="vehicleName"
+              :rules="nameRules"
               color="white"
-              label="Description"
+              label="Name"
               required
             ></v-text-field>
             </v-col>
@@ -50,14 +50,14 @@ export default {
       valid: false,
       vehicleTypes: ['e-bike', 'e-scooter', 'other'],
       vehicleTypeValue: 'e-bike',
-      vehicleDescription: null,
-      descriptionRules: [
-        v => !!v || 'Vehicle description is required',
+      vehicleName: null,
+      nameRules: [
+        v => !!v || 'Vehicle name is required',
       ],
       autocompleteRules: [
         v => !!v || 'Vehicle type is required',
       ],
-      logo: null
+      icon: null
     }
   },
 
@@ -70,20 +70,22 @@ export default {
     save() {
       switch(this.vehicleTypeValue) {
         case 'e-bike':
-          this.logo = "mdi-bicycle"
+          this.icon = "mdi-bicycle"
           break;
         case 'e-scooter':
-          this.logo = "mdi-scooter"
+          this.icon = "mdi-scooter"
           break;
         default:
-          this.logo = "mdi-alpha-e-circle"
+          this.icon = "mdi-alpha-e-circle"
       }
 
       let newVehicle = {
         id: 3, //tbd real id from db?
-        description: this.vehicleDescription,
+        name: this.vehicleName,
         type: this.vehicleTypeValue,
-        logo: this.logo
+        icon: this.icon,
+        isCharging: false,
+        isCurrent: false,
       }
 
       //tbd: add vehicle to database

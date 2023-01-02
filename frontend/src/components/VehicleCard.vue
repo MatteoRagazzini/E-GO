@@ -2,49 +2,79 @@
   <v-card
     class="mx-auto"
     width="100%"
-    :prepend-icon= vehicle.logo
+    :prepend-icon= vehicle.icon
     variant="tonal"
+    :title="vehicle.name"
   >
 
-    <template v-slot:title>
-      {{vehicle.description}}
-    </template>
-
     <v-card-actions>
+
+      <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        label
+        v-if="vehicle.isCurrent"
+      >
+        <v-icon start icon="mdi-check-decagram"></v-icon>
+        In use
+      </v-chip>
+
+<!--      tbd decision if this is needed-->
+<!--      <v-chip-->
+<!--        class="ma-2"-->
+<!--        color="green"-->
+<!--        text-color="white"-->
+<!--        label-->
+<!--        v-if="vehicle.isCharging"-->
+<!--      >-->
+<!--        <v-icon start icon="mdi-lightning-bolt"></v-icon>-->
+<!--        Charging-->
+<!--      </v-chip>-->
+
+      <v-spacer></v-spacer>
         <v-btn
         color="green"
         variant="outlined"
-        @click="useVehicle">
+        v-if="!vehicle.isCurrent"
+        @click="useVehicle(vehicle.id)">
           Use
         </v-btn>
+
       <v-btn
         color="red"
         variant="outlined"
-        @click="deleteVehicle">
+        @click="deleteVehicle(vehicle.id)">
         Delete
       </v-btn>
     </v-card-actions>
-
   </v-card>
+<!--  <v-alert type="error" v-if="displayError">Vehicle cannot be deleted</v-alert>-->
 </template>
 
 <script>
 export default {
   name: "VehicleCard",
-  props:{
-    vehicle:{
-      id: String,
-      description: String,
+  data(){
+    return {
+      displayError: false,
     }
+  },
+  props:{
+    vehicle: Object
   },
   methods: {
     useVehicle(vehicleID){
-
+      this.$emit("useVehicle", vehicleID)
     },
     deleteVehicle(vehicleID){
-
+      if(!this.vehicle.isCurrent || !this.vehicle.isCharging){
+        this.$emit("removeVehicle", vehicleID, true)
+      }else{
+        this.$emit("removeVehicle", vehicleID, false)
+      }
     },
-  }
+  },
 }
 </script>
 

@@ -123,8 +123,8 @@ export default {
       this.showSnackbar = true
     },
 
-    removeVehicle(vehicleID, success) {
-      if (success){
+    removeVehicle(vehicleID) {
+      if (this.currentVehicle != vehicleID){
         //tbd: remove in backend
         const vehicleToRemoveID = this.vehicles.findIndex((obj) => obj.id === vehicleID);
 

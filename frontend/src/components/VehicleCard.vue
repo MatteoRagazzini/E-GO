@@ -68,11 +68,7 @@ export default {
       this.$emit("useVehicle", vehicleID)
     },
     deleteVehicle(vehicleID){
-      if(!this.vehicle.isCurrent || !this.vehicle.isCharging){
-        this.$emit("removeVehicle", vehicleID, true)
-      }else{
-        this.$emit("removeVehicle", vehicleID, false)
-      }
+        this.$emit("removeVehicle", vehicleID)
     },
   },
 }

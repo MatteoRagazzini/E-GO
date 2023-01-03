@@ -31,13 +31,27 @@ function findUser(req) {
     })
 }
 
-function performOperation(user, req, operation, vehicle = {}) {
+function performOperation(user, req, operation, NewVehicle = {}) {
     return new Promise((resolve, reject) => {
-        if (operation === 'push') user.vehicles.push(vehicle);
+        if (operation === 'push') user.vehicles.push(NewVehicle);
         else if (operation === 'pull') {
+            // NOTE: FOR VEHICLES WE SHOULD USE ID AND NOT _ID
             let index = user.vehicles.findIndex(v => v.id === req.body.vehicle_id);
             if (index === -1) reject('vehicle not found')
             user.vehicles.splice(index, 1)
+        }else if (operation === 'update') {
+            const vehicle = user.vehicles.find(v => v.id === req.body.vehicle_id);
+            console.log(vehicle)
+            if (vehicle === undefined) {
+                reject('vehicle not found')
+            } else {
+                vehicle.name = req.body.name
+                vehicle.vehicleType = req.body.vehicleType
+                vehicle.img = req.body.img
+                vehicle.batteryLevel = req.body.batteryLevel
+                vehicle.isCharging = req.body.isCharging
+                vehicle.isCurrent = req.body.isCurrent
+            }
         }
         else{
             reject('operation unknown')
@@ -76,42 +90,10 @@ exports.removeVehicle = (req, res) => {
 
 
 exports.updateVehicle = (req, res) => {
-    User.findById(req.body.user_id, function (err, user) {
-        if (err) {
-            res.send(err)
-        } else {
-            if (user == null) {
-                res.status(404).send({
-                    description: 'user not found'
-                });
-            } else {
-                const vehicle = user.vehicles.find(v => v._id = req.body.vehicle_id);
-                if (vehicle == null) {
-                    res.status(404).send({
-                        description: 'vehicle not found'
-                    });
-                } else {
-
-                    vehicle.name = req.body.name
-                    vehicle.vehicleType = req.body.vehicleType
-                    vehicle.icon = req.body.icon
-                    vehicle.batteryLevel = req.body.batteryLevel
-                    vehicle.isCharging = req.body.isCharging
-                    vehicle.isCurrent = req.body.isCurrent
-
-                    user.save().then(
-                        res.status(200).send("vehicle successfully updated")
-                    ).catch(e => {
-                            res.status(404).send({
-                                description: 'save not completed'
-                            });
-                        }
-                    )
-
-                }
-            }
-        }
-    });
+    findUser(req)
+        .then(user => performOperation(user, req, 'update'))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
 }
 
 

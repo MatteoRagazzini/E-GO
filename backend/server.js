@@ -43,6 +43,8 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', function(socket) {
+    let timer = null;
+    let timeout = null;
     console.log('A user connected');
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
@@ -51,7 +53,7 @@ io.on('connection', function(socket) {
 
     socket.on("station", (data) => {
         console.log(data)
-        io.emit("ChangeMarker","inc");
+        io.emit("ChangeMarker", "inc");
     });
 
 
@@ -59,20 +61,31 @@ io.on('connection', function(socket) {
         console.log(data)
         io.emit("ChangeMarker", "inc");
         let minutes = 10;
-        const timer = setInterval(()=> {
+        timer = setInterval(() => {
             minutes--;
             socket.emit("timer", minutes)
-        },1000)
-        setTimeout(()=>{
+        }, 1000)
+        timeout = setTimeout(() => {
             clearInterval(timer)
-            controller.TowerRelease(data.station, data.tower).then( res=> {
+            controller.TowerRelease(data.station, data.tower).then(res => {
                 console.log(res)
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
             })
-        },10000)
+        }, 10000)
     });
-});
+
+    socket.on("unbook", (data) => {
+        clearInterval(timer)
+        clearTimeout(timeout)
+        controller.TowerRelease(data.station, data.tower).then(res => {
+            console.log(res)
+            socket.emit("expired")
+            io.emit("ChangeMarker", "dec");
+        })
+    })
+})
+
 //Whenever someone connects this gets executed
 
 global.appRoot = path.resolve(__dirname);

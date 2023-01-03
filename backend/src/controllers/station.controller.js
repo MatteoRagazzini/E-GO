@@ -160,3 +160,9 @@ exports.TowerRelease = (station_id, tower_id) => {
     })
 }
 
+
+exports.unbookTower = (req,res) =>{
+    this.TowerRelease(req.body.station_id, req.body.tower_id)
+        .then(response => res.status(200).send(response))
+        .catch(err => res.status(500).send(err))
+}

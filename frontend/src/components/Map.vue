@@ -3,7 +3,6 @@
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
-    @book="book"
     :station="this.station"/>
 </template>
 
@@ -103,6 +102,7 @@ export default {
     clearMarkers() {
       console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
       StationsMarkers.forEach(m => m.marker.setMap(null))
+      StationsMarkers = []
     },
     buildMarkers() {
       StationService.getStation().then(
@@ -111,7 +111,6 @@ export default {
           stations.forEach(station => {
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(station.latitude, station.longitude),
-              // content: availabilityTag,
               // animation: google.maps.Animation.DROP,
               label: "" + (station.totalTowers - station.usedTowers),
               map: this.map
@@ -143,10 +142,6 @@ export default {
         }
       })
     },
-    book(station){
-      const bookedStation = StationsMarkers.find(s => s.station_id = station.id)
-      console.log(bookedStation)
-    }
   }
 }
 </script>

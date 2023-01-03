@@ -33,6 +33,12 @@ module.exports = function(app) {
         controller.bookTower
     );
 
+    app.post(
+        "/api/station/tower/unbook",
+        [authJwt.verifyToken],
+        controller.unbookTower
+    );
+
     app.put(
         "/api/station/tower/free",
         [authJwt.verifyToken],

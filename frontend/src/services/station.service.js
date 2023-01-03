@@ -37,6 +37,20 @@ class StationService {
       });
   }
 
+  // unbookTower(station_id, tower_id){
+  //   return axios.post(API_URL + 'tower/unbook',
+  //     {
+  //       station_id: station_id,
+  //       tower_id: tower_id
+  //     },
+  //     { headers: authHeader()})
+  //     .then(response => {
+  //       return response.data;
+  //     }).catch(function (error){
+  //       throw new Error(error.response.data.message)
+  //     });
+  // }
+
 
 }
 export default new StationService();

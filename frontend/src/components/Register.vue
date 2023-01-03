@@ -32,7 +32,7 @@
           placeholder="Set your email"
         ></v-text-field>
 
-        <v-text-xfield
+        <v-text-field
           v-model="password"
           :readonly="loading"
           :rules="[required]"
@@ -40,7 +40,7 @@
           label="Password"
           type="password"
           placeholder="Set your password"
-        ></v-text-xfield>
+        ></v-text-field>
 
         <v-btn
           :disabled="!form"

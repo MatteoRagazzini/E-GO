@@ -37,7 +37,7 @@
         color="green"
         variant="outlined"
         v-if="!vehicle.isCurrent"
-        @click="useVehicle(vehicle._id)">
+        @click="useVehicle(vehicle)">
           Use
         </v-btn>
 
@@ -63,8 +63,8 @@ export default {
     vehicle: Object
   },
   methods: {
-    useVehicle(vehicleID){
-      this.$emit("useVehicle", vehicleID)
+    useVehicle(vehicle){
+      this.$emit("useVehicle", vehicle)
     },
     deleteVehicle(vehicleID){
         this.$emit("removeVehicle", vehicleID)

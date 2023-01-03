@@ -16,23 +16,24 @@
 
       <v-card-item>
         <v-card-title>{{ this.station.title }}
-        <v-btn
-          icon
-          :color="this.station.favorite === true ? 'pink' : 'grey'"
-          @click="changeFavorite"
-          variant="plain"
-        >
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
+          <!--       What is that icon for?-->
+          <v-btn
+            icon
+            :color="this.station.favorite === true ? 'pink' : 'grey'"
+            @click="changeFavorite"
+            variant="plain"
+          >
+            <v-icon>mdi-heart</v-icon>
+          </v-btn>
         </v-card-title>
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-      <v-card-subtitle class="my-4 text-subtitle-1">{{this.station.address}}</v-card-subtitle>
+      <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
 
       <v-card-text>
 
-        <div>Availability: {{this.stationAvailability}}</div>
+        <div>Availability: {{ this.stationAvailability }}</div>
 
       </v-card-text>
 
@@ -52,10 +53,19 @@
           @click="reserve"
           :disabled="reserved || connected"
         >
-          Reserve for 30min
+          {{this.bookingStatus}}
         </v-btn>
       </v-card-actions>
     </v-card>
+    <v-snackbar
+      v-model="showSnackbar"
+      :timeout="3000"
+      absolute
+      location="bottom right"
+      :color="snackbarColor"
+    >
+      {{ this.snackbarText }}
+    </v-snackbar>
   </v-dialog>
 </template>
 
@@ -69,54 +79,77 @@ export default {
     heartColor: "white",
     reserved: false,
     connected: false,
-    status:"connect",
+    status: "connect",
+    bookingStatus: "Reserve for 1 min",
     alertText: "",
     alertType: "success",
     showAlert: false,
+    showSnackbar: false,
+    snackbarText: "",
+    snackbarColor: "",
   }),
-  computed:{
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    timer: function (data) {
+      this.bookingStatus = "Reserved for "+ data + "sec"
+    },
+    expired: function (data) {
+      console.log('Expired')
+      this.bookingStatus = "Reserve for 1 min";
+      this.reserved = false;
+    }
+  },
+  computed: {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    stationAvailability(){
-      return (this.station.totalTowers - this.station.usedTowers)+ "/"+ this.station.totalTowers
+    stationAvailability() {
+      return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }
   },
   methods: {
-    reserve () {
+    reserve() {
       this.loading = true
-      setTimeout(() => (this.loading = false), 2000)
-      this.reserved = true
-      this.alertType = "success"
-      this.alertText = "Reservation successfully"
-      this.showAlert = true
-
-      // create reservation
-      // send reservation to backend
-      // send user notification
-      // set also info in stationCard
+      StationService.bookStation(this.currentUser['id'], this.station.id).then(
+        (tower) => {
+          // this is working we will need to change the button to unconnect and disable the book
+          this.$emit("book", this.station)
+          this.loading = false
+          this.reserved = true
+          console.log("[STATION]: booked" + tower)
+          this.$socket.emit('reserveStation', {station: this.station.id, tower: tower.id})
+          this.alertType = "success"
+          this.alertText = "Vehicle successfully connected"
+        }).catch(err=>{
+        console.log(err)
+        this.snackbarColor = "red"
+        this.snackbarText = "Station full"
+        this.showSnackbar = true
+        this.loading = false
+      })
     },
-    connect () {
+    connect() {
       this.loading = true
       StationService.occupyStation(this.currentUser['id'], this.station.id).then(
         (tower) => {
           // this is working we will need to change the button to unconnect and disable the book
           this.loading = false
           console.log("[STATION]: connected to ", tower)
-          this.$socket.emit('station',{station:this.station.id, tower:tower.id})
+          this.$socket.emit('station', {station: this.station.id, tower: tower.id})
           this.alertType = "success"
           this.alertText = "Vehicle successfully connected"
           // try not to change the name of the properties, this should be colled disable not connected
-         // this.connected = true
+          // this.connected = true
           // should we keep an internal status of the application?
           // Because in this case after we connect, we would like to see realtime that the status
           // of the application changes
           this.status = "Disconnect"
           this.showAlert = true
         }
-        )
-
+      )
 
 
       // create charge
@@ -124,24 +157,24 @@ export default {
       // send user notification
       // set also info in stationCard
     },
-    changeFavorite () {
+    changeFavorite() {
       if (!this.station.favorite) {
         this.station.favorite = true
-        userService.addFavouriteStation(this.currentUser['id'],this.station.id)
-      }else{
+        userService.addFavouriteStation(this.currentUser['id'], this.station.id)
+      } else {
         this.station.favorite = false
-        userService.removeFavouriteStation(this.currentUser['id'],this.station.id)
+        userService.removeFavouriteStation(this.currentUser['id'], this.station.id)
       }
       // update favorite
       // send favorite to backend
       // inform user
     },
   },
-  props:{
-    station:{
+  props: {
+    station: {
       id: String,
       //ratings: Number,
-      title:String,
+      title: String,
       //reviews: Number,
       address: String,
       usedTowers: Number,
@@ -153,5 +186,6 @@ export default {
 </script>
 
 <style>
+
 </style>
 

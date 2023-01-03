@@ -25,7 +25,13 @@ module.exports = function(app) {
         "/api/station/tower/occupy",
         [authJwt.verifyToken],
         controller.occupyTower
-    )
+    );
+
+    app.post(
+        "/api/station/tower/book",
+        [authJwt.verifyToken],
+        controller.bookTower
+    );
 
     app.put(
         "/api/station/tower/free",

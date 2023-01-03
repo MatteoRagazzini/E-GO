@@ -70,6 +70,38 @@ exports.freeTower = (req, res) => {
     });
 }
 
+exports.bookTower = (req,res) => {
+    Station.findById(req.body.station_id, function (err, station) {
+        if (err)
+            res.send(err);
+        else {
+            if (station == null) {
+                res.status(404).send({
+                    description: 'station not found'
+                });
+            } else {
+                const firstFreeTower = station.towers.find(s => s.isAvailable)
+                if(firstFreeTower === undefined){
+                    res.status(500).send({
+                        description: 'All towers occupied'
+                    })
+                }else{
+                    firstFreeTower.isAvailable = false;
+                    // Here I want to insert the current vehicle id of the user, an idea is that I keep it in the store
+                    firstFreeTower.charging_vehicle_id = req.body.user_id
+                    station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                    station.save().then(
+                        res.status(200).send(firstFreeTower)
+                    ).catch(er => {
+                            res.status(500).send(er)
+                        }
+                    )
+                }
+            }
+        }
+    })
+}
+
 exports.occupyTower = (req,res) => {
     Station.findById(req.body.station_id, function (err, station) {
         if (err)
@@ -81,14 +113,14 @@ exports.occupyTower = (req,res) => {
                 });
             } else {
                 const firstFreeTower = station.towers.find(s => s.isAvailable)
-                if(firstFreeTower==null){
+                if(firstFreeTower===undefined){
                     res.status(500).send({
                         description: 'All towers occupied'
                     })
                 }
                 firstFreeTower.isAvailable = false;
                 // Here I want to insert the current vehicle id of the user, an idea is that I keep it in the store
-                firstFreeTower.charging_vehicle_id = "test"
+                firstFreeTower.charging_vehicle_id = "req.body.vehicle_id"
                 station.usedTowers = station.towers.filter(s => !s.isAvailable).length
                 station.save().then(
                     res.status(200).send(firstFreeTower)

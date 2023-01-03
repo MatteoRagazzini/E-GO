@@ -22,5 +22,21 @@ class StationService {
         throw new Error(error.response.data.message)
       });
   }
+
+  bookStation(user_id,station_id){
+    return axios.post(API_URL + 'tower/book',
+      {
+        user_id: user_id,
+        station_id: station_id
+      },
+      { headers: authHeader()})
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        throw new Error(error.response.data.message)
+      });
+  }
+
+
 }
 export default new StationService();

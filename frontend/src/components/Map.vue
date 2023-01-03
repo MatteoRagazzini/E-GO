@@ -3,6 +3,7 @@
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
+    @book="book"
     :station="this.station"/>
 </template>
 
@@ -140,6 +141,10 @@ export default {
           this.$router.push('/login')
         }
       })
+    },
+    book(station){
+      const bookedStation = StationsMarkers.find(s => s.station_id = station.id)
+      console.log(bookedStation)
     }
   }
 }

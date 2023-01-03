@@ -52,7 +52,22 @@ io.on('connection', function(socket) {
     socket.on("station", (data) => {
         console.log(data)
         io.emit("ChangeMarker",data);
-    })
+    });
+
+
+    socket.on("reserveStation", (data) => {
+        console.log(data)
+        io.emit("ChangeMarker",data);
+        let minutes = 60;
+        const timer = setInterval(()=> {
+            minutes--;
+            socket.emit("timer", minutes)
+        },1000)
+        setTimeout(()=>{
+            clearInterval(timer)
+            socket.emit("expired")
+        },60000)
+    });
 });
 //Whenever someone connects this gets executed
 

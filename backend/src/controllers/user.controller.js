@@ -1,10 +1,6 @@
-const config = require("../config/auth.config");
 const db = require("../models");
-const mongoose = require("mongoose");
 const stationController = require("../controllers/station.controller")
 const User = db.user;
-const Role = db.role;
-const Vehicle = db.vehicle;
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
@@ -48,6 +44,45 @@ exports.addVehicle = (req, res) => {
                 });
             } else {
                 res.status(200).send("vehicle successfully added to the user");
+            }
+        }
+    });
+}
+
+exports.updateVehicle = (req, res) => {
+    User.findById(req.body.user_id, function (err, user) {
+        if (err) {
+            res.send(err)
+        } else {
+            if (user == null) {
+                res.status(404).send({
+                    description: 'user not found'
+                });
+            } else {
+                const vehicle = user.vehicles.find(v => v._id = req.body.vehicle_id);
+                if (vehicle == null) {
+                    res.status(404).send({
+                        description: 'vehicle not found'
+                    });
+                } else {
+
+                    vehicle.name = req.body.name
+                    vehicle.vehicleType = req.body.vehicleType
+                    vehicle.icon = req.body.icon
+                    vehicle.batteryLevel = req.body.batteryLevel
+                    vehicle.isCharging = req.body.isCharging
+                    vehicle.isCurrent = req.body.isCurrent
+
+                    user.save().then(
+                        res.status(200).send("vehicle successfully updated")
+                    ).catch(e=>{
+                            res.status(404).send({
+                                description: 'save not completed'
+                            });
+                        }
+                    )
+
+                }
             }
         }
     });
@@ -161,22 +196,6 @@ exports.getFavouriteStations = (req, res) => {
             }
         }
     });
-
-    //
-    // User.findOne({_id: req.params.user_id}, function(err, user) {
-    //     if (err)
-    //         res.send(err);
-    //     else{
-    //         if(user==null){
-    //             res.status(404).send({
-    //                 description: 'user not found'
-    //             });
-    //         }
-    //         else{
-    //             res.status(200).json(user.favouriteStations());
-    //         }
-    //     }
-    // });
 }
 
 exports.connect = (req, res) => {

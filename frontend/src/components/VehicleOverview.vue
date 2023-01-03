@@ -16,6 +16,11 @@
   <v-window v-model="tab">
     <v-window-item value="vehicles"
     >
+      <v-progress-circular
+        indeterminate
+        color="green"
+        v-if="loading"
+      ></v-progress-circular>
         <v-list
         >
           <v-list-subheader>Your vehicles</v-list-subheader>
@@ -84,6 +89,7 @@ export default {
       showSnackbar: false,
       snackbarText: "",
       snackbarColor: "",
+      loading: true
     }
   },
   computed: {
@@ -97,15 +103,18 @@ export default {
   },
 
   methods: {
-
     loadVehicles(){
       UserService.getVehicles(this.currentUser.id).then(
         (response) => {
           this.vehicles = response.data
+          console.log(this.vehicles)
           this.vehicles.forEach(vehicle =>{
-            if (vehicle.isCurrent)
+            if (vehicle.isCurrent) {
               this.currentVehicle = vehicle._id
+              console.log(vehicle.name)
+            }
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error)
@@ -149,20 +158,24 @@ export default {
       this.showSnackbar = true
     },
 
-    useVehicle(vehicleID) {
-      if (this.currentVehicle != vehicleID){
+    useVehicle(vehicle) {
+      if (this.currentVehicle != vehicle._id){
 
-        //tbd: change use in backend
+        console.log(vehicle._id)
+        const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj._id === vehicle._id)
 
-        const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj.id === vehicleID)
-        const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj.id === this.currentVehicle)
+        if (this.currentVehicle != null) {
+          const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj._id === this.currentVehicle)
+          this.vehicles[vehicleToUseIndexOld].isCurrent = false
+        }
 
-        this.vehicles[vehicleToUseIndexOld].isCurrent = false
         this.vehicles[vehicleToUseIndex].isCurrent = true
+        this.currentVehicle = vehicle._id
 
-        this.currentVehicle = vehicleID
+        UserService.updateVehicle(this.currentUser['id'], vehicle)
+
         this.snackbarText = "Vehicle in use has been changed successfully"
-      }else {
+      } else {
         this.snackbarText = "This vehicle is already in use"
 
       }

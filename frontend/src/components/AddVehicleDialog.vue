@@ -81,14 +81,12 @@ export default {
 
       let newVehicle = {
         name: this.vehicleName,
-        type: this.vehicleTypeValue,
+        vehicleType: this.vehicleTypeValue,
         icon: this.icon,
         batteryLevel: null,
         isCharging: false,
         isCurrent: false,
       }
-
-      //tbd: add vehicle to database
 
       this.$emit("save", newVehicle)
     },

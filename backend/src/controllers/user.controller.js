@@ -31,14 +31,13 @@ function findUser(req) {
     })
 }
 
-function perfmormOperation(user, req, operation, vehicle = {}) {
-    let vehicleToRemove = {}
+function performOperation(user, req, operation, vehicle = {}) {
     return new Promise((resolve, reject) => {
         if (operation === 'push') user.vehicles.push(vehicle);
         else if (operation === 'pull') {
-            vehicleToRemove = user.vehicles.find(v => v._id = req.body.vehicle_id);
-            if (vehicleToRemove == null) reject('vehicle not found')
-            user.vehicles.splice(vehicleToRemove, 1)
+            let index = user.vehicles.findIndex(v => v.id === req.body.vehicle_id);
+            if (index === -1) reject('vehicle not found')
+            user.vehicles.splice(index, 1)
         }
         else{
             reject('operation unknown')
@@ -64,9 +63,17 @@ exports.addVehicle = (req, res) => {
     };
 
     findUser(req)
-        .then(user => perfmormOperation(user, req, 'push', newVehicle))
+        .then(user => performOperation(user, req, 'push', newVehicle))
         .then(result => res.status(200).send(result))
 }
+
+exports.removeVehicle = (req, res) => {
+    findUser(req)
+        .then(user => performOperation(user, req, 'pull'))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
+}
+
 
 exports.updateVehicle = (req, res) => {
     User.findById(req.body.user_id, function (err, user) {
@@ -107,38 +114,7 @@ exports.updateVehicle = (req, res) => {
     });
 }
 
-exports.removeVehicle = (req, res) => {
-    User.findById(req.body.user_id, function (err, user) {
-        if (err) {
-            console.log(err)
-            res.send(err)
-        } else {
-            if (user == null) {
-                res.status(404).send({
-                    description: 'user not found'
-                });
-            } else {
-                const index = user.vehicles.find(v => v._id = req.body.vehicle_id);
-                if (index == null) {
-                    res.status(404).send({
-                        description: 'vehicle not found'
-                    });
-                } else {
-                    user.vehicles.splice(index, 1)
-                    user.save().then(
-                        res.status(200).send("vehicle successfully removed")
-                    ).catch(e => {
-                            res.status(404).send({
-                                description: 'save not completed'
-                            });
-                        }
-                    )
 
-                }
-            }
-        }
-    });
-}
 
 exports.addFavouriteStation = (req, res) => {
 

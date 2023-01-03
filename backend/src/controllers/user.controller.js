@@ -18,9 +18,11 @@ exports.moderatorBoard = (req, res) => {
     res.status(200).send("Moderator Content.");
 };
 
-function findUser(req) {
+//HELPER FUNCTIONS//
+
+function findUser(user_id) {
     return new Promise((resolve, reject) => {
-        User.findById(req.body.user_id, function (err, user) {
+        User.findById(user_id, function (err, user) {
             if (err)
                 reject(err);
             else {
@@ -31,7 +33,7 @@ function findUser(req) {
     })
 }
 
-function performOperation(user, req, operation, NewVehicle = {}) {
+function performOperationVehicle(user, req, operation, NewVehicle = {}) {
     return new Promise((resolve, reject) => {
         if (operation === 'push') user.vehicles.push(NewVehicle);
         else if (operation === 'pull') {
@@ -39,7 +41,7 @@ function performOperation(user, req, operation, NewVehicle = {}) {
             let index = user.vehicles.findIndex(v => v.id === req.body.vehicle_id);
             if (index === -1) reject('vehicle not found')
             user.vehicles.splice(index, 1)
-        }else if (operation === 'update') {
+        } else if (operation === 'update') {
             const vehicle = user.vehicles.find(v => v.id === req.body.vehicle_id);
             if (vehicle === undefined) {
                 reject('vehicle not found')
@@ -51,7 +53,7 @@ function performOperation(user, req, operation, NewVehicle = {}) {
                 vehicle.isCharging = req.body.isCharging
                 vehicle.isCurrent = req.body.isCurrent
             }
-        }else{
+        } else {
             reject('operation unknown')
         }
         user.save().then(
@@ -62,6 +64,27 @@ function performOperation(user, req, operation, NewVehicle = {}) {
         )
     })
 }
+
+function performOperationFavourites(user, req, operation, newStation = {}) {
+    return new Promise((resolve, reject) => {
+        if (operation === 'push') user.favouriteStations.push(newStation);
+        else if (operation === 'pull') {
+            let index = user.favouriteStations.findIndex(s => s.id === req.body.station_id);
+            if (index === -1) reject('station not found')
+            user.favouriteStations.splice(index, 1)
+        } else {
+            reject('operation unknown')
+        }
+        user.save().then(
+            resolve("operation performed")
+        ).catch(error => {
+                reject(error)
+            }
+        )
+    })
+}
+
+// VEHICLES //
 
 exports.addVehicle = (req, res) => {
 
@@ -74,46 +97,51 @@ exports.addVehicle = (req, res) => {
         isCurrent: req.body.isCurrent
     };
 
-    findUser(req)
-        .then(user => performOperation(user, req, 'push', newVehicle))
-        .then(result => res.status(200).send(result))
-}
-
-exports.removeVehicle = (req, res) => {
-    findUser(req)
-        .then(user => performOperation(user, req, 'pull'))
+    findUser(req.body.user_id)
+        .then(user => performOperationVehicle(user, req, 'push', newVehicle))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
+exports.removeVehicle = (req, res) => {
+    findUser(req.body.user_id)
+        .then(user => performOperationVehicle(user, req, 'pull'))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
+}
 
 exports.updateVehicle = (req, res) => {
-    findUser(req)
-        .then(user => performOperation(user, req, 'update'))
+    findUser(req.body.user_id)
+        .then(user => performOperationVehicle(user, req, 'update'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
 exports.setVehicleInUse = (req, res) => {
-    findUser(req)
+    findUser(req.body.user_id)
         // to fix the fact that multiple vehicles were Current together
-        .then(function (user){
-            user.vehicles.forEach(v=>v.isCurrent = false);
+        .then(function (user) {
+            user.vehicles.forEach(v => v.isCurrent = false);
             return user
         })
-        .then(user => performOperation(user, req, 'update'))
+        .then(user => performOperationVehicle(user, req, 'update'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
+exports.getVehicles = (req, res) => {
+    findUser(req.params.id)
+        .then(user => res.status(200).json(user.vehicles))
+        .catch(err => res.status(500).send(err))
+}
 
+// STATIONS //
 
 exports.addFavouriteStation = (req, res) => {
 
-    findUser(req)
-        .then(user => console.log(res))
-        .catch(err => console.log(err))
-
+    findUser(req.body.user_id)
+        .then(user => performOperationFavourites(user, req, 'push', req.body.station_id))
+        .then(result => res.status(200).send(result))
     // User.findOneAndUpdate({_id: req.body.user_id}, {
     //     $push: {
     //         'favouriteStations':
@@ -136,58 +164,37 @@ exports.addFavouriteStation = (req, res) => {
 }
 
 exports.removeFavouriteStation = (req, res) => {
-    User.findOneAndUpdate({_id: req.body.user_id}, {
-        $pull: {
-            'favouriteStations': req.body.station_id
-        }
-    }, function (err, user) {
-        if (err)
-            res.send(err);
-        else {
-            if (user == null) {
-                res.status(404).send({
-                    description: 'user not found'
-                });
-            } else {
-                console.log("station successfully removed from the user")
-                res.status(200).send("station successfully removed from the user");
-            }
-        }
-    });
-}
 
-exports.getVehicles = (req, res) => {
+    findUser(req.body.user_id)
+        .then(user => performOperationFavourites(user, req, 'pull'))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
 
-    User.findById(req.params.id, function (err, user) {
-        if (err)
-            res.send(err);
-        else {
-            if (user == null) {
-                res.status(404).send({
-                    description: 'User not found'
-                });
-            } else {
-                res.json(user.vehicles);
-            }
-        }
-    });
+    // User.findOneAndUpdate({_id: req.body.user_id}, {
+    //     $pull: {
+    //         'favouriteStations': req.body.station_id
+    //     }
+    // }, function (err, user) {
+    //     if (err)
+    //         res.send(err);
+    //     else {
+    //         if (user == null) {
+    //             res.status(404).send({
+    //                 description: 'user not found'
+    //             });
+    //         } else {
+    //             console.log("station successfully removed from the user")
+    //             res.status(200).send("station successfully removed from the user");
+    //         }
+    //     }
+    // });
 }
 
 exports.getFavouriteStations = (req, res) => {
+    findUser(req.params.id)
+        .then(user => res.status(200).json(user.favouriteStations))
+        .catch(err => res.status(500).send(err))
 
-    User.findById(req.params.id, function (err, user) {
-        if (err)
-            res.send(err);
-        else {
-            if (user == null) {
-                res.status(404).send({
-                    description: 'User not found'
-                });
-            } else {
-                res.json(user.favouriteStations);
-            }
-        }
-    });
 }
 
 exports.connect = (req, res) => {

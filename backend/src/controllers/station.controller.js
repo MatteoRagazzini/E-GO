@@ -45,16 +45,14 @@ exports.freeTower = (req, res) => {
                     description: 'station not found'
                 });
             } else {
-                const towerToFree = station.towers.find(s=>s.id == req.body.tower_id)
-                if(towerToFree==null){
+                const towerToFree = station.towers.find(s => s.id == req.body.tower_id)
+                if (towerToFree == null) {
                     res.status(500).send({
                         description: 'tower not existing'
                     })
-                }
-                else if(towerToFree.isAvailable){
+                } else if (towerToFree.isAvailable) {
                     res.status(500).send('tower already available')
-                }
-                else{
+                } else {
                     towerToFree.isAvailable = true
                     towerToFree.charging_vehicle_id = ""
                     station.usedTowers = station.towers.filter(s => !s.isAvailable).length
@@ -70,7 +68,7 @@ exports.freeTower = (req, res) => {
     });
 }
 
-exports.bookTower = (req,res) => {
+exports.bookTower = (req, res) => {
     Station.findById(req.body.station_id, function (err, station) {
         if (err)
             res.send(err);
@@ -81,11 +79,11 @@ exports.bookTower = (req,res) => {
                 });
             } else {
                 const firstFreeTower = station.towers.find(s => s.isAvailable)
-                if(firstFreeTower === undefined){
+                if (firstFreeTower === undefined) {
                     res.status(500).send({
                         description: 'All towers occupied'
                     })
-                }else{
+                } else {
                     firstFreeTower.isAvailable = false;
                     // Here I want to insert the current vehicle id of the user, an idea is that I keep it in the store
                     firstFreeTower.charging_vehicle_id = req.body.user_id
@@ -102,7 +100,7 @@ exports.bookTower = (req,res) => {
     })
 }
 
-exports.occupyTower = (req,res) => {
+exports.occupyTower = (req, res) => {
     Station.findById(req.body.station_id, function (err, station) {
         if (err)
             res.send(err);
@@ -113,7 +111,7 @@ exports.occupyTower = (req,res) => {
                 });
             } else {
                 const firstFreeTower = station.towers.find(s => s.isAvailable)
-                if(firstFreeTower===undefined){
+                if (firstFreeTower === undefined) {
                     res.status(500).send({
                         description: 'All towers occupied'
                     })
@@ -131,5 +129,34 @@ exports.occupyTower = (req,res) => {
             }
         }
     });
+}
+
+exports.TowerRelease = (station_id, tower_id) => {
+    return new Promise((resolve, reject) => {
+        Station.findById(station_id, function (err, station) {
+            if (err) reject(err)
+            else {
+                if (station == null) {
+                    reject('station not found')
+                } else {
+                    const towerToFree = station.towers.find(s => s.id === tower_id)
+                    if (towerToFree === undefined) reject('tower not found')
+                    else if (towerToFree.isAvailable) reject('tower not occupied')
+                    else {
+                        towerToFree.isAvailable = true
+                        towerToFree.charging_vehicle_id = ""
+                        station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                        station.save().then(
+                            resolve("tower released")
+                        ).catch(er => {
+                                reject('error in saving')
+                            }
+                        )
+                    }
+                }
+            }
+
+        })
+    })
 }
 

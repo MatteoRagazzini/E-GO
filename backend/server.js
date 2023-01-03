@@ -51,22 +51,26 @@ io.on('connection', function(socket) {
 
     socket.on("station", (data) => {
         console.log(data)
-        io.emit("ChangeMarker",data);
+        io.emit("ChangeMarker","inc");
     });
 
 
     socket.on("reserveStation", (data) => {
         console.log(data)
-        io.emit("ChangeMarker",data);
-        let minutes = 60;
+        io.emit("ChangeMarker", "inc");
+        let minutes = 10;
         const timer = setInterval(()=> {
             minutes--;
             socket.emit("timer", minutes)
         },1000)
         setTimeout(()=>{
             clearInterval(timer)
-            socket.emit("expired")
-        },60000)
+            controller.TowerRelease(data.station, data.tower).then( res=> {
+                console.log(res)
+                socket.emit("expired")
+                io.emit("ChangeMarker", "dec");
+            })
+        },10000)
     });
 });
 //Whenever someone connects this gets executed

@@ -56,7 +56,8 @@ export default {
       // markerToChange.usedTowers ++;
       // markerToChange.marker.setMap(null)
       this.clearMarkers()
-      this.station.usedTowers++
+      if(data === 'inc')this.station.usedTowers++
+      else if (data === 'dec') this.station.usedTowers--
       this.buildMarkers()
     }
   },

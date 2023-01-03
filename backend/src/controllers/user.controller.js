@@ -41,7 +41,6 @@ function performOperation(user, req, operation, NewVehicle = {}) {
             user.vehicles.splice(index, 1)
         }else if (operation === 'update') {
             const vehicle = user.vehicles.find(v => v.id === req.body.vehicle_id);
-            console.log(vehicle)
             if (vehicle === undefined) {
                 reject('vehicle not found')
             } else {
@@ -52,8 +51,7 @@ function performOperation(user, req, operation, NewVehicle = {}) {
                 vehicle.isCharging = req.body.isCharging
                 vehicle.isCurrent = req.body.isCurrent
             }
-        }
-        else{
+        }else{
             reject('operation unknown')
         }
         user.save().then(
@@ -70,7 +68,7 @@ exports.addVehicle = (req, res) => {
     const newVehicle = {
         name: req.body.name,
         vehicleType: req.body.vehicleType,
-        icon: req.body.icon,
+        img: req.body.img,
         batteryLevel: req.body.batteryLevel,
         isCharging: req.body.isCharging,
         isCurrent: req.body.isCurrent
@@ -91,6 +89,18 @@ exports.removeVehicle = (req, res) => {
 
 exports.updateVehicle = (req, res) => {
     findUser(req)
+        .then(user => performOperation(user, req, 'update'))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
+}
+
+exports.setVehicleInUse = (req, res) => {
+    findUser(req)
+        // to fix the fact that multiple vehicles were Current together
+        .then(function (user){
+            user.vehicles.forEach(v=>v.isCurrent = false);
+            return user
+        })
         .then(user => performOperation(user, req, 'update'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))

@@ -65,9 +65,9 @@ class UserService {
   }
 
   updateVehicle(user_id, vehicle) {
-    console.log(user_id + "," + vehicle)
+    console.log(user_id , vehicle)
     return axios
-      .post('http://localhost:3000/api/user/updateVehicle', {
+      .post('http://localhost:3000/api/user/setVehicleInUse', {
         user_id: user_id,
         vehicle_id: vehicle._id,
         name: vehicle.name,

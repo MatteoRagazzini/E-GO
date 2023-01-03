@@ -2,7 +2,7 @@
   <v-card
     class="mx-auto"
     width="100%"
-    :prepend-icon= vehicle.icon
+    :prepend-icon= vehicle.img
     variant="tonal"
     :title="vehicle.name"
   >

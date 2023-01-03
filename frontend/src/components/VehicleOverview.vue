@@ -131,15 +131,15 @@ export default {
 
     closeDialog(newVehicle) {
       this.dialog = false
-      UserService.addVehicle(this.currentUser['id'], newVehicle)
-      this.loadVehicles()
+      UserService.addVehicle(this.currentUser['id'], newVehicle).then(this.loadVehicles)
+      // this.loadVehicles()
       this.snackbarColor = "green"
       this.snackbarText = "Your new vehicle has been added successfully"
       this.showSnackbar = true
     },
 
     removeVehicle(vehicleID) {
-      if (this.currentVehicle != vehicleID){
+      if (this.currentVehicle !== vehicleID){
 
         UserService.removeVehicle(this.currentUser['id'], vehicleID)
 
@@ -159,10 +159,13 @@ export default {
     },
 
     useVehicle(vehicle) {
-      if (this.currentVehicle != vehicle._id){
+      if (this.currentVehicle !== vehicle._id){
 
         console.log(vehicle._id)
         const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj._id === vehicle._id)
+        const vehicleToUse = this.vehicles.find((obj) => obj._id === vehicle._id)
+        console.log(vehicleToUseIndex)
+        console.log(vehicleToUse)
 
         if (this.currentVehicle != null) {
           const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj._id === this.currentVehicle)

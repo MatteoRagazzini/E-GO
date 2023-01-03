@@ -55,6 +55,7 @@
         >
           {{this.bookingStatus}}
         </v-btn>
+        <v-btn color="primary" @click="closeStationCard">Close</v-btn>
       </v-card-actions>
     </v-card>
     <v-snackbar
@@ -116,6 +117,9 @@ export default {
     }
   },
   methods: {
+    closeStationCard(){
+      this.$emit('close');
+    },
     reserve() {
       this.loading = true
       StationService.bookStation(this.currentUser['id'], this.station.id).then(
@@ -184,6 +188,7 @@ export default {
     },
   },
   props: {
+    showStationCard: Boolean,
     station: {
       id: String,
       //ratings: Number,

@@ -3,6 +3,7 @@
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
+    @close="this.showStationCard = false"
     :station="this.station"/>
 </template>
 

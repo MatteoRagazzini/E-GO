@@ -64,7 +64,7 @@
           v-if="reserved"
           color="green"
           variant="text"
-          @click="releaseTower"
+          @click="startCharge"
         >
           Start
         </v-btn>

@@ -9,7 +9,7 @@ exports.startCharge = (req, res) => {
         vehicle_id: req.body.vehicle_id,
         isCompleted: false,
         startDateTime: new Date(),
-        stopDateTime: String,
+        stopDateTime: null,
         duration: null,
         totalBatteryCharged: null,
         cost: null
@@ -17,14 +17,14 @@ exports.startCharge = (req, res) => {
 
     console.log(charge)
 
-    // station.save(err => {
-    //     if (err) {
-    //         res.status(500).send({message: err});
-    //         return;
-    //     }
-    //
-    //     res.send({message: "Station was registered successfully!"});
-    // });
+    charge.save(err => {
+        if (err) {
+            res.status(500).send({message: err});
+            return;
+        }
+
+        res.status(200).send({message: "Charge was registered successfully!"});
+    });
 };
 
 exports.endCharge = (req, res) => {

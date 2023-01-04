@@ -42,21 +42,31 @@
 
       <v-card-actions>
         <v-btn
+          v-if="!reserved"
           color="green"
           variant="text"
-          @click="occupyStation('connect')"
+          @click="occupyTower('connect')"
           :disabled="connected"
         >
-          {{ status }}
+          Connect
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
+          v-if="!reserved"
           :color="colour"
           variant="text"
-          @click="occupyStation('reserve')"
+          @click="occupyTower('reserve')"
           :disabled="connected"
         >
-          {{ this.bookingStatus }}
+          Reserve
+        </v-btn>
+        <v-btn
+          v-if="reserved"
+          :color="colour"
+          variant="text"
+          @click="releaseTower"
+        >
+          Cancel
         </v-btn>
         <v-btn color="primary" @click="closeStationCard">Close</v-btn>
       </v-card-actions>
@@ -124,15 +134,15 @@ export default {
     closeStationCard() {
       this.$emit('close');
     },
-    occupyStation(option) {
+    occupyTower(option) {
           this.loading = true
-          StationService.bookStation(this.currentUser['id'], this.station.id).then(
+          StationService.occupyTower(this.currentUser['id'], this.station.id).then(
             (tower) => {
               this.tower = tower
               this.loading = false
               this.reserved = true
               console.log("[STATION]: reserved " + tower)
-              this.$socket.emit('reserveStation', {station: this.station.id, tower: tower.id, reason: option})
+              this.$socket.emit('startTimer', {station: this.station.id, tower: tower.id, reason: option})
               this.snackbarColor = "green"
               this.snackbarText = "Station successfully reserved"
               this.showSnackbar = true
@@ -144,13 +154,15 @@ export default {
             this.loading = false
           })
     },
-    releaseStation(){
-      this.$socket.emit('cancel', {station: this.station.id, tower: this.tower.id})
+    releaseTower(){
+      StationService.releaseTower(this.station.id, this.tower.id).then( res => {
+        console.log(res)
+      this.$socket.emit('cancelTimer', {station: this.station.id, tower: this.tower.id})
       this.snackbarColor = "green"
       this.snackbarText = "Station successfully unbooked"
       this.showSnackbar = true
+    }).catch(err=> console.log(err))
     },
-
   changeFavorite() {
     if (!this.station.favorite) {
       this.station.favorite = true

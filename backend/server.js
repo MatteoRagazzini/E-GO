@@ -53,7 +53,7 @@ io.on('connection', function(socket) {
     });
 
 
-    socket.on("reserveStation", (data) => {
+    socket.on("startTimer", (data) => {
         console.log(data)
         io.emit("ChangeMarker", "inc");
         // in case of reserving I send back a longer timer
@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
         }, 1000)
         timeout = setTimeout(() => {
             clearInterval(timer)
-            controller.TowerRelease(data.station, data.tower).then(res => {
+            controller.releaseTowerForTimerExpired(data.station, data.tower).then(res => {
                 console.log(res)
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
@@ -73,14 +73,11 @@ io.on('connection', function(socket) {
         }, time*1000)
     });
 
-    socket.on("cancel", (data) => {
+    socket.on("cancelTimer", () => {
         clearInterval(timer)
         clearTimeout(timeout)
-        controller.TowerRelease(data.station, data.tower).then(res => {
-            console.log(res)
-            socket.emit("expired")
-            io.emit("ChangeMarker", "dec");
-        })
+        socket.emit("expired")
+        io.emit("ChangeMarker", "dec");
     })
 })
 

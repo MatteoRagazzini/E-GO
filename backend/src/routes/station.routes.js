@@ -21,29 +21,17 @@ module.exports = function(app) {
         controller.registerStation
     );
 
-    app.put(
+    app.post(
         "/api/station/tower/occupy",
         [authJwt.verifyToken],
         controller.occupyTower
     );
 
     app.post(
-        "/api/station/tower/book",
+        "/api/station/tower/release",
         [authJwt.verifyToken],
-        controller.bookTower
+        controller.releaseTower
     );
-
-    app.post(
-        "/api/station/tower/unbook",
-        [authJwt.verifyToken],
-        controller.unbookTower
-    );
-
-    app.put(
-        "/api/station/tower/free",
-        [authJwt.verifyToken],
-        controller.freeTower
-    )
 
     // app.post(
     //     "/api/station/tower/connect",

@@ -21,6 +21,7 @@
         color="green"
         v-if="loading"
       ></v-progress-circular>
+      <v-card id="scrollable" height="600" variant="tonal" color="white">
         <v-list
         >
           <v-list-subheader>Your vehicles</v-list-subheader>
@@ -35,6 +36,7 @@
               @removeVehicle="removeVehicle"></VehicleCard>
             </v-list-item>
         </v-list>
+      </v-card>
         <div class="d-flex justify-space-around">
           <v-btn
             color="green"
@@ -49,7 +51,6 @@
               ></AddVehicleDialog>
             </v-dialog>
           </v-btn>
-
         </div>
     </v-window-item>
     <v-window-item value="history"
@@ -191,5 +192,8 @@ export default {
 </script>
 
 <style scoped>
-
+.v-card {
+  display: flex !important;
+  flex-direction: column;
+}
 </style>

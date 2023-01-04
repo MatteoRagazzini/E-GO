@@ -4,6 +4,7 @@
       :loading="loading"
       class="mx-auto my-12"
       max-width="374"
+      min-width="300"
     >
       <v-progress-linear
         :active="loading"
@@ -27,57 +28,62 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-      <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
+        <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
 
-      <v-card-text>
+        <v-card-text>
+          <div v-if="!reserved">Availability: {{ this.stationAvailability }}</div>
+          <div class="text-center" v-if="reserved">
+            <div>Click to unlock Tower {{ this.tower.id }}</div>
+            <br>
+            <v-progress-circular
+              :rotate="360"
+              :size="100"
+              :width="20"
+              :model-value="this.timerValue"
+              color="#C6F68D"
+            >
+            <v-btn
+              color="success"
+              icon="mdi-lightning-bolt"
+              @click="startCharge"
+              size="x-large"
+            ></v-btn>
+            </v-progress-circular>
+          </div>
+          <br>
 
-        <div>Availability: {{ this.stationAvailability }}</div>
-
-      </v-card-text>
-      <v-card-text v-if="reserved">
-
-        <div>{{ this.timerText }}</div>
-
-      </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          v-if="!reserved"
-          color="green"
-          variant="text"
-          @click="occupyTower('connect')"
-          :disabled="connected"
-        >
-          Connect
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn
-          v-if="!reserved"
-          :color="colour"
-          variant="text"
-          @click="occupyTower('reserve')"
-          :disabled="connected"
-        >
-          Reserve
-        </v-btn>
-        <v-btn
-          v-if="reserved"
-          color="green"
-          variant="text"
-          @click="startCharge"
-        >
-          Start
-        </v-btn>
-        <v-btn
-          v-if="reserved"
-          color="red"
-          variant="text"
-          @click="releaseTower"
-        >
-          Cancel
-        </v-btn>
-        <v-btn color="primary" @click="closeStationCard">Close</v-btn>
-      </v-card-actions>
+        </v-card-text>
+        <v-card-actions>
+          <!--      IF RESERVED-->
+          <div v-if="reserved">{{ this.timerText }}</div>
+          <v-spacer v-if="reserved"></v-spacer>
+          <v-btn
+            color="red"
+            v-if="reserved"
+            @click="releaseTower"
+          >
+            Cancel
+          </v-btn>
+          <!--      IF NOT RESERVED-->
+          <v-btn v-if="!reserved"
+            color="green"
+            variant="text"
+            @click="occupyTower('connect')"
+            :disabled="connected"
+          >
+            Connect
+          </v-btn>
+          <v-btn v-if="!reserved"
+            color="green"
+            variant="text"
+            @click="occupyTower('reserve')"
+            :disabled="connected"
+          >Reserve
+          </v-btn>
+          <v-spacer v-if="!reserved"></v-spacer>
+          <v-btn color="primary" @click="closeStationCard" v-if="!reserved">Close</v-btn>
+        </v-card-actions>
+        <!-- IF RESERVED-->
     </v-card>
     <v-snackbar
       v-model="showSnackbar"
@@ -100,29 +106,34 @@ export default {
   data: () => ({
     loading: false,
     heartColor: "white",
-    reserved: false,
+   reserved: false,
     connected: false,
-    status: "connect",
-    bookingStatus: "Reserve for 1 min",
     timerText: "",
+    timerValue: 100,
+    firstValue: 0,
     alertText: "",
     alertType: "success",
     showAlert: false,
     showSnackbar: false,
     snackbarText: "",
     snackbarColor: "",
-    tower: {}
+    tower: {},
   }),
   sockets: {
     connect: function () {
       console.log('socket connected')
     },
     timer: function (data) {
+
+      if(this.firstValue === 0)this.firstValue = data
+
       this.timerText = "Reserved for " + data + "sec"
+      this.timerValue = 100/this.firstValue*data
+      // this.timerValue = 50
     },
     expired: function (data) {
       console.log('Expired')
-      this.bookingStatus = "Reserve for 1 min";
+      this.resetTimer()
       this.reserved = false;
     }
   },
@@ -140,6 +151,11 @@ export default {
     }
   },
   methods: {
+    resetTimer(){
+      this.firstValue = 0;
+      this.timerValue = 100;
+      this.timerText = "";
+    },
     closeStationCard() {
       this.$emit('close');
     },
@@ -167,6 +183,7 @@ export default {
       StationService.releaseTower(this.station.id, this.tower.id).then( res => {
         console.log(res)
       this.$socket.emit('cancelTimer', {station: this.station.id, tower: this.tower.id})
+      this.resetTimer()
       this.snackbarColor = "green"
       this.snackbarText = "Station successfully unbooked"
       this.showSnackbar = true
@@ -184,7 +201,12 @@ export default {
   },
     startCharge(){
       ChargeService.startCharge(this.currentUser['id'], this.station.id, this.tower.id)
-        .then(res=>console.log(res))
+        .then(res=>{
+          console.log(res)
+          this.snackbarColor = "green"
+          this.snackbarText = "Charge Started"
+          this.showSnackbar = true
+        })
         .catch(err=>console.log(err))
     }
 }

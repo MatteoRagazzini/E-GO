@@ -4,6 +4,7 @@
       :loading="loading"
       class="mx-auto my-12"
       max-width="374"
+      min-width="300"
     >
       <v-progress-linear
         :active="loading"
@@ -27,39 +28,57 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-      <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
+        <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
 
-      <v-card-text>
+        <v-card-text>
+          <div v-if="!reserved">Availability: {{ this.stationAvailability }}</div>
+          <div class="text-center" v-if="reserved">
+            <div>Click to unlock Tower {{ this.tower.id }}</div>
+            <br>
+            <v-progress-circular
+              :rotate="360"
+              :size="100"
+              :width="20"
+              :model-value="this.timerValue"
+              color="#C6F68D"
+            >
+            <v-btn
+              color="success"
+              icon="mdi-lightning-bolt"
+              size="x-large"
+            ></v-btn>
+            </v-progress-circular>
+          </div>
+          <br>
 
-        <div>Availability: {{ this.stationAvailability }}</div>
+        </v-card-text>
+        <v-card-actions>
+          <!--      IF RESERVED-->
+          <div v-if="reserved">{{ this.timerText }}</div>
+          <v-spacer></v-spacer>
+          <v-btn color="red" v-if="reserved" @click="releaseStation()">Cancel</v-btn>
+          <!--      IF NOT RESERVED-->
+          <v-btn v-if="!reserved"
+            color="green"
+            variant="text"
+            @click="occupyStation('connect')"
+            :disabled="connected"
+          >
+            {{ status }}
+          </v-btn>
+          <v-spacer v-if="!reserved"></v-spacer>
+          <v-btn v-if="!reserved"
+            :color="colour"
+            variant="text"
+            @click="occupyStation('reserve')"
+            :disabled="connected"
+          >
+            {{ this.bookingStatus }}
+          </v-btn>
+          <v-btn color="primary" @click="closeStationCard" v-if="!reserved">Close</v-btn>
+        </v-card-actions>
+        <!-- IF RESERVED-->
 
-      </v-card-text>
-      <v-card-text v-if="reserved">
-
-        <div>{{ this.timerText }}</div>
-
-      </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          color="green"
-          variant="text"
-          @click="occupyStation('connect')"
-          :disabled="connected"
-        >
-          {{ status }}
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn
-          :color="colour"
-          variant="text"
-          @click="occupyStation('reserve')"
-          :disabled="connected"
-        >
-          {{ this.bookingStatus }}
-        </v-btn>
-        <v-btn color="primary" @click="closeStationCard">Close</v-btn>
-      </v-card-actions>
     </v-card>
     <v-snackbar
       v-model="showSnackbar"
@@ -81,18 +100,19 @@ export default {
   data: () => ({
     loading: false,
     heartColor: "white",
-    reserved: false,
+   reserved: false,
     connected: false,
     status: "connect",
     bookingStatus: "Reserve for 1 min",
     timerText: "",
+    timerValue: 0,
     alertText: "",
     alertType: "success",
     showAlert: false,
     showSnackbar: false,
     snackbarText: "",
     snackbarColor: "",
-    tower: {}
+    tower: {},
   }),
   sockets: {
     connect: function () {
@@ -100,6 +120,7 @@ export default {
     },
     timer: function (data) {
       this.timerText = "Reserved for " + data + "sec"
+      this.timerValue = data
     },
     expired: function (data) {
       console.log('Expired')

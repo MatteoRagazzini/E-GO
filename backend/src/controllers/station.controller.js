@@ -1,10 +1,6 @@
 const db = require("../models");
 const Station = db.station;
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
-const {Socket} = require("socket.io");
-
 exports.registerStation = (req, res) => {
     const station = new Station({
         latitude: req.body.latitude,

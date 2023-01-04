@@ -33,6 +33,12 @@ module.exports = function(app) {
         controller.releaseTower
     );
 
+    app.post(
+        "/api/station/tower/unlock",
+        [authJwt.verifyToken],
+        controller.releaseTower
+    );
+
     // app.post(
     //     "/api/station/tower/connect",
     //     controller.connect

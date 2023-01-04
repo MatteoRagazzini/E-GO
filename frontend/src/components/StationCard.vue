@@ -62,7 +62,15 @@
         </v-btn>
         <v-btn
           v-if="reserved"
-          :color="colour"
+          color="green"
+          variant="text"
+          @click="releaseTower"
+        >
+          Start
+        </v-btn>
+        <v-btn
+          v-if="reserved"
+          color="red"
           variant="text"
           @click="releaseTower"
         >
@@ -86,6 +94,7 @@
 <script>
 import userService from "@/services/user.service";
 import StationService from "@/services/station.service";
+import ChargeService from "@/services/charge.service";
 
 export default {
   data: () => ({
@@ -173,6 +182,11 @@ export default {
     }
     // inform user
   },
+    startCharge(){
+      ChargeService.startCharge(this.currentUser['id'], this.station.id, this.tower.id)
+        .then(res=>console.log(res))
+        .catch(err=>console.log(err))
+    }
 }
 ,
 props: {

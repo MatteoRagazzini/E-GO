@@ -35,6 +35,5 @@ class StationService {
       });
   }
 
-
 }
 export default new StationService();

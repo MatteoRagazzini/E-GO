@@ -45,25 +45,23 @@ const io = new Server(httpServer, {
 io.on('connection', function(socket) {
     let timer = null;
     let timeout = null;
+    let time = null;
     console.log('A user connected');
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
         console.log('A user disconnected');
     });
 
-    socket.on("station", (data) => {
-        console.log(data)
-        io.emit("ChangeMarker", "inc");
-    });
-
 
     socket.on("reserveStation", (data) => {
         console.log(data)
         io.emit("ChangeMarker", "inc");
-        let minutes = 10;
+        // in case of reserving I send back a longer timer
+        if(data.reason === "reserve") time = 21;
+        else time = 11;
         timer = setInterval(() => {
-            minutes--;
-            socket.emit("timer", minutes)
+            time--;
+            socket.emit("timer", time)
         }, 1000)
         timeout = setTimeout(() => {
             clearInterval(timer)
@@ -72,10 +70,10 @@ io.on('connection', function(socket) {
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
             })
-        }, 10000)
+        }, time*1000)
     });
 
-    socket.on("unbook", (data) => {
+    socket.on("cancel", (data) => {
         clearInterval(timer)
         clearTimeout(timeout)
         controller.TowerRelease(data.station, data.tower).then(res => {

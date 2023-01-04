@@ -44,7 +44,7 @@
         <v-btn
           color="green"
           variant="text"
-          @click="connect"
+          @click="occupyStation('connect')"
           :disabled="connected"
         >
           {{ status }}
@@ -53,7 +53,7 @@
         <v-btn
           :color="colour"
           variant="text"
-          @click="reserve"
+          @click="occupyStation('reserve')"
           :disabled="connected"
         >
           {{ this.bookingStatus }}
@@ -124,60 +124,33 @@ export default {
     closeStationCard() {
       this.$emit('close');
     },
-    reserve() {
-      if (this.bookingStatus === 'unbook') {
-        this.$socket.emit('unbook', {station: this.station.id, tower: this.tower.id})
-        this.snackbarColor = "green"
-        this.snackbarText = "Station successfully unbooked"
-        this.showSnackbar = true
-      } else {
-        this.loading = true
-        StationService.bookStation(this.currentUser['id'], this.station.id).then(
-          (tower) => {
-            // this is working we will need to change the button to unconnect and disable the book
-            this.tower = tower
-            this.bookingStatus = "unbook"
-            this.loading = false
-            this.reserved = true
-            console.log("[STATION]: booked" + tower)
-            this.$socket.emit('reserveStation', {station: this.station.id, tower: tower.id})
-            this.snackbarColor = "green"
-            this.snackbarText = "Station successfully booked"
+    occupyStation(option) {
+          this.loading = true
+          StationService.bookStation(this.currentUser['id'], this.station.id).then(
+            (tower) => {
+              this.tower = tower
+              this.loading = false
+              this.reserved = true
+              console.log("[STATION]: reserved " + tower)
+              this.$socket.emit('reserveStation', {station: this.station.id, tower: tower.id, reason: option})
+              this.snackbarColor = "green"
+              this.snackbarText = "Station successfully reserved"
+              this.showSnackbar = true
+            }).catch(err => {
+            console.log(err)
+            this.snackbarColor = "red"
+            this.snackbarText = "Station is full"
             this.showSnackbar = true
-          }).catch(err => {
-          console.log(err)
-          this.snackbarColor = "red"
-          this.snackbarText = "Station full"
-          this.showSnackbar = true
-          this.loading = false
-        })
-      }
+            this.loading = false
+          })
     },
-    connect() {
-      this.loading = true
-      StationService.occupyStation(this.currentUser['id'], this.station.id).then(
-        (tower) => {
-          this.tower = tower
-          // this is working we will need to change the button to unconnect and disable the book
-          this.loading = false
-          console.log("[STATION]: connected to ", tower)
-          this.$socket.emit('station', {station: this.station.id, tower: tower.id})
-          this.alertType = "success"
-          this.alertText = "Vehicle successfully connected"
-          // try not to change the name of the properties, this should be colled disable not connected
-          // this.connected = true
-          // should we keep an internal status of the application?
-          // Because in this case after we connect, we would like to see realtime that the status
-          // of the application changes
-          this.status = "Disconnect"
-          this.showAlert = true
-        }
-      )
+    releaseStation(){
+      this.$socket.emit('cancel', {station: this.station.id, tower: this.tower.id})
+      this.snackbarColor = "green"
+      this.snackbarText = "Station successfully unbooked"
+      this.showSnackbar = true
     },
-    // create charge
-    // send charge to backend
-    // send user notification
-    // set also info in stationCard
+
   changeFavorite() {
     if (!this.station.favorite) {
       this.station.favorite = true
@@ -186,35 +159,21 @@ export default {
       this.station.favorite = false
       userService.removeFavouriteStation(this.currentUser['id'], this.station.id)
     }
-    // update favorite
-    // send favorite to backend
     // inform user
   },
 }
 ,
 props: {
   showStationCard: Boolean,
-    station
-:
-  {
-    id: String,
-      //ratings: Number,
-      title
-  :
-    String,
-      //reviews: Number,
-      address
-  :
-    String,
-      usedTowers
-  :
-    Number,
-      totalTowers
-  :
-    Number,
-      favorite
-  :
-    Boolean,
+  station: {
+  id: String,
+    //ratings: Number,
+    title: String,
+    //reviews: Number,
+    address: String,
+    usedTowers: Number,
+    totalTowers: Number,
+    favorite: Boolean,
   }
 }
 }

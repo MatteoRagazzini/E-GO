@@ -57,7 +57,7 @@ export default {
       autocompleteRules: [
         v => !!v || 'Vehicle type is required',
       ],
-      icon: null
+      img: null
     }
   },
 
@@ -70,19 +70,19 @@ export default {
     save() {
       switch(this.vehicleTypeValue) {
         case 'e-bike':
-          this.icon = "mdi-bicycle"
+          this.img = "mdi-bicycle"
           break;
         case 'e-scooter':
-          this.icon = "mdi-scooter"
+          this.img = "mdi-scooter"
           break;
         default:
-          this.icon = "mdi-alpha-e-circle"
+          this.img = "mdi-alpha-e-circle"
       }
 
       let newVehicle = {
         name: this.vehicleName,
         vehicleType: this.vehicleTypeValue,
-        icon: this.icon,
+        img: this.img,
         batteryLevel: null,
         isCharging: false,
         isCurrent: false,

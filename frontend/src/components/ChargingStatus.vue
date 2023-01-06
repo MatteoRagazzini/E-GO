@@ -118,7 +118,6 @@ export default {
   mounted() {
     this.loadChargeHistory()
   },
-
   methods: {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
@@ -133,6 +132,7 @@ export default {
         this.$store.dispatch("userState/endedCharge")
         this.$socket.emit('endCharge')
         this.loadChargeHistory()
+        this.tab = "ChargingHistory"
       }).catch(err=>{
         console.log(err)
       })

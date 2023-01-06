@@ -103,7 +103,8 @@ TowerRelease = (station_id, tower_id) => {
                 if (station == null) {
                     reject('station not found')
                 } else {
-                    const towerToFree = station.towers.find(s => s.id.toString() === tower_id)
+                    console.log(station.towers.map(t=>t.id),tower_id)
+                    const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
                     if (towerToFree === undefined) reject('tower not found')
                     else if (towerToFree.isAvailable) reject('tower not occupied')
                     else {

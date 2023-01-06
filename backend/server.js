@@ -101,6 +101,7 @@ io.on('connection', function(socket) {
         clearInterval(timer)
         clearTimeout(timeout)
         io.emit("ChangeMarker", "dec");
+        socket.emit("endCharge")
     })
 })
 

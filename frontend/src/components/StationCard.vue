@@ -145,6 +145,11 @@ export default {
       console.log('Expired')
       this.resetTimer()
       this.status = "free";
+    },
+    endCharge: function (){
+      console.log('Expired')
+      this.resetTimer()
+      this.status = "free";
     }
   },
   computed: {

@@ -43,4 +43,7 @@ module.exports = function (app) {
     app.get("/api/user/favouriteStations/:id", [authJwt.verifyToken], controller.getFavouriteStations);
 
     app.post("/api/user/connect", [authJwt.verifyToken], controller.connect);
+
+    app.post("/api/user/isCharging", [authJwt.verifyToken], controller.isCharging);
+
 }

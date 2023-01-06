@@ -7,6 +7,8 @@ const User = mongoose.model(
         email: String,
         password: String,
         profilePicture: String,
+        isChargingAVehicle: Boolean,
+        hasReserved : Boolean,
         favouriteStations : [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -32,7 +34,13 @@ const User = mongoose.model(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Charge"
             }
-        ]
+        ],
+        reservations: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Reservation"
+            }
+        ],
     })
 );
 

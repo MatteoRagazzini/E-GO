@@ -216,3 +216,21 @@ exports.connect = (req, res) => {
 
 
 
+// TO TEST
+exports.isCharging = (req, res) => {
+    findUser(req.body.user_id)
+        .then(user => {
+            // this value is not existing
+            // user.isChargingAVehicle = "test";
+            user.save().then(
+                res.send("operation performed")
+            ).catch(error => {
+                    res.send(error)
+                }
+            )
+        }).catch(err => console.log(err))
+}
+
+
+
+

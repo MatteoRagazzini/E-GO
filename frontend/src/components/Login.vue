@@ -73,7 +73,7 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
-    },
+    }
   },
   created() {
     if (this.loggedIn) {
@@ -85,7 +85,6 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/login", {"username":this.username, "password":this.password}).then(
         () => {
-          console.log("here even if the login is not working")
           this.$router.push("/map");
         },
         (error) => {

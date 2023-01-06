@@ -34,7 +34,7 @@
           <div>Availability: {{ this.stationAvailability }}</div>
           <div v-if="status==='connected'">In charging</div>
           <div class="text-center" v-if="this.status==='reserved'">
-            <div>Click to unlock Tower {{ this.tower._id }}</div>
+            <div>Click to unlock Tower {{ this.tower.id }}</div>
             <br>
             <v-progress-circular
               :rotate="360"
@@ -55,32 +55,34 @@
 
         </v-card-text>
         <v-card-actions>
-          <!--      IF RESERVED-->
-          <div v-if="status==='reserved'">{{ this.timerText }}</div>
-          <v-spacer v-if="status==='reserved'"></v-spacer>
-          <v-btn
-            color="red"
-            v-if="status==='reserved'"
-            @click="releaseTower"
-          >
-            Cancel
-          </v-btn>
-          <!--      IF NOT RESERVED-->
-          <v-btn v-if="status==='free'"
-            color="green"
-            variant="text"
-            @click="occupyTower('connect')"
-          >
-            Connect
-          </v-btn>
-          <v-btn v-if="status==='free'"
-            color="green"
-            variant="text"
-            @click="occupyTower('reserve')"
-          >Reserve
-          </v-btn>
-          <v-spacer v-if="status==='free'"></v-spacer>
-          <v-btn color="primary" v-if="status==='connected'">Disconnect</v-btn>
+          <div v-if="!isCharging">
+            <!--      IF RESERVED-->
+            <div v-if="status==='reserved'">{{ this.timerText }}</div>
+            <v-spacer v-if="status==='reserved'"></v-spacer>
+            <v-btn
+              color="red"
+              v-if="status==='reserved'"
+              @click="releaseTower"
+            >
+              Cancel
+            </v-btn>
+            <!--      IF NOT RESERVED-->
+            <v-btn v-if="status==='free'"
+                   color="green"
+                   variant="text"
+                   @click="occupyTower('connect')"
+            >
+              Connect
+            </v-btn>
+            <v-btn v-if="status==='free'"
+                   color="green"
+                   variant="text"
+                   @click="occupyTower('reserve')"
+            >Reserve
+            </v-btn>
+            <v-spacer v-if="status==='free'"></v-spacer>
+            <v-btn color="primary" v-if="status==='connected'">Disconnect</v-btn>
+          </div>
           <v-btn color="primary" @click="closeStationCard">Close</v-btn>
         </v-card-actions>
     </v-card>
@@ -149,6 +151,9 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    isCharging(){
+      return this.currentUser.isChargingAVehicle
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers

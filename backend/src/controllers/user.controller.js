@@ -214,21 +214,22 @@ exports.connect = (req, res) => {
     });
 }
 
-
-
-// TO TEST
-exports.isCharging = (req, res) => {
-    findUser(req.body.user_id)
-        .then(user => {
-            // this value is not existing
-            // user.isChargingAVehicle = "test";
-            user.save().then(
-                res.send("operation performed")
-            ).catch(error => {
-                    res.send(error)
-                }
-            )
-        }).catch(err => console.log(err))
+// we need to pass true or false based on if it's charging or not.
+exports.setIsCharging = (user_id, isCharging) => {
+    return new Promise((resolve, reject) => {
+        findUser(user_id)
+            .then(user => {
+                user.isChargingAVehicle = isCharging;
+                user.save().then(
+                    resolve(user)
+                ).catch(error => {
+                        reject(error)
+                    }
+                )
+            }).catch(err => {
+            console.log(err)
+        })
+    })
 }
 
 

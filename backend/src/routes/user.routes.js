@@ -44,6 +44,6 @@ module.exports = function (app) {
 
     app.post("/api/user/connect", [authJwt.verifyToken], controller.connect);
 
-    app.post("/api/user/isCharging", [authJwt.verifyToken], controller.isCharging);
+    // app.post("/api/user/isCharging", [authJwt.verifyToken], controller.isCharging);
 
 }

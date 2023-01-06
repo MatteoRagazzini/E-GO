@@ -1,5 +1,6 @@
 const db = require("../models");
 const Station = db.station;
+const UserController  = require("./user.controller")
 
 exports.registerStation = (req, res) => {
     const station = new Station({
@@ -48,18 +49,23 @@ exports.occupyTower = (req, res) => {
                     })
                 } else {
                     firstFreeTower.isAvailable = false;
-                    // Here I want to insert the current vehicle id of the user, an idea is that I keep it in the store
                     firstFreeTower.charging_vehicle_id = req.body.user_id
                     station.usedTowers = station.towers.filter(s => !s.isAvailable).length
-                    station.save().then(
-                        res.status(200).send(firstFreeTower)
-                    ).catch(er => {
-                            res.status(500).send(er)
-                        }
-                    )
+                    // if I will be able to retrieve the currentVehicle direclty I can refactor this
+                    UserController.setIsCharging(req.body.user_id, true).then(user=>{
+                        console.log(user)
+                        const currVehicle = user.vehicles.find(v=>v.isCurrent)
+                        firstFreeTower.charging_vehicle_id = currVehicle.id
+                        station.save().then(
+                            res.status(200).send(firstFreeTower)
+                        ).catch(er => {
+                                res.status(500).send(er)
+                            }
+                        )
+                    }).catch(err=>res.status(500).send(err))
+                    }
                 }
             }
-        }
     })
 }
 

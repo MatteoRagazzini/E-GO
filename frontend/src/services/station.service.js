@@ -17,7 +17,7 @@ class StationService {
       .then(response => {
         return response.data;
       }).catch(function (error){
-        throw new Error(error.response.data.message)
+        throw new Error(error.response.data)
       });
   }
 

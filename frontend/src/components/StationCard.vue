@@ -153,10 +153,13 @@ export default {
       return this.user
     },
     isCharging(){
-      return this.currentUser.isChargingAVehicle
+      return this.$store.state.userState.status.isCharging;
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
+    },
+    loggedIn() {
+
     }
   },
   methods: {
@@ -218,6 +221,11 @@ export default {
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
           this.status = "connected";
+          //this commit is not working
+          // this.$store.state.commit("startedCharging");
+          // second try
+          this.$store.dispatch("userState/startcharge")
+          // console.log(this.isCharging)
           this.switchTab("Charging")
           this.closeStationCard();
         })
@@ -231,16 +239,6 @@ export default {
 props: {
   showStationCard: Boolean,
   station: Object
-  // station: {
-  // id: String,
-  //   //ratings: Number,
-  //   title: String,
-  //   //reviews: Number,
-  //   address: String,
-  //   usedTowers: Number,
-  //   totalTowers: Number,
-  //   favorite: Boolean,
-  // }
 },
   emits: ['switchTab','close']
 }

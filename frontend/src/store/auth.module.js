@@ -37,7 +37,7 @@ export const auth = {
           return Promise.reject(error);
         }
       );
-    }
+    },
   },
   mutations: {
     loginSuccess(state, user) {
@@ -57,6 +57,6 @@ export const auth = {
     },
     registerFailure(state) {
       state.status.loggedIn = false;
-    }
+    },
   }
 };

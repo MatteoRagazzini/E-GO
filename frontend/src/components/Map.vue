@@ -135,7 +135,7 @@ export default {
               this.station.usedTowers = m.station.usedTowers
               this.station.address = "not a second address"
 
-              UserService.getFavouriteStations(this.currentUser.id).then((response) => {
+              UserService.getFavouriteStations(this.currentUser._id).then((response) => {
                 let favStations = response.data
                 this.station.favorite = favStations.indexOf(m.station._id) > -1
               })

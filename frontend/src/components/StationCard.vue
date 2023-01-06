@@ -165,7 +165,8 @@ export default {
     },
     occupyTower(option) {
           this.loading = true
-          StationService.occupyTower(this.currentUser['id'], this.station.id).then(
+      console.log(this.currentUser._id)
+          StationService.occupyTower(this.currentUser._id, this.station.id).then(
             (tower) => {
               this.tower = tower
               this.loading = false
@@ -196,15 +197,15 @@ export default {
   changeFavorite() {
     if (!this.station.favorite) {
       this.station.favorite = true
-      userService.addFavouriteStation(this.currentUser['id'], this.station.id)
+      userService.addFavouriteStation(this.currentUser._id, this.station.id)
     } else {
       this.station.favorite = false
-      userService.removeFavouriteStation(this.currentUser['id'], this.station.id)
+      userService.removeFavouriteStation(this.currentUser._id, this.station.id)
     }
     // inform user
   },
     startCharge(){
-      ChargeService.startCharge(this.currentUser['id'], this.station.id, this.tower.id)
+      ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id)
         .then(res=>{
           console.log(res)
           this.$socket.emit('startCharge')

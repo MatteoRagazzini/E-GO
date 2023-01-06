@@ -1,31 +1,49 @@
 const db = require("../models");
 const Charge = db.charge;
 const stationController = require("../controllers/station.controller");
+const User = db.user;
+
+function findUser(user_id) {
+    return new Promise((resolve, reject) => {
+        User.findById(user_id, function (err, user) {
+            if (err)
+                reject(err);
+            else {
+                if (user == null) reject("User not found")
+                else resolve(user)
+            }
+        })
+    })
+}
+
 
 exports.startCharge = (req, res) => {
-    const charge = new Charge({
-        user_id: req.body.user_id,
-        station_id: req.body.station_id,
-        tower_id: req.body.tower_id,
-        vehicle_id: req.body.vehicle_id,
-        isCompleted: false,
-        startDateTime: new Date(),
-        stopDateTime: null,
-        duration: null,
-        totalBatteryCharged: null,
-        cost: null
-    });
+    findUser(req.body.user._id).then(user=>{
+        const currVehicle = user.vehicles.find(v=>v.isCurrent);
+        const charge = new Charge({
+            user_id: req.body.user._id,
+            station_id: req.body.station.id,
+            station_name: req.body.station.title,
+            tower_id: req.body.tower_id,
+            vehicle_id: currVehicle.id,
+            vehicle_name: currVehicle.name,
+            isCompleted: false,
+            startDateTime: new Date(),
+            stopDateTime: null,
+            duration: null,
+            totalBatteryCharged: null,
+            cost: null
+        });
 
-    console.log(charge)
-
-    charge.save(err => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
-        }
-        // stationController.occupyTower(res,req)
-        res.status(200).send({message: "Charge was registered successfully!"});
-    });
+        charge.save(err => {
+            if (err) {
+                res.status(500).send({message: err});
+                return;
+            }
+        console.log(charge)
+            res.status(200).send({message: "Charge was registered successfully!"});
+        });
+    })
 };
 
 

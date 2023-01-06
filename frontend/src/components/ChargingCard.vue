@@ -5,7 +5,7 @@
     variant="tonal"
   >
     <v-card-title>
-      Charged: {{this.vehicleName}}
+      Charged: {{this.charge.vehicle_name}}
       <v-chip
         class="ma-2"
         :color="this.labelColor"
@@ -21,7 +21,7 @@
       </div>
       <span class="font-weight-bold">Duration:</span> {{this.charge.duration}}
       <br>
-      <span class="font-weight-bold">Station:</span> {{this.stationName}}
+      <span class="font-weight-bold">Station:</span> {{this.charge.station_name}}
       <br>
       <span class="font-weight-bold">Tower:</span> Tower {{this.charge.tower_id}}
       <br>
@@ -57,29 +57,29 @@ export default {
   },
   mounted(){
 
-    StationService.getStation(this.charge.station_id).then(
-      (response) => {
-        this.stationName = response.data.address
-      })
-      .catch(error => {
-        console.log(error)
-        if (error.response.status === 401) {
-          console.log("trying to push")
-          this.$router.push('/login')
-        }
-      })
-
-    UserService.getVehicle(this.currentUser._id, this.charge.vehicle_id).then(
-      (response) => {
-        this.vehicleName = response.data.name
-      })
-      .catch(error => {
-        console.log(error)
-        if (error.response.status === 401) {
-          console.log("trying to push")
-          this.$router.push('/login')
-        }
-      })
+    // StationService.getStation(this.charge.station_id).then(
+    //   (response) => {
+    //     this.stationName = response.data.address
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     if (error.response.status === 401) {
+    //       console.log("trying to push")
+    //       this.$router.push('/login')
+    //     }
+    //   })
+    //
+    // UserService.getVehicle(this.currentUser._id, this.charge.vehicle_id).then(
+    //   (response) => {
+    //     this.vehicleName = response.data.name
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     if (error.response.status === 401) {
+    //       console.log("trying to push")
+    //       this.$router.push('/login')
+    //     }
+    //   })
 
     if(this.charge.isCompleted === false){
       this.isCompletedLabel = "Not completed"

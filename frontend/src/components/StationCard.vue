@@ -205,8 +205,7 @@ export default {
     // inform user
   },
     startCharge(){
-      const current_vehicle = this.currentUser.vehicles.find(v => v.isCurrent)
-      ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id, current_vehicle._id)
+      ChargeService.startCharge(this.currentUser, this.station, this.tower.id)
         .then(res=>{
           console.log(res)
           this.$socket.emit('startCharge')

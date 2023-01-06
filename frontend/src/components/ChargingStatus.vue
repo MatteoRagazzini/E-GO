@@ -112,7 +112,8 @@ export default {
 
   methods: {
     loadChargeHistory() {
-      ChargeService.getChargeHistory(this.currentUser.user_id).then(response=>{
+      ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
+        console.log("here")
         this.charges = response
       }).catch(err=>console.log(err))
       // ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id).then(res => {

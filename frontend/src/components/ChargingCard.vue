@@ -82,7 +82,7 @@ export default {
       })
 
     if(this.charge.isCompleted === false){
-      this.isCompleted = "Not completed"
+      this.isCompletedLabel = "Not completed"
       this.labelColor = "red"
     }
   },

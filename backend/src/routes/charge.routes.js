@@ -11,7 +11,7 @@ module.exports = function(app) {
     });
 
     app.get(
-        "/api/charge/history",
+        "/api/charge/history/:id",
         [authJwt.verifyToken],
         controller.getHistory
     );

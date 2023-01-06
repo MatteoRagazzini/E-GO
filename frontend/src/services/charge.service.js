@@ -37,11 +37,12 @@ class ChargeService {
 
 
   getChargeHistory(user_id,){
-    return axios.get(API_URL + 'history',
+    return axios.get(API_URL + 'history/'+ user_id,
       { headers: authHeader()})
       .then(response => {
         return response.data;
       }).catch(function (error){
+        console.log(error)
         throw new Error(error.response.data)
       });
   }

@@ -39,9 +39,8 @@ exports.endCharge = (req, res) => {
 
 
 exports.getHistory = (req, res) => {
-    // here of course the charges need to be of a single user
-    // so find user, retrieve histories
-    Charge.find({}, function (err, station) {
+// getting the charge only of the specific user
+    Charge.find({user_id:req.params.id}, function (err, station) {
         if (err)
             res.send(err);
         res.json(station);

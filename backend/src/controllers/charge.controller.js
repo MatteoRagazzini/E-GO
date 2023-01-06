@@ -7,6 +7,7 @@ exports.startCharge = (req, res) => {
         user_id: req.body.user_id,
         station_id: req.body.station_id,
         tower_id: req.body.tower_id,
+        vehicle_id: req.body.vehicle_id,
         isCompleted: false,
         startDateTime: new Date(),
         stopDateTime: null,

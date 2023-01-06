@@ -16,6 +16,12 @@ module.exports = function(app) {
         controller.retrieveStations
     );
 
+    app.get(
+        "/api/station/retrieve/:id",
+        [authJwt.verifyToken],
+        controller.retrieveStation
+    );
+
     app.post(
         "/api/station/register",
         controller.registerStation

@@ -32,6 +32,8 @@ module.exports = function (app) {
 
     app.get("/api/user/vehicles/:id", [authJwt.verifyToken], controller.getVehicles);
 
+    app.get("/api/user/:idUser/vehicles/:idVehicle", [authJwt.verifyToken], controller.getVehicle);
+
     app.post("/api/user/updateVehicle", [authJwt.verifyToken], controller.updateVehicle);
 
     app.post("/api/user/setVehicleInUse", [authJwt.verifyToken], controller.setVehicleInUse);

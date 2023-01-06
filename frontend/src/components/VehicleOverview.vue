@@ -1,67 +1,49 @@
 <template>
-  <v-tabs
-    fixed-tabs
-    bg-color="transparent"
-    grow
-    v-model="tab"
+  <v-progress-circular
+    indeterminate
     color="green"
-  >
-    <v-tab value="vehicles">
-      Vehicles
-    </v-tab>
-    <v-tab value="history">
-      Charging history
-    </v-tab>
-  </v-tabs>
-  <v-window v-model="tab">
-    <v-window-item value="vehicles"
+    v-if="loading"
+  ></v-progress-circular>
+  <v-card
+    id="scrollable"
+    height="690"
+    color="white">
+    <v-card-title
+      color="black">
+      Your vehicles
+    </v-card-title>
+    <v-list
     >
-      <v-progress-circular
-        indeterminate
-        color="green"
-        v-if="loading"
-      ></v-progress-circular>
-      <v-card id="scrollable" height="600" variant="tonal" color="white">
-        <v-list
-        >
-          <v-list-subheader>Your vehicles</v-list-subheader>
-          <v-list-item
-              v-for="vehicle in this.vehicles"
-              :key="vehicle._id"
-              :items="vehicles"
-          >
-            <VehicleCard
-              :vehicle="vehicle"
-              @useVehicle="useVehicle"
-              @removeVehicle="removeVehicle"></VehicleCard>
-            </v-list-item>
-        </v-list>
-      </v-card>
-        <div class="d-flex justify-space-around">
-          <v-btn
-            color="green"
-            @click="showDialog"
-          >
-            Add
-
-            <v-dialog
-              v-model="dialog">
-              <AddVehicleDialog
-              @save="closeDialog"
-              ></AddVehicleDialog>
-            </v-dialog>
-          </v-btn>
-        </div>
-    </v-window-item>
-    <v-window-item value="history"
-    >
-      <v-card
-        flat
+      <v-list-item
+          v-for="vehicle in this.vehicles"
+          :key="vehicle._id"
+          :items="vehicles"
       >
-        <v-card-text>history</v-card-text>
-      </v-card>
-    </v-window-item>
-  </v-window>
+        <VehicleCard
+          :vehicle="vehicle"
+          @useVehicle="useVehicle"
+          @removeVehicle="removeVehicle"></VehicleCard>
+        </v-list-item>
+    </v-list>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+        <v-btn
+          color="green"
+          @click="showDialog"
+          variant="tonal"
+        >
+          Add
+
+          <v-dialog
+            v-model="dialog">
+            <AddVehicleDialog
+              @save="closeDialog"
+            ></AddVehicleDialog>
+          </v-dialog>
+        </v-btn>
+      <v-spacer></v-spacer>
+    </v-card-actions>
+  </v-card>
     <v-snackbar
       v-model="showSnackbar"
       :timeout="3000"
@@ -83,7 +65,6 @@ export default {
 
   data() {
     return {
-      tab: "VehicleOptions",
       vehicles: null,
       currentVehicle: null,
       dialog: false,
@@ -108,11 +89,9 @@ export default {
       UserService.getVehicles(this.currentUser.id).then(
         (response) => {
           this.vehicles = response.data
-          console.log(this.vehicles)
           this.vehicles.forEach(vehicle =>{
             if (vehicle.isCurrent) {
               this.currentVehicle = vehicle._id
-              console.log(vehicle.name)
             }
           })
           this.loading=false
@@ -162,11 +141,8 @@ export default {
     useVehicle(vehicle) {
       if (this.currentVehicle !== vehicle._id){
 
-        console.log(vehicle._id)
         const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj._id === vehicle._id)
         const vehicleToUse = this.vehicles.find((obj) => obj._id === vehicle._id)
-        console.log(vehicleToUseIndex)
-        console.log(vehicleToUse)
 
         if (this.currentVehicle != null) {
           const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj._id === this.currentVehicle)

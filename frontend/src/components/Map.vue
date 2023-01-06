@@ -106,7 +106,7 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
-      StationService.getStation().then(
+      StationService.getStations().then(
         (response) => {
           var stations = response.data
           stations.forEach(station => {

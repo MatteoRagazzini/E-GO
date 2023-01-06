@@ -110,11 +110,7 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
-      // is user charging
-      // has user reserved
-      // if one of these != null
-      // you print the station with station_id === that in a different colour
-      StationService.getStation().then(
+      StationService.getStations().then(
         (response) => {
           var stations = response.data
           stations.forEach(station => {

@@ -22,9 +22,12 @@ class UserService {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
 
-
   getVehicles(user_id){
     return axios.get('http://localhost:3000/api/user/vehicles/'+ user_id, { headers: authHeader() });
+  }
+
+  getVehicle(user_id, vehicle_id){
+    return axios.get('http://localhost:3000/api/user/' + user_id + '/vehicles/' + vehicle_id, { headers: authHeader() });
   }
 
   addVehicle(user_id, vehicle){

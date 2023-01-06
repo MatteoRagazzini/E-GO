@@ -35,5 +35,16 @@ class ChargeService {
       });
   }
 
+
+  getChargeHistory(user_id,){
+    return axios.get(API_URL + 'history',
+      { headers: authHeader()})
+      .then(response => {
+        return response.data;
+      }).catch(function (error){
+        throw new Error(error.response.data)
+      });
+  }
+
 }
 export default new ChargeService();

@@ -135,6 +135,15 @@ exports.getVehicles = (req, res) => {
         .catch(err => res.status(500).send(err))
 }
 
+exports.getVehicle = (req, res) => {
+    findUser(req.params.idUser)
+        .then(function(user) {
+            const vehicle = user.vehicles.find(v => req.params.idVehicle)
+            res.status(200).json(vehicle)
+        })
+        .catch(err => res.status(500).send(err))
+}
+
 // STATIONS //
 
 exports.addFavouriteStation = (req, res) => {

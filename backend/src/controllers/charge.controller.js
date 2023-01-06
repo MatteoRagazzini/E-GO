@@ -38,12 +38,14 @@ exports.endCharge = (req, res) => {
 
 
 
-exports.retrieveCharges = (req, res) => {
-    // Station.find({}, function (err, station) {
-    //     if (err)
-    //         res.send(err);
-    //     res.json(station);
-    // });
+exports.getHistory = (req, res) => {
+    // here of course the charges need to be of a single user
+    // so find user, retrieve histories
+    Charge.find({}, function (err, station) {
+        if (err)
+            res.send(err);
+        res.json(station);
+    });
 };
 
 //

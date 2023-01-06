@@ -31,6 +31,22 @@ exports.retrieveStations = (req, res) => {
     });
 };
 
+exports.retrieveStation = (req, res) => {
+    Station.findById(req.params.id, function (err, station) {
+        if (err)
+            res.send(err);
+        else {
+            if (station == null) {
+                res.status(404).send({
+                    description: 'Station not found'
+                });
+            } else {
+                res.json(station)
+            }
+        }
+    });
+};
+
 
 exports.occupyTower = (req, res) => {
     Station.findById(req.body.station_id, function (err, station) {

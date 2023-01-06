@@ -10,6 +10,12 @@ module.exports = function(app) {
         next();
     });
 
+    app.get(
+        "/api/charge/history",
+        [authJwt.verifyToken],
+        controller.getHistory
+    );
+
     app.post(
         "/api/charge/start",
         [authJwt.verifyToken],

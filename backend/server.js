@@ -82,6 +82,11 @@ io.on('connection', function(socket) {
         socket.emit("expired")
         io.emit("ChangeMarker", "dec");
     })
+
+    socket.on("startCharge",()=>{
+        clearInterval(timer)
+        clearTimeout(timeout)
+    })
 })
 
 //Whenever someone connects this gets executed

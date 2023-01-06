@@ -4,6 +4,7 @@
   <StationCard
     v-model="this.showStationCard"
     @close="this.showStationCard = false"
+    @switchTab="switchTab"
     :station="this.station"/>
 </template>
 
@@ -100,12 +101,19 @@ export default {
     }
   },
   methods: {
+    switchTab(tab){
+      this.$emit("switchTab", tab)
+    },
     clearMarkers() {
       console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
       StationsMarkers.forEach(m => m.marker.setMap(null))
       StationsMarkers = []
     },
     buildMarkers() {
+      // is user charging
+      // has user reserved
+      // if one of these != null
+      // you print the station with station_id === that in a different colour
       StationService.getStation().then(
         (response) => {
           var stations = response.data
@@ -142,8 +150,9 @@ export default {
           this.$router.push('/login')
         }
       })
-    },
-  }
+    }
+  },
+  emits: ['switchTab']
 }
 </script>
 

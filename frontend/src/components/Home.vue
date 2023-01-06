@@ -31,10 +31,10 @@
           <v-window-item value="Map"
           >
             <v-card>
-              <googleMap :coords="this.coords"></googleMap>
+              <googleMap :coords="this.coords"  @switchTab="switchTab"></googleMap>
             </v-card>
           </v-window-item>
-          <v-window-item value="vehicles"
+          <v-window-item value="Vehicles"
           >
             <v-card>
               <vehicle-overview></vehicle-overview>
@@ -57,15 +57,15 @@
         color="green"
         icons-and-text
       >
+        <v-tab value="Vehicles">
+          <v-icon>mdi-bicycle</v-icon>
+
+          Vehicles
+        </v-tab>
         <v-tab value="Map">
           <v-icon>mdi-map</v-icon>
 
           Map
-        </v-tab>
-        <v-tab value="vehicles">
-          <v-icon>mdi-bicycle</v-icon>
-
-          Vehicles
         </v-tab>
         <v-tab value="Charging">
           <v-icon>mdi-battery</v-icon>
@@ -116,7 +116,7 @@ export default {
   name: "Home",
   data() {
     return {
-      tab: "VehicleOptions",
+      tab: "Map",
       isHidden: false,
       infoCharged: false,
       coords: {lat:48.15143929407981,lng:11.580534476878478},
@@ -139,9 +139,9 @@ export default {
     if(this.watcher) navigator.geolocation.clearWatch(this.watcher)
   },
   methods: {
-    // goToMap(){
-    //   this.$router.push({name:"map",params:{coords:1}})
-    // },
+    switchTab(tab){
+      this.tab = tab
+    },
     updateLocation(newLocation) {
       console.log("updating location in response of the emit from the AutocompleteComponent")
       this.coords.lat = newLocation.lat;
@@ -167,7 +167,7 @@ export default {
     VehicleOverview,
     autocompleteComponent: AutocompleteComponent,
     googleMap: Map
-  }
+  },
 }
 </script>
 

@@ -1,12 +1,12 @@
 const db = require("../models");
 const Charge = db.charge;
+const stationController = require("../controllers/station.controller");
 
 exports.startCharge = (req, res) => {
     const charge = new Charge({
         user_id: req.body.user_id,
         station_id: req.body.station_id,
         tower_id: req.body.tower_id,
-        vehicle_id: req.body.vehicle_id,
         isCompleted: false,
         startDateTime: new Date(),
         stopDateTime: null,
@@ -22,10 +22,13 @@ exports.startCharge = (req, res) => {
             res.status(500).send({message: err});
             return;
         }
-
+        // stationController.occupyTower(res,req)
         res.status(200).send({message: "Charge was registered successfully!"});
     });
 };
+
+
+
 
 exports.endCharge = (req, res) => {
     // TowerRelease(req.body.station_id, req.body.tower_id)

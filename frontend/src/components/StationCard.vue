@@ -221,11 +221,8 @@ export default {
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
           this.status = "connected";
-          //this commit is not working
-          // this.$store.state.commit("startedCharging");
-          // second try
-          this.$store.dispatch("userState/startcharge")
-          // console.log(this.isCharging)
+          // this updates the value in the store, so that if I go to the map it's changed real time
+          this.$store.dispatch("userState/startedCharging")
           this.switchTab("Charging")
           this.closeStationCard();
         })

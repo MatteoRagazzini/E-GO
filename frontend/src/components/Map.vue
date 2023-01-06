@@ -62,7 +62,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.isCharging)
     this.map = new google.maps.Map(document.getElementById("mapDiv"), {
       center: this.coords,
       zoom: 13,

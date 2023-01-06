@@ -212,9 +212,9 @@ export default {
           this.snackbarColor = "green"
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
+          this.status = "connected";
           this.switchTab("Charging")
           this.closeStationCard();
-          this.status = "connected";
         })
         .catch(err=>console.log(err))
     },

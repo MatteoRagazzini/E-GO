@@ -94,20 +94,18 @@ export default {
       return this.user
     }
   },
-
+  sockets: {
+    battery: function (data) {
+      this.value = data
+    },
+    chargeCompleted:function(){
+      this.snackbarColor = "green"
+      this.snackbarText = "Charge completed"
+      this.showSnackbar = true
+    }
+  },
   mounted() {
-    //tbd
     this.loadChargeHistory()
-    this.interval = setInterval(() => {
-      if (this.value === 100) {
-        clearTimeout(this.interval)
-        this.showSnackbar = true
-        this.snackbarText = "Your device is fully charged!"
-        this.snackbarColor = "green"
-        return (this.value = 100)
-      }
-      this.value += 1
-    }, 600)
   },
 
   methods: {
@@ -116,25 +114,6 @@ export default {
         console.log("here")
         this.charges = response
       }).catch(err=>console.log(err))
-      // ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id).then(res => {
-      //   console.log(res)
-      // })
-      //tbd load charges from backend
-      //   const charge = {
-      //     user_id: this.currentUser.user_id,
-      //     station_id: "639f3e9c29a8a26bac492c5f",
-      //     tower_id: 5,
-      //     vehicle_id: 3,
-      //     isCompleted: true,
-      //     startDateTime: "06.01.2023 11:11:11",
-      //     stopDateTime: "06.01.2023 11:21:21",
-      //     duration: "10 min 10 sec",
-      //     totalBatteryCharged: 100,
-      //     cost: 5
-      //   }
-      //
-      //   this.charges.push(charge)
-      // }
     },
 
 

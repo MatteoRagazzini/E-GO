@@ -47,6 +47,7 @@ io.on('connection', function(socket) {
     let timer = null;
     let timeout = null;
     let time = null;
+    let battery = (Math.round(Math.random() * (95 - 80) + 80));
     console.log('A user connected');
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
@@ -86,6 +87,14 @@ io.on('connection', function(socket) {
     socket.on("startCharge",()=>{
         clearInterval(timer)
         clearTimeout(timeout)
+        timer = setInterval(() => {
+            battery++;
+            socket.emit("battery", battery)
+            if(battery===100){
+                socket.emit("chargeCompleted")
+                clearInterval(timer)
+            }
+        }, 1000)
     })
 })
 

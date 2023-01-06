@@ -37,7 +37,7 @@
           <v-window-item value="Vehicles"
           >
             <v-card>
-              <vehicle-overview></vehicle-overview>
+              <vehicle-overview v-if="currentUser!==undefined"></vehicle-overview>
             </v-card>
           </v-window-item>
           <v-window-item value="Charging"
@@ -121,7 +121,12 @@ export default {
       infoCharged: false,
       coords: {lat:48.15143929407981,lng:11.580534476878478},
       geoCords: {lat:48.15143929407981,lng:11.580534476878478},
-      watcher: null
+      watcher: null,
+    }
+  },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
     }
   },
   mounted() {

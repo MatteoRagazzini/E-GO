@@ -14,9 +14,8 @@
       </v-tab>
     </v-tabs>
     <v-window v-model="tab">
-      <v-window-item value="CurrentCharging"
-      >
-        <br>
+      <v-window-item value="CurrentCharging">
+      <div v-if="isCharging">
         <v-container>
           <v-row align="center" justify="center">
             <v-progress-circular
@@ -30,10 +29,10 @@
               {{ value }}
             </v-progress-circular>
           </v-row>
-          <br>
+
+          <v-btn @click="endCharge">Stop Charging</v-btn>
           <transition name="blink">
-            <v-row
-              align="center" justify="center" class="text-h5">
+            <v-row align="center" justify="center" class="text-h5">
               {{chargingText}}
             </v-row>
           </transition>
@@ -48,6 +47,10 @@
           </v-snackbar>
           <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
         </v-container>
+      </div>
+        <div v-else align="center" justify="center">
+          <h1>YOU ARE NOT CHARGING ANYTHING</h1>
+        </div>
       </v-window-item>
       <v-window-item value="ChargingHistory"
       >
@@ -89,6 +92,7 @@ export default {
       snackbarText: "",
       snackbarColor: "green",
       showSnackbar: false,
+      currentCharge : {}
     }
   },
 
@@ -96,6 +100,9 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    isCharging() {
+      return this.$store.state.userState.status.isCharging;
     }
   },
   sockets: {
@@ -115,14 +122,21 @@ export default {
   methods: {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
-        console.log("here")
-        this.charges = response
+        this.currentCharge = response.find(c=>!c.isCompleted)
+        console.log(this.currentCharge)
+        this.charges = response.reverse()
       }).catch(err=>console.log(err))
     },
-
-
-    beforeUnmount() {
-      clearInterval(this.interval)
+    endCharge(){
+      ChargeService.endCharge(this.currentCharge).then(response=>{
+        console.log(response)
+        this.$store.dispatch("userState/endedCharge")
+        this.$socket.emit('endCharge')
+        this.loadChargeHistory()
+      }).catch(err=>{
+        console.log(err)
+      })
+      console.log("end charge")
     },
   }
 }

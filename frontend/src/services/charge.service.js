@@ -20,12 +20,11 @@ class ChargeService {
       });
   }
 
-  endCharge(user, station, tower_id){
+  endCharge(charge){
+    console.log(charge)
     return axios.post(API_URL + 'end',
       {
-        user: user,
-        station: station,
-        tower_id: tower_id,
+        charge: charge
       },
       { headers: authHeader()})
       .then(response => {

@@ -12,11 +12,18 @@ export const userState = {
     startedCharging({commit}){
       console.log(initialState)
       commit('startedCharging')
+    },
+    endedCharge({commit}){
+      console.log(initialState)
+      commit('endedCharge')
     }
   },
   mutations: {
     startedCharging(state){
       state.status.isCharging = true;
+    },
+    endedCharge(state){
+      state.status.isCharging = false;
     }
   }
 };

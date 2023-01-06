@@ -50,6 +50,28 @@ exports.startCharge = (req, res) => {
 
 
 exports.endCharge = (req, res) => {
+    Charge.findById(req.body.charge._id).then( charge => {
+            charge.isCompleted = true;
+            charge.stopDateTime = new Date();
+            const difference =  charge.stopDateTime - charge.startDateTime
+            const minutes = Math.round(difference / 60000); // minutes
+            const diffDays = Math.floor(difference / 86400000); // days
+            const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+            const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+            charge.duration = diffHrs + "h:" + diffMins + "m"
+            // to make with a sense
+            charge.totalBatteryCharged = 100
+            // considering a cost of 10 cents per minutes
+            charge.cost = ( minutes * 0.10).toFixed(2)
+
+        console.log(charge)
+
+            charge.save()
+                .then(result =>stationController.releaseTowerForTimerExpired(req.body.charge.station_id, req.body.charge.tower_id))
+                .then(result => res.send(result))
+                .catch(err => res.status(500).send(err))
+        }
+    )
     // TowerRelease(req.body.station_id, req.body.tower_id)
     //     .then(result=>res.status(200).send(result))
     //     .catch(err => res.status(500).send(err))

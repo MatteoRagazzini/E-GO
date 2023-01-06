@@ -96,6 +96,12 @@ io.on('connection', function(socket) {
             }
         }, 1000)
     })
+
+    socket.on("endCharge",()=>{
+        clearInterval(timer)
+        clearTimeout(timeout)
+        io.emit("ChangeMarker", "dec");
+    })
 })
 
 //Whenever someone connects this gets executed

@@ -17,7 +17,10 @@
     </v-card-title>
     <v-card-text>
       <div>
-      <span class="font-weight-bold">Time:</span> {{this.charge.startDateTime}} - {{this.charge.stopDateTime}}
+      <span class="font-weight-bold">StartTime:</span> {{this.charge.startDateTime}}
+      </div>
+      <div>
+        <span class="font-weight-bold">EndTime:</span> {{this.charge.stopDateTime}}
       </div>
       <span class="font-weight-bold">Duration:</span> {{this.charge.duration}}
       <br>

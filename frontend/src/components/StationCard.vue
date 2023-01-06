@@ -157,9 +157,6 @@ export default {
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
-    },
-    loggedIn() {
-
     }
   },
   methods: {

@@ -10,9 +10,9 @@ const Charge = mongoose.model(
         vehicle_id: String,
         vehicle_name: String,
         isCompleted: Boolean,
-        startDateTime: String,
-        stopDateTime: String,
-        duration: Number,
+        startDateTime: Date,
+        stopDateTime: Date,
+        duration: String,
         totalBatteryCharged: Number,
         cost: Number
     })

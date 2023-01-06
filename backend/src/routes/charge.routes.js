@@ -23,7 +23,7 @@ module.exports = function(app) {
     );
 
     app.post(
-        "/api/charge/stop",
+        "/api/charge/end",
         [authJwt.verifyToken],
         controller.endCharge
     );

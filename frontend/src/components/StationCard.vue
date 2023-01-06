@@ -14,7 +14,7 @@
       ></v-progress-linear>
 
       <v-card-item>
-        <v-card-title>{{ this.station.title }}
+        <v-card-title>{{ this.station.address }}
           <!--       What is that icon for?-->
           <v-btn
             icon
@@ -28,13 +28,13 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-        <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
+        <v-card-subtitle class="my-4 text-subtitle-1">not existed</v-card-subtitle>
 
         <v-card-text>
           <div>Availability: {{ this.stationAvailability }}</div>
           <div v-if="status==='connected'">In charging</div>
           <div class="text-center" v-if="this.status==='reserved'">
-            <div>Click to unlock Tower {{ this.tower.id }}</div>
+            <div>Click to unlock Tower {{ this.tower._id }}</div>
             <br>
             <v-progress-circular
               :rotate="360"
@@ -166,13 +166,13 @@ export default {
     occupyTower(option) {
           this.loading = true
       console.log(this.currentUser._id)
-          StationService.occupyTower(this.currentUser._id, this.station.id).then(
+          StationService.occupyTower(this.currentUser._id, this.station._id).then(
             (tower) => {
               this.tower = tower
               this.loading = false
               this.status = "reserved";
               console.log("[STATION]: reserved " + tower)
-              this.$socket.emit('startTimer', {station: this.station.id, tower: tower.id, reason: option})
+              this.$socket.emit('startTimer', {station: this.station._id, tower: tower.id, reason: option})
               this.snackbarColor = "green"
               this.snackbarText = "Station successfully reserved"
               this.showSnackbar = true
@@ -185,9 +185,9 @@ export default {
           })
     },
     releaseTower(){
-      StationService.releaseTower(this.station.id, this.tower.id).then( res => {
+      StationService.releaseTower(this.station._id, this.tower.id).then( res => {
         console.log(res)
-      this.$socket.emit('cancelTimer', {station: this.station.id, tower: this.tower.id})
+      this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.tower.id})
       this.resetTimer()
       this.snackbarColor = "green"
       this.snackbarText = "Station successfully unbooked"
@@ -197,10 +197,10 @@ export default {
   changeFavorite() {
     if (!this.station.favorite) {
       this.station.favorite = true
-      userService.addFavouriteStation(this.currentUser._id, this.station.id)
+      userService.addFavouriteStation(this.currentUser._id, this.station._id)
     } else {
       this.station.favorite = false
-      userService.removeFavouriteStation(this.currentUser._id, this.station.id)
+      userService.removeFavouriteStation(this.currentUser._id, this.station._id)
     }
     // inform user
   },
@@ -225,16 +225,17 @@ export default {
 ,
 props: {
   showStationCard: Boolean,
-  station: {
-  id: String,
-    //ratings: Number,
-    title: String,
-    //reviews: Number,
-    address: String,
-    usedTowers: Number,
-    totalTowers: Number,
-    favorite: Boolean,
-  }
+  station: Object
+  // station: {
+  // id: String,
+  //   //ratings: Number,
+  //   title: String,
+  //   //reviews: Number,
+  //   address: String,
+  //   usedTowers: Number,
+  //   totalTowers: Number,
+  //   favorite: Boolean,
+  // }
 },
   emits: ['switchTab','close']
 }

@@ -69,7 +69,7 @@ function performOperationFavourites(user, req, operation, newStation = {}) {
     return new Promise((resolve, reject) => {
         if (operation === 'push') user.favouriteStations.push(newStation);
         else if (operation === 'pull') {
-            let index = user.favouriteStations.findIndex(s => s.id === req.body.station_id);
+            let index = user.favouriteStations.findIndex(s => s._id.toString() === req.body.station_id);
             if (index === -1) reject('station not found')
             user.favouriteStations.splice(index, 1)
         } else {
@@ -78,6 +78,7 @@ function performOperationFavourites(user, req, operation, newStation = {}) {
         user.save().then(
             resolve("operation performed")
         ).catch(error => {
+                console.log(error)
                 reject(error)
             }
         )

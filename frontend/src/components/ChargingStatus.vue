@@ -1,70 +1,74 @@
 <template>
-  <v-tabs
-    fixed-tabs
-    bg-color="transparent"
-    grow
-    v-model="tab"
-    color="green"
-  >
-    <v-tab value="CurrentCharging">
-      Current charge
-    </v-tab>
-    <v-tab value="ChargingHistory">
-      Charging history
-    </v-tab>
-  </v-tabs>
-  <v-window v-model="tab">
-    <v-window-item value="CurrentCharging"
+    <v-tabs
+      fixed-tabs
+      bg-color="transparent"
+      grow
+      v-model="tab"
+      color="green"
     >
-  <br>
-  <v-container>
-    <v-row align="center" justify="center">
-    <v-progress-circular
-      :rotate="360"
-      :size="400"
-      :width="30"
-      :model-value="value"
-      color="teal"
-    >
-      <v-icon size="x-large">mdi-battery</v-icon>
-      {{ value }}
-    </v-progress-circular>
-    </v-row>
-    <br>
-    <transition name="blink">
-    <v-row
-      align="center" justify="center" class="text-h5">
-      {{chargingText}}
-    </v-row>
-    </transition>
-    <v-snackbar
-      v-model="showSnackbar"
-      :timeout="3000"
-      absolute
-      location="bottom right"
-      :color="snackbarColor"
-    >
-      {{ this.snackbarText }}
-    </v-snackbar>
-<!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
-  </v-container>
-    </v-window-item>
-    <v-window-item value="ChargingHistory"
-    >
-      <v-list
+      <v-tab value="CurrentCharging">
+        Current charge
+      </v-tab>
+      <v-tab value="ChargingHistory">
+        Charging history
+      </v-tab>
+    </v-tabs>
+    <v-window v-model="tab">
+      <v-window-item value="CurrentCharging"
       >
-        <v-list-item
-          v-for="charge in this.charges"
-          :key="charge._id"
-          :items="charges"
+        <br>
+        <v-container>
+          <v-row align="center" justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="400"
+              :width="30"
+              :model-value="value"
+              color="teal"
+            >
+              <v-icon size="x-large">mdi-battery</v-icon>
+              {{ value }}
+            </v-progress-circular>
+          </v-row>
+          <br>
+          <transition name="blink">
+            <v-row
+              align="center" justify="center" class="text-h5">
+              {{chargingText}}
+            </v-row>
+          </transition>
+          <v-snackbar
+            v-model="showSnackbar"
+            :timeout="3000"
+            absolute
+            location="bottom right"
+            :color="snackbarColor"
+          >
+            {{ this.snackbarText }}
+          </v-snackbar>
+          <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
+        </v-container>
+      </v-window-item>
+      <v-window-item value="ChargingHistory"
+      >
+        <v-card
+          height="690">
+        <v-list
         >
-          <ChargingCard
-            :charge="charge"
-          ></ChargingCard>
-        </v-list-item>
-      </v-list>
-    </v-window-item>
-  </v-window>
+          <v-list-item
+            v-for="charge in this.charges"
+            :key="charge._id"
+            :items="charges"
+          >
+            <ChargingCard
+              :charge="charge"
+            ></ChargingCard>
+          </v-list-item>
+        </v-list>
+        </v-card>
+      </v-window-item>
+    </v-window>
+
 </template>
 
 <script>
@@ -127,5 +131,9 @@ export default {
 <style scoped>
   .v-progress-circular {
     margin: 1rem;
+  }
+  .v-card {
+    display: flex !important;
+    flex-direction: column;
   }
 </style>

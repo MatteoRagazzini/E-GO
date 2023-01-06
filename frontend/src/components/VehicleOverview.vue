@@ -5,7 +5,6 @@
     v-if="loading"
   ></v-progress-circular>
   <v-card
-    id="scrollable"
     height="690"
     color="white">
     <v-card-title

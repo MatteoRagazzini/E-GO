@@ -35,14 +35,7 @@ export default {
     return {
       showStationCard: false,
       // to be passed to the station card
-      station: {
-        id: 1,
-        totalTowers: 2,
-        usedTowers: 1,
-        ratings: 4.5,
-        title: "Station example",
-        reviews: 400,
-      },
+      station: {},
       map: null
     }
   },
@@ -125,11 +118,12 @@ export default {
 
             StationsMarkers.forEach(m => m.marker.addListener("click", () => {
               this.showStationCard = true
-              this.station.id = m.station._id
-              this.station.title = m.station.address
-              this.station.totalTowers = m.station.totalTowers
-              this.station.usedTowers = m.station.usedTowers
-              this.station.address = "not a second address"
+              this.station = m.station
+              // this.station.id = m.station._id
+              // this.station.title = m.station.address
+              // this.station.totalTowers = m.station.totalTowers
+              // this.station.usedTowers = m.station.usedTowers
+              // this.station.address = "not a second address"
 
               UserService.getFavouriteStations(this.currentUser._id).then((response) => {
                 let favStations = response.data

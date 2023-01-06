@@ -22,8 +22,8 @@ exports.startCharge = (req, res) => {
         const currVehicle = user.vehicles.find(v=>v.isCurrent);
         const charge = new Charge({
             user_id: req.body.user._id,
-            station_id: req.body.station.id,
-            station_name: req.body.station.title,
+            station_id: req.body.station._id,
+            station_name: req.body.station.address,
             tower_id: req.body.tower_id,
             vehicle_id: currVehicle.id,
             vehicle_name: currVehicle.name,

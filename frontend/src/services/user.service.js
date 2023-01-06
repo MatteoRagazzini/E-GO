@@ -124,7 +124,7 @@ class UserService {
         return response.data;
       }).catch(function (error){
         console.log(error)
-        throw new Error(error.response.data.message)
+        throw new Error(error.response.data)
       });
   }
 }

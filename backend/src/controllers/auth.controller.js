@@ -14,6 +14,8 @@ exports.signup = (req, res) => {
         profilePicture : "",
         isChargingAVehicle: false,
         hasReserved : false,
+        status: "free",
+        occupiedStationId:""
     });
 
     user.save((err, user) => {

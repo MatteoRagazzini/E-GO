@@ -66,7 +66,9 @@ exports.TowerOccupy = (user_id,station_id) => {
                         // if I will be able to retrieve the currentVehicle direclty I can refactor this
                         UserController.setIsCharging(user_id, true).then(user=>{
                             const currVehicle = user.vehicles.find(v=>v.isCurrent)
+                            if(currVehicle === undefined) reject("user doesn't have a vehicle in use")
                             firstFreeTower.charging_vehicle_id = currVehicle.id
+                            console.log("here")
                             station.save().then(
                                 resolve(firstFreeTower)
                             ).catch(err => reject(err))

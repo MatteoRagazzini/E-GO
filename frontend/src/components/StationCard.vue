@@ -148,12 +148,12 @@ export default {
     expired: function (data) {
       console.log('Expired')
       this.resetTimer()
-      this.station.status = "free";
+      this.$store.dispatch("userState/goToFreeStatus")
     },
     endCharge: function (){
       console.log('Expired')
       this.resetTimer()
-      this.this.station.status = "free";
+      this.$store.dispatch("userState/goToFreeStatus")
     }
   },
   computed: {
@@ -161,10 +161,10 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    isCharging(){
+    status(){
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
       // return this.$store.state.userState.status.isCharging;
-      return this.disabled = false
+      this.disabled = this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
@@ -187,7 +187,7 @@ export default {
             console.log(reservation)
             this.reservation = reservation
             this.loading = false
-            this.station.status = "reserved";
+            this.$store.dispatch("userState/goToReservedStatus")
             console.log("[STATION]: reserved " + reservation.tower_id)
             this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
             this.snackbarColor = "green"
@@ -222,6 +222,7 @@ export default {
           console.log(res)
             this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
             this.resetTimer()
+            this.$store.dispatch("userState/goToFreeStatus")
             this.snackbarColor = "green"
             this.snackbarText = "Station successfully unbooked"
             this.showSnackbar = true
@@ -246,9 +247,9 @@ export default {
           this.snackbarColor = "green"
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
-          this.this.station.status = "connected";
+          this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
-          this.$store.dispatch("userState/startedCharging")
+          this.$store.dispatch("userState/goToConnectedStatus")
           this.switchTab("Charging")
           this.closeStationCard();
         })

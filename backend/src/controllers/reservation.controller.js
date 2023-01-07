@@ -22,9 +22,9 @@ exports.createReservation = (req, res) => {
                 stopDateTime: null,
                 duration: null,
             });
-            reservation.save().then(res.status(200).send(reservation))
+            reservation.save().then(res.status(200).send(reservation)).catch(err=> res.status(500).send(err))
         })
-        .catch(err=>console.log(err))
+        .catch(err=>res.status(500).send(err))
 };
 
 exports.deleteReservation = (req, res) => {

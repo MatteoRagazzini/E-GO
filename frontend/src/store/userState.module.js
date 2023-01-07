@@ -1,29 +1,33 @@
 import AuthService from '../services/auth.service';
 const user = JSON.parse(localStorage.getItem('user'));
 console.log(user)
-const initialState = user.isChargingAVehicle
-  ? { status: { isCharging: true }, user }
-  : { status: { isCharging: false }, user: null };
+const initialState = user
+  ? { status:  user.status , user }
+  : { status:  "free", user: null };
 
 export const userState = {
   namespaced: true,
   state: initialState,
   actions: {
-    startedCharging({commit}){
-      console.log(initialState)
-      commit('startedCharging')
+    goToReservedStatus({commit}){
+      commit('toReservedStatus')
     },
-    endedCharge({commit}){
-      console.log(initialState)
-      commit('endedCharge')
+    goToConnectedStatus({commit}){
+      commit('toConnectedStatus')
+    },
+    goToFreeStatus({commit}){
+      commit('toFreeStatus')
     }
   },
   mutations: {
-    startedCharging(state){
-      state.status.isCharging = true;
+    toReservedStatus(state){
+      state.status = "reserved";
     },
-    endedCharge(state){
-      state.status.isCharging = false;
+    toConnectedStatus(state){
+      state.status = "connected";
+    },
+    toFreeStatus(state){
+      state.status = "free";
     }
   }
 };

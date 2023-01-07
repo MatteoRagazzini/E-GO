@@ -7,6 +7,8 @@ const User = mongoose.model(
         email: String,
         password: String,
         profilePicture: String,
+        status: String,
+        occupiedStationId:String,
         isChargingAVehicle: Boolean,
         hasReserved : Boolean,
         favouriteStations : [

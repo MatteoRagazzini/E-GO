@@ -27,6 +27,7 @@
     </v-app-bar>
     <v-container>
       <v-main>
+        <div> status store: {{ this.status }} status user: {{this.currentUser.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
           >
@@ -127,6 +128,9 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
+    },
+    status(){
+      return this.$store.state.userState.status;
     }
   },
   mounted() {

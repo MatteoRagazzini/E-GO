@@ -2,7 +2,7 @@ import AuthService from '../services/auth.service';
 const user = JSON.parse(localStorage.getItem('user'));
 console.log(user)
 const initialState = user
-  ? { status:  user.status , station: user.occupiedStation }
+  ? { status:  user.status , station: user.occupiedStationId }
   : { status:  "free", station: null };
 
 export const userState = {

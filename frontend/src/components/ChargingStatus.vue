@@ -102,7 +102,8 @@ export default {
       return this.user
     },
     isCharging() {
-      return this.$store.state.userState.status.isCharging;
+      if(this.$store.state.userState.status === "connected") this.tab = "CurrentCharging";
+      return this.$store.state.userState.status === "connected";
     }
   },
   sockets: {
@@ -129,7 +130,7 @@ export default {
     endCharge(){
       ChargeService.endCharge(this.currentCharge).then(response=>{
         console.log(response)
-        this.$store.dispatch("userState/endedCharge")
+        this.$store.dispatch("userState/goToFreeStatus")
         this.$socket.emit('endCharge')
         this.loadChargeHistory()
         this.tab = "ChargingHistory"

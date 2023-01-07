@@ -88,6 +88,8 @@ io.on('connection', function(socket) {
     socket.on("startCharge",()=>{
         clearInterval(timer)
         clearTimeout(timeout)
+        // to change the marker to green
+        socket.emit("ChangeMarker")
         timer = setInterval(() => {
             battery++;
             socket.emit("battery", battery)

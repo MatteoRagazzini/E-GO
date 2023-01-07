@@ -62,6 +62,7 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
+    // retrieve from the store which is always up to date with the backend the stations occupied by the user
     userStationReserved(){
       return  this.$store.state.userState.status === "reserved" ? this.$store.state.userState.station : ""
     },

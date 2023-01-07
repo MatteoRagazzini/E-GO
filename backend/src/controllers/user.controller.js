@@ -39,7 +39,7 @@ exports.setStatus = (status, user_id, station_id) => {
            user.status = status
            user.occupiedStationId = station_id
            user.save()
-               .then(resolve("status updated to" + status ))
+               .then(resolve("status updated to " + status ))
                .catch(reject("problem in saving"))
        }).catch(err=>reject(err))
     })

@@ -19,8 +19,8 @@ function findUser(user_id) {
 
 
 exports.startCharge = (req, res) => {
-    findUser(req.body.user._id).then(user=>{
-        const currVehicle = user.vehicles.find(v=>v.isCurrent);
+    findUser(req.body.user._id).then(user => {
+        const currVehicle = user.vehicles.find(v => v.isCurrent);
         const charge = new Charge({
             user_id: req.body.user._id,
             station_id: req.body.station._id,
@@ -36,66 +36,110 @@ exports.startCharge = (req, res) => {
             cost: null
         });
 
-        userController.setStatus("connected",req.body.user._id, req.body.station._id )
-            .then(r=> charge.save(err => {
-                if (err) {
-                    res.status(500).send({message: err});
-                    return;
-                }
-                res.status(200).send({message: "Charge was registered successfully!"});
-            })
-        )
+        userController.setStatus("connected", req.body.user._id, req.body.station._id)
+            .then(r => charge.save(err => {
+                    if (err) {
+                        res.status(500).send({message: err});
+                        return;
+                    }
+                    res.status(200).send({message: "Charge was registered successfully!"});
+                })
+            )
     })
 };
 
 
+// exports.endCharge = (req, res) => {
+//     if(req.body.constructor === Object && Object.keys(req.body).length === 0) res.status(500).send("Charge object is missing")
+//     else{
+//         Charge.findById(req.body.charge._id).then( charge => {
+//                 charge.isCompleted = true;
+//                 charge.stopDateTime = new Date();
+//                 const difference =  charge.stopDateTime - charge.startDateTime
+//                 const minutes = Math.round(difference / 60000); // minutes
+//                 const diffDays = Math.floor(difference / 86400000); // days
+//                 const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+//                 const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+//                 charge.duration = diffHrs + "h:" + diffMins + "m"
+//                 // to make with a sense
+//                 charge.totalBatteryCharged = 100
+//                 // considering a cost of 10 cents per minutes
+//                 charge.cost = ( minutes * 0.10).toFixed(2)
+//
+//
+//                 charge.save()
+//                     .then(r => {
+//                         console.log(r)
+//                         userController.setStatus("free", req.body.charge.user_id, "")
+//                     })
+//                     .then(result => {
+//                         console.log("here")
+//                         console.log(result)
+//                         stationController.TowerRelease(req.body.charge.station_id, req.body.charge.tower_id)
+//                     })
+//                     .then(result => res.send(result))
+//                     .catch(err => {
+//                         console.log(err)
+//                         res.status(500).send(err)
+//                     })
+//             }
+//         ).catch(err => {
+//             res.send(err)
+//         })
+//     }
+// }
 
 
 exports.endCharge = (req, res) => {
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0) res.status(500).send("Charge object is missing")
-    else{
-        Charge.findById(req.body.charge._id).then( charge => {
-                charge.isCompleted = true;
-                charge.stopDateTime = new Date();
-                const difference =  charge.stopDateTime - charge.startDateTime
-                const minutes = Math.round(difference / 60000); // minutes
-                const diffDays = Math.floor(difference / 86400000); // days
-                const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
-                const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
-                charge.duration = diffHrs + "h:" + diffMins + "m"
-                // to make with a sense
-                charge.totalBatteryCharged = 100
-                // considering a cost of 10 cents per minutes
-                charge.cost = ( minutes * 0.10).toFixed(2)
-
-
-                charge.save()
-                    .then(r => {
-                        console.log(r)
-                        userController.setStatus("free", req.body.charge.user_id, "")
-                    })
-                    .then(result => {
-                        console.log("here")
-                        console.log(result)
-                        stationController.TowerRelease(req.body.charge.station_id, req.body.charge.tower_id)
-                    })
-                    .then(result => res.send(result))
-                    .catch(err => {
-                        console.log(err)
-                        res.status(500).send(err)
-                    })
-            }
-        ).catch(err => {
-            res.send(err)
-        })
+    console.log("[END CHARGE] user: " + req.body.user.username)
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) res.status(500).send("Charge object is missing")
+    else {
+        userController.setStatus("free", req.body.user._id, "")
+            .then(r => {
+                console.log(r)
+                Charge.find({user_id: req.body.user._id}, function (err, charges) {
+                    if (err) console.log(err)
+                    else {
+                        console.log(charges)
+                        if (charges.filter(c => !c.isCompleted) > 1) res.status(500).send("multiple active charge")
+                        const activeCharge = charges.find(c => !c.isCompleted)
+                        if (activeCharge === undefined) res.status(500).send("No active charge found")
+                        else {
+                            activeCharge.isCompleted = true;
+                            activeCharge.stopDateTime = new Date();
+                            const difference = activeCharge.stopDateTime - activeCharge.startDateTime
+                            const minutes = Math.round(difference / 60000); // minutes
+                            const diffDays = Math.floor(difference / 86400000); // days
+                            const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+                            const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+                            activeCharge.duration = diffHrs + "h:" + diffMins + "m"
+                            // to make with a sense
+                            activeCharge.totalBatteryCharged = 100
+                            // considering a cost of 10 cents per minutes
+                            activeCharge.cost = (minutes * 0.10).toFixed(2)
+                            activeCharge.save()
+                                .then(chargeSaved => {
+                                    console.log(chargeSaved)
+                                    stationController.TowerRelease(chargeSaved.station_id.toString(), chargeSaved.tower_id.toString())
+                                })
+                                .then(result => {
+                                    console.log(result)
+                                    res.status(200).send("charged deleted " + result)
+                                }).catch(err => {
+                                    console.log(err)
+                                res.status(500).send(err)
+                            })
+                        }
+                    }
+                })
+            })
     }
 }
 
 
-
 exports.getHistory = (req, res) => {
 // getting the charge only of the specific user
-    Charge.find({user_id:req.params.id}, function (err, station) {
+    Charge.find({user_id: req.params.id}, function (err, station) {
         if (err)
             res.send(err);
         res.json(station);

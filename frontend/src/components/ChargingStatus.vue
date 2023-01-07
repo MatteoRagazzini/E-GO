@@ -128,7 +128,7 @@ export default {
       }).catch(err=>console.log(err))
     },
     endCharge(){
-      ChargeService.endCharge(this.currentCharge).then(response=>{
+      ChargeService.endCharge(this.currentUser).then(response=>{
         console.log(response)
         this.$store.dispatch("userState/goToFreeStatus")
         this.$socket.emit('endCharge')
@@ -136,6 +136,9 @@ export default {
         this.tab = "ChargingHistory"
       }).catch(err=>{
         console.log(err)
+        this.snackbarColor = "red"
+        this.snackbarText =  err
+        this.showSnackbar = true
       })
       console.log("end charge")
     },

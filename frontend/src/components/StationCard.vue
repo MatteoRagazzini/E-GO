@@ -32,8 +32,8 @@
 
         <v-card-text>
           <div>Availability: {{ this.stationAvailability }}</div>
-          <div v-if="status==='connected'">In charging</div>
-          <div class="text-center" v-if="this.status==='reserved'">
+          <div v-if="this.station.status==='connected'">In charging</div>
+          <div class="text-center" v-if="this.station.status==='reserved'">
             <div>Click to unlock Tower {{ this.tower.id }}</div>
             <br>
             <v-progress-circular
@@ -57,31 +57,31 @@
         <v-card-actions>
           <div v-if="!isCharging">
             <!--      IF RESERVED-->
-            <div v-if="status==='reserved'">{{ this.timerText }}</div>
-            <v-spacer v-if="status==='reserved'"></v-spacer>
+            <div v-if="this.station.status==='reserved'">{{ this.timerText }}</div>
+            <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
             <v-btn
               color="red"
-              v-if="status==='reserved'"
+              v-if="this.station.status==='reserved'"
               @click="releaseTower"
             >
               Cancel
             </v-btn>
             <!--      IF NOT RESERVED-->
-            <v-btn v-if="status==='free'"
+            <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
                    @click="occupyTower('connect')"
             >
               Connect
             </v-btn>
-            <v-btn v-if="status==='free'"
+            <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
                    @click="occupyTower('reserve')"
             >Reserve
             </v-btn>
-            <v-spacer v-if="status==='free'"></v-spacer>
-            <v-btn color="primary" v-if="status==='connected'">Disconnect</v-btn>
+            <v-spacer v-if="this.station.status==='free'"></v-spacer>
+            <v-btn color="primary" v-if="this.station.status==='connected'">Disconnect</v-btn>
           </div>
           <v-btn color="primary" @click="closeStationCard">Close</v-btn>
         </v-card-actions>
@@ -100,8 +100,8 @@
 
 // you pass a prop in case the user has reserved or is charging containing the station id.
 // add a field to the station prop isReserved isCharging
-// this.status = status coming form the prop
-// status can be free reserved or connected.
+// this.this.station.status = this.station.status coming form the prop
+// this.station.status can be free reserved or connected.
 // has user reserved
 // if one of these != null
 // you print the station with station_id === that in a different colour
@@ -117,7 +117,7 @@ export default {
   data: () => ({
     loading: false,
     heartColor: "white",
-    status: "free",
+    // this.station.status: "free",
     timerText: "",
     timerValue: 100,
     firstValue: 0,
@@ -144,12 +144,12 @@ export default {
     expired: function (data) {
       console.log('Expired')
       this.resetTimer()
-      this.status = "free";
+      this.this.station.status = "free";
     },
     endCharge: function (){
       console.log('Expired')
       this.resetTimer()
-      this.status = "free";
+      this.this.station.status = "free";
     }
   },
   computed: {
@@ -157,9 +157,9 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    isCharging(){
-      return this.$store.state.userState.status.isCharging;
-    },
+    // isCharging(){
+    //   return this.$store.state.userState.this.station.status.isCharging;
+    // },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }
@@ -180,7 +180,7 @@ export default {
             (tower) => {
               this.tower = tower
               this.loading = false
-              this.status = "reserved";
+              this.this.station.status = "reserved";
               console.log("[STATION]: reserved " + tower)
               this.$socket.emit('startTimer', {station: this.station._id, tower: tower.id, reason: option})
               this.snackbarColor = "green"
@@ -222,7 +222,7 @@ export default {
           this.snackbarColor = "green"
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
-          this.status = "connected";
+          this.this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/startedCharging")
           this.switchTab("Charging")

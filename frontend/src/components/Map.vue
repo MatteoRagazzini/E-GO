@@ -40,7 +40,7 @@ export default {
       station: {},
       map: null,
       userStationReserved : "639f3e9c29a8a26bac492c5f",
-      userStationCharging : "63a6d09bd1080075f534305c"
+      //userStationCharging : "63a6d09bd1080075f534305c"
     }
   },
   sockets: {
@@ -130,6 +130,7 @@ export default {
 
 
             if (station._id === this.userStationReserved) {
+              station.status = "reserved"
               marker = new google.maps.Marker({
                 position: new google.maps.LatLng(station.latitude, station.longitude),
                 label: "" + (station.totalTowers - station.usedTowers),
@@ -137,6 +138,7 @@ export default {
                 map: this.map
               })
             } else if(station._id === this.userStationCharging){
+              station.status = "connected"
               marker = new google.maps.Marker({
                 position: new google.maps.LatLng(station.latitude, station.longitude),
                 label: "" + (station.totalTowers - station.usedTowers),
@@ -144,6 +146,7 @@ export default {
                 map: this.map
               })
             } else{
+              station.status = "free"
               marker = new google.maps.Marker({
                 position: new google.maps.LatLng(station.latitude, station.longitude),
                 // animation: google.maps.Animation.DROP,

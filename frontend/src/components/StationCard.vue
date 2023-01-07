@@ -69,7 +69,7 @@
             <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
-                   :disabled="disabled"
+                   :disabled="this.disabled"
                    @click="occupyTower('connect')"
             >
               Connect
@@ -77,7 +77,7 @@
             <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
-                   :disabled="disabled"
+                   :disabled="this.disabled"
                    @click="occupyTower('reserve')"
             >Reserve
             </v-btn>
@@ -128,7 +128,6 @@ export default {
     alertType: "success",
     showAlert: false,
     showSnackbar: false,
-    disabled: false,
     snackbarText: "",
     snackbarColor: "",
     reservation: {},
@@ -148,11 +147,13 @@ export default {
     expired: function (data) {
       console.log('Expired')
       this.resetTimer()
+      this.station.status = "free"
       this.$store.dispatch("userState/goToFreeStatus")
     },
     endCharge: function (){
       console.log('Expired')
       this.resetTimer()
+      this.station.status = "free"
       this.$store.dispatch("userState/goToFreeStatus")
     }
   },
@@ -161,10 +162,10 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    status(){
+    disabled(){
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
       // return this.$store.state.userState.status.isCharging;
-      this.disabled = this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
+      return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
@@ -187,8 +188,9 @@ export default {
             console.log(reservation)
             this.reservation = reservation
             this.loading = false
-            this.$store.dispatch("userState/goToReservedStatus")
-            console.log("[STATION]: reserved " + reservation.tower_id)
+            this.station.status = "reserved"
+            this.$store.dispatch("userState/goToReservedStatus", this.station._id)
+            console.log("[STATION]: reserved tower" + reservation.tower_id)
             this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
             this.snackbarColor = "green"
             this.snackbarText = "Station successfully reserved"
@@ -222,6 +224,7 @@ export default {
           console.log(res)
             this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
             this.resetTimer()
+            this.station.status = "reserved"
             this.$store.dispatch("userState/goToFreeStatus")
             this.snackbarColor = "green"
             this.snackbarText = "Station successfully unbooked"
@@ -249,7 +252,7 @@ export default {
           this.showSnackbar = true
           this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
-          this.$store.dispatch("userState/goToConnectedStatus")
+          this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
           this.switchTab("Charging")
           this.closeStationCard();
         })

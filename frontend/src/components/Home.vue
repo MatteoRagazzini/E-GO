@@ -130,7 +130,7 @@ export default {
       return this.$store.state.auth.user;
     },
     status(){
-      return this.$store.state.userState.status;
+      return this.$store.state.userState;
     }
   },
   mounted() {

@@ -39,8 +39,6 @@ export default {
       // to be passed to the station card
       station: {},
       map: null,
-      //userStationReserved : "639f3e9c29a8a26bac492c5f",
-      //userStationCharging : "63a6d09bd1080075f534305c"
     }
   },
   sockets: {
@@ -63,6 +61,12 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    userStationReserved(){
+      return  this.$store.state.userState.status === "reserved" ? this.$store.state.userState.station : ""
+    },
+    userStationCharging(){
+      return  this.$store.state.userState.status === "connected" ? this.$store.state.userState.station : ""
     }
   },
   mounted() {
@@ -172,10 +176,10 @@ export default {
           //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
     .catch(error => {
         console.log(error)
-        if (error.response.status === 401) {
-          console.log("trying to push")
-          this.$router.push('/login')
-        }
+        // if (error.response.status === 401) {
+        //   console.log("trying to push")
+        //   this.$router.push('/login')
+        // }
       })
     }
   },

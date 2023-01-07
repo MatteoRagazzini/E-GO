@@ -55,7 +55,6 @@
 
         </v-card-text>
         <v-card-actions>
-          <div v-if="!isCharging">
             <!--      IF RESERVED-->
             <div v-if="this.station.status==='reserved'">{{ this.timerText }}</div>
             <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
@@ -70,6 +69,7 @@
             <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
+                   disabled
                    @click="occupyTower('connect')"
             >
               Connect
@@ -77,12 +77,14 @@
             <v-btn v-if="this.station.status==='free'"
                    color="green"
                    variant="text"
+                   disabled
                    @click="occupyTower('reserve')"
             >Reserve
             </v-btn>
             <v-spacer v-if="this.station.status==='free'"></v-spacer>
+
             <v-btn color="primary" v-if="this.station.status==='connected'">Disconnect</v-btn>
-          </div>
+
           <v-btn color="primary" @click="closeStationCard">Close</v-btn>
         </v-card-actions>
     </v-card>
@@ -125,6 +127,7 @@ export default {
     alertType: "success",
     showAlert: false,
     showSnackbar: false,
+    disabled: false,
     snackbarText: "",
     snackbarColor: "",
     tower: {},
@@ -157,9 +160,11 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    // isCharging(){
-    //   return this.$store.state.userState.this.station.status.isCharging;
-    // },
+    isCharging(){
+      // this is representing if the user has already interacted with a station. In this case all the others are disabled
+      // return this.$store.state.userState.status.isCharging;
+      return this.disabled = true
+    },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }

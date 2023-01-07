@@ -112,6 +112,15 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
+      // -----
+      UserService.getState(this.currentUser._id).then(res=>{
+        console.log(res.data)
+        this.$store.dispatch("userState/refreshStatus",res.data)
+      }).catch(err=>{
+        console.log(err)
+      })
+
+      // -----
       const yellow_marker_icon = {
         url: yellow_marker_url, // url
         scaledSize: new google.maps.Size(40, 40), // scaled size

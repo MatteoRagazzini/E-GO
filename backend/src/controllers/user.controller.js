@@ -219,6 +219,15 @@ exports.getFavouriteStations = (req, res) => {
 
 }
 
+exports.getState = (req, res) => {
+    this.findUser(req.params.id)
+        .then(user => res.status(200).json({status: user.status, station:user.occupiedStationId}))
+        .catch(err => res.status(500).send(err))
+
+}
+
+
+
 exports.connect = (req, res) => {
     User.findById(req.params.user_id, function (err, user) {
         if (err)

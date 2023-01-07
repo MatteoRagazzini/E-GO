@@ -17,6 +17,9 @@ export const userState = {
     },
     goToFreeStatus({commit}){
       commit('toFreeStatus')
+    },
+    refreshStatus({commit}, status){
+      commit('refresh', status)
     }
   },
   mutations: {
@@ -30,6 +33,11 @@ export const userState = {
     },
     toFreeStatus(state){
       state.status = "free";
+    },
+    refresh(state, status){
+      // this is a walk around to the fact that store is resetting everytime I refresh
+      state.status = status.status;
+      state.station = status.station;
     }
   }
 };

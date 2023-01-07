@@ -94,6 +94,10 @@ class UserService {
     return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });
   }
 
+  getState(user_id){
+    return axios.get('http://localhost:3000/api/user/state/'+ user_id, { headers: authHeader() });
+  }
+
   addFavouriteStation(user_id, station_id){
     console.log(user_id +","+station_id)
     return axios

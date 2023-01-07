@@ -39,7 +39,7 @@ export default {
       // to be passed to the station card
       station: {},
       map: null,
-      userStationReserved : "639f3e9c29a8a26bac492c5f",
+      //userStationReserved : "639f3e9c29a8a26bac492c5f",
       //userStationCharging : "63a6d09bd1080075f534305c"
     }
   },
@@ -116,6 +116,7 @@ export default {
         url: green_marker_url, // url
         scaledSize: new google.maps.Size(40, 40), // scaled size
       };
+
 
       StationService.getStations().then(
         (response) => {

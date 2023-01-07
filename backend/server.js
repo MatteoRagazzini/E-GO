@@ -33,6 +33,7 @@ require('./src/routes/user.routes')(app);
 require('./src/routes/station.routes')(app);
 require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);
+require('./src/routes/reservation.routes')(app);
 
 const httpServer = createServer(app);
 
@@ -48,7 +49,7 @@ io.on('connection', function(socket) {
     let timeout = null;
     let time = null;
     let battery = (Math.round(Math.random() * (95 - 80) + 80));
-    console.log('A user connected');
+    console.log('[SOCKET] A user connected');
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {
         console.log('A user disconnected');
@@ -56,7 +57,7 @@ io.on('connection', function(socket) {
 
 
     socket.on("startTimer", (data) => {
-        console.log(data)
+        console.log("[SOCKET] ", data)
         io.emit("ChangeMarker", "inc");
         // in case of reserving I send back a longer timer
         if(data.reason === "reserve") time = 500;
@@ -70,7 +71,7 @@ io.on('connection', function(socket) {
         timeout = setTimeout(() => {
             clearInterval(timer)
             controller.releaseTowerForTimerExpired(data.station, data.tower).then(res => {
-                console.log(res)
+                console.log("[SOCKET] ", res)
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
             })

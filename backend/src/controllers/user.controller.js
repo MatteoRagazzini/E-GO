@@ -20,7 +20,7 @@ exports.moderatorBoard = (req, res) => {
 
 //HELPER FUNCTIONS//
 
-function findUser(user_id) {
+exports.findUser = (user_id) => {
     return new Promise((resolve, reject) => {
         User.findById(user_id, function (err, user) {
             if (err)
@@ -98,28 +98,28 @@ exports.addVehicle = (req, res) => {
         isCurrent: req.body.isCurrent
     };
 
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         .then(user => performOperationVehicle(user, req, 'push', newVehicle))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
 exports.removeVehicle = (req, res) => {
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         .then(user => performOperationVehicle(user, req, 'pull'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
 exports.updateVehicle = (req, res) => {
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         .then(user => performOperationVehicle(user, req, 'update'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
 }
 
 exports.setVehicleInUse = (req, res) => {
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         // to fix the fact that multiple vehicles were Current together
         .then(function (user) {
             user.vehicles.forEach(v => v.isCurrent = false);
@@ -131,13 +131,13 @@ exports.setVehicleInUse = (req, res) => {
 }
 
 exports.getVehicles = (req, res) => {
-    findUser(req.params.id)
+    this.findUser(req.params.id)
         .then(user => res.status(200).json(user.vehicles))
         .catch(err => res.status(500).send(err))
 }
 
 exports.getVehicle = (req, res) => {
-    findUser(req.params.idUser)
+    this.findUser(req.params.idUser)
         .then(function(user) {
             const vehicle = user.vehicles.find(v => req.params.idVehicle)
             res.status(200).json(vehicle)
@@ -149,7 +149,7 @@ exports.getVehicle = (req, res) => {
 
 exports.addFavouriteStation = (req, res) => {
 
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         .then(user => performOperationFavourites(user, req, 'push', req.body.station_id))
         .then(result => res.status(200).send(result))
     // User.findOneAndUpdate({_id: req.body.user_id}, {
@@ -175,7 +175,7 @@ exports.addFavouriteStation = (req, res) => {
 
 exports.removeFavouriteStation = (req, res) => {
 
-    findUser(req.body.user_id)
+    this.findUser(req.body.user_id)
         .then(user => performOperationFavourites(user, req, 'pull'))
         .then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err))
@@ -201,7 +201,7 @@ exports.removeFavouriteStation = (req, res) => {
 }
 
 exports.getFavouriteStations = (req, res) => {
-    findUser(req.params.id)
+    this.findUser(req.params.id)
         .then(user => res.status(200).json(user.favouriteStations))
         .catch(err => res.status(500).send(err))
 
@@ -227,7 +227,7 @@ exports.connect = (req, res) => {
 // we need to pass true or false based on if it's charging or not.
 exports.setIsCharging = (user_id, isCharging) => {
     return new Promise((resolve, reject) => {
-        findUser(user_id)
+        this.findUser(user_id)
             .then(user => {
                 user.isChargingAVehicle = isCharging;
                 user.save().then(

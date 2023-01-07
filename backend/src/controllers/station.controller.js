@@ -2,26 +2,6 @@ const db = require("../models");
 const Station = db.station;
 const UserController  = require("./user.controller")
 
-exports.registerStation = (req, res) => {
-    const station = new Station({
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        address: req.body.address,
-        totalTowers: req.body.totalTowers,
-        usedTowers: req.body.usedTowers,
-        towers: req.body.towers
-    });
-
-    station.save(err => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
-        }
-
-        res.send({message: "Station was registered successfully!"});
-    });
-};
-
 
 exports.retrieveStations = (req, res) => {
     Station.find({}, function (err, station) {
@@ -126,8 +106,8 @@ TowerRelease = (station_id, tower_id) => {
 }
 
 
-exports.unbookTower = (req,res) =>{
-    this.TowerRelease(req.body.station_id, req.body.tower_id)
-        .then(response => res.status(200).send(response))
-        .catch(err => res.status(500).send(err))
-}
+// exports.unbookTower = (req,res) =>{
+//     this.TowerRelease(req.body.station_id, req.body.tower_id)
+//         .then(response => res.status(200).send(response))
+//         .catch(err => res.status(500).send(err))
+// }

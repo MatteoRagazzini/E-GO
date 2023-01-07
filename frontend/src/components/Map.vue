@@ -13,6 +13,8 @@
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
+import yellow_marker_url from "@/assets/yellow-marker.png"
+import green_marker_url from "@/assets/green-marker.png"
 
 let locationMarker = null;
 let locationMarkerIsSet = false;
@@ -36,7 +38,9 @@ export default {
       showStationCard: false,
       // to be passed to the station card
       station: {},
-      map: null
+      map: null,
+      userStationReserved : "639f3e9c29a8a26bac492c5f",
+      userStationCharging : "63a6d09bd1080075f534305c"
     }
   },
   sockets: {
@@ -103,28 +107,57 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
+      const yellow_marker_icon = {
+        url: yellow_marker_url, // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
+      };
+
+      const green_marker_icon = {
+        url: green_marker_url, // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
+      };
+
       StationService.getStations().then(
         (response) => {
           var stations = response.data
           stations.forEach(station => {
-            const marker = new google.maps.Marker({
-              position: new google.maps.LatLng(station.latitude, station.longitude),
-              // animation: google.maps.Animation.DROP,
-              label: "" + (station.totalTowers - station.usedTowers),
-              map: this.map
-            })
+            let marker = {}
+
+            // I have three different markers only because I would like to show the one which are
+            // reserved and the once which are in charging
+
+            // Here the correct way to do it would be revert back to the advancedMarkers and use a class
+
+
+            if (station._id === this.userStationReserved) {
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                label: "" + (station.totalTowers - station.usedTowers),
+                icon: yellow_marker_icon,
+                map: this.map
+              })
+            } else if(station._id === this.userStationCharging){
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                label: "" + (station.totalTowers - station.usedTowers),
+                icon: green_marker_icon,
+                map: this.map
+              })
+            } else{
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                // animation: google.maps.Animation.DROP,
+                label: "" + (station.totalTowers - station.usedTowers),
+                map: this.map
+              })
+            }
+
 
             StationsMarkers.push({station: station, marker: marker})})
 
             StationsMarkers.forEach(m => m.marker.addListener("click", () => {
               this.showStationCard = true
               this.station = m.station
-              // this.station.id = m.station._id
-              // this.station.title = m.station.address
-              // this.station.totalTowers = m.station.totalTowers
-              // this.station.usedTowers = m.station.usedTowers
-              // this.station.address = "not a second address"
-
               UserService.getFavouriteStations(this.currentUser._id).then((response) => {
                 let favStations = response.data
                 this.station.favorite = favStations.indexOf(m.station._id) > -1

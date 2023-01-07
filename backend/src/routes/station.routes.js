@@ -23,11 +23,6 @@ module.exports = function(app) {
     );
 
     app.post(
-        "/api/station/register",
-        controller.registerStation
-    );
-
-    app.post(
         "/api/station/tower/occupy",
         [authJwt.verifyToken],
         controller.occupyTower

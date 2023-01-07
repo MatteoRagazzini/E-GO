@@ -83,37 +83,33 @@ exports.TowerOccupy = (user_id,station_id) => {
 exports.TowerRelease = (station_id, tower_id) => {
     console.log("[RELEASE TOWER] station: " + station_id, "| tower: " + tower_id)
     return new Promise((resolve, reject) => {
-        Station.findById(station_id, function (err, station) {
-            if (err) reject(err)
-            else {
-                if (station == null) {
-                    reject('station not found')
-                } else {
-                    console.log(station.towers.map(t=>t.id),tower_id)
-                    const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
-                    if (towerToFree === undefined) reject('tower not found')
-                    else if (towerToFree.isAvailable) reject('tower not occupied')
-                    else {
-                        towerToFree.isAvailable = true
-                        towerToFree.charging_vehicle_id = ""
-                        station.usedTowers = station.towers.filter(s => !s.isAvailable).length
-                        station.save().then(
-                            resolve("tower released")
-                        ).catch(er => {
-                                reject('error in saving')
-                            }
-                        )
+        if(station_id=== undefined || tower_id === undefined) reject("Impossible to release tower due to undefined parameters")
+        else{
+            Station.findById(station_id, function (err, station) {
+                if (err) reject(err)
+                else {
+                    if (station == null) {
+                        reject('station not found')
+                    } else {
+                        console.log(station.towers.map(t=>t.id),tower_id)
+                        const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
+                        if (towerToFree === undefined) reject('tower not found')
+                        else if (towerToFree.isAvailable) reject('tower not occupied')
+                        else {
+                            towerToFree.isAvailable = true
+                            towerToFree.charging_vehicle_id = ""
+                            station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                            station.save().then(
+                                resolve("tower released")
+                            ).catch(er => {
+                                    reject('error in saving')
+                                }
+                            )
+                        }
                     }
                 }
-            }
 
-        })
+            })
+        }
     })
 }
-
-
-// exports.unbookTower = (req,res) =>{
-//     this.TowerRelease(req.body.station_id, req.body.tower_id)
-//         .then(response => res.status(200).send(response))
-//         .catch(err => res.status(500).send(err))
-// }

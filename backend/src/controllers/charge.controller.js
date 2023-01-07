@@ -1,6 +1,7 @@
 const db = require("../models");
 const Charge = db.charge;
 const stationController = require("../controllers/station.controller");
+const userController = require("../controllers/user.controller");
 const User = db.user;
 
 function findUser(user_id) {
@@ -35,14 +36,15 @@ exports.startCharge = (req, res) => {
             cost: null
         });
 
-        charge.save(err => {
-            if (err) {
-                res.status(500).send({message: err});
-                return;
-            }
-        console.log(charge)
-            res.status(200).send({message: "Charge was registered successfully!"});
-        });
+        userController.setStatus("connected",req.body.user._id, req.body.station._id )
+            .then(r=> charge.save(err => {
+                if (err) {
+                    res.status(500).send({message: err});
+                    return;
+                }
+                res.status(200).send({message: "Charge was registered successfully!"});
+            })
+        )
     })
 };
 
@@ -66,20 +68,27 @@ exports.endCharge = (req, res) => {
                 // considering a cost of 10 cents per minutes
                 charge.cost = ( minutes * 0.10).toFixed(2)
 
-                console.log(charge)
 
                 charge.save()
-                    .then(result =>stationController.releaseTowerForTimerExpired(req.body.charge.station_id, req.body.charge.tower_id))
+                    .then(r => {
+                        console.log(r)
+                        userController.setStatus("free", req.body.charge.user_id, "")
+                    })
+                    .then(result => {
+                        console.log("here")
+                        console.log(result)
+                        stationController.TowerRelease(req.body.charge.station_id, req.body.charge.tower_id)
+                    })
                     .then(result => res.send(result))
-                    .catch(err => res.status(500).send(err))
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).send(err)
+                    })
             }
         ).catch(err => {
             res.send(err)
         })
     }
-    // TowerRelease(req.body.station_id, req.body.tower_id)
-    //     .then(result=>res.status(200).send(result))
-    //     .catch(err => res.status(500).send(err))
 }
 
 

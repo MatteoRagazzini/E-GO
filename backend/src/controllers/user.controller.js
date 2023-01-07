@@ -33,13 +33,13 @@ exports.findUser = (user_id) => {
     })
 };
 
-exports.setStatus = (user_id, station_id) => {
+exports.setStatus = (status, user_id, station_id) => {
     return new Promise((resolve, reject) => {
        this.findUser(user_id).then(user=>{
-           user.status = "reserved"
+           user.status = status
            user.occupiedStationId = station_id
            user.save()
-               .then(resolve("status updated"))
+               .then(resolve("status updated to" + status ))
                .catch(reject("problem in saving"))
        }).catch(err=>reject(err))
     })

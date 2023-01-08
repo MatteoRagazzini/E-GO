@@ -1,5 +1,5 @@
 <template>
-<!--  <v-btn @click="this.clearMarkers">delete</v-btn>-->
+  <!--  <v-btn @click="this.clearMarkers">delete</v-btn>-->
   <div id="mapDiv"/>
   <StationCard
     v-model="this.showStationCard"
@@ -13,8 +13,6 @@
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
-import yellow_marker_url from "@/assets/yellow-marker.png"
-import green_marker_url from "@/assets/green-marker.png"
 
 let locationMarker = null;
 let locationMarkerIsSet = false;
@@ -37,7 +35,6 @@ export default {
   data() {
     return {
       showStationCard: false,
-      // to be passed to the station card
       station: {},
     }
   },
@@ -47,12 +44,8 @@ export default {
     },
     ChangeMarker: function (data) {
       console.log("[MAP] receive ChangeMarker: ", data)
-      // let markerToChange = markers.find(m=>m.id === data.station)
-      // console.log(markerToChange)
-      // markerToChange.usedTowers ++;
-      // markerToChange.marker.setMap(null)
       this.clearMarkers()
-      if(data === 'inc')this.station.usedTowers++
+      if (data === 'inc') this.station.usedTowers++
       else if (data === 'dec') this.station.usedTowers--
       this.buildMarkers()
     }
@@ -62,12 +55,8 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    // retrieve from the store which is always up to date with the backend the stations occupied by the user
-    userStationReserved(){
-      return  this.$store.state.userState.status === "reserved" ? this.$store.state.userState.station : ""
-    },
-    userStationCharging(){
-      return  this.$store.state.userState.status === "connected" ? this.$store.state.userState.station : ""
+    userStatus() {
+      return this.$store.state.userState
     }
   },
   mounted() {
@@ -76,6 +65,7 @@ export default {
       zoom: 13,
       mapId: "16c023e99af33056",
     })
+    this.refreshUserState();
     this.clearMarkers();
     this.buildMarkers();
   },
@@ -103,8 +93,19 @@ export default {
     }
   },
   methods: {
-    switchTab(tab){
+    switchTab(tab) {
       this.$emit("switchTab", tab)
+    },
+    refreshUserState(){
+      UserService.getState(this.currentUser._id).then(res => {
+        console.log(res.data)
+        this.$store.dispatch("userState/refreshStatus", res.data)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getStationStatus(station_id) {
+      return this.userStatus.station === station_id ? this.userStatus.status : "free"
     },
     clearMarkers() {
       console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
@@ -112,99 +113,40 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
-      // -----
-      UserService.getState(this.currentUser._id).then(res=>{
-        console.log(res.data)
-        this.$store.dispatch("userState/refreshStatus",res.data)
-      }).catch(err=>{
-        console.log(err)
-      })
-
-      // -----
-      const yellow_marker_icon = {
-        url: yellow_marker_url, // url
-        scaledSize: new google.maps.Size(40, 40), // scaled size
-      };
-
-      const green_marker_icon = {
-        url: green_marker_url, // url
-        scaledSize: new google.maps.Size(40, 40), // scaled size
-      };
-
-
       StationService.getStations().then(
-        (response) => {
-          var stations = response.data
-          stations.forEach(station => {
-
-            console.log(station)
-
-            // I have three different markers only because I would like to show the one which are
-            // reserved and the once which are in charging
-
-            // Here the correct way to do it would be revert back to the advancedMarkers and use a class
+        (stations) => {
+            stations.data.forEach(station => {
             let marker = {}
 
-            if (station._id === this.userStationReserved) {
-              station.status = "reserved"
-              const pinViewBackground = new google.maps.marker.PinView({
-                background: "#FBBC04",
-                scale: 1.3,
-                glyph: "",
-              });
+            const content = document.createElement("div");
+              content.classList.add("free")
+            content.innerText = "" + (station.totalTowers - station.usedTowers)
+            content.classList.add(this.getStationStatus(station._id))
 
-              //   label: "" + (station.totalTowers - station.usedTowers),
+            station.status = this.getStationStatus(station._id)
 
-              marker = new google.maps.marker.AdvancedMarkerView({
-                map,
-                position: new google.maps.LatLng(station.latitude, station.longitude),
-                content: pinViewBackground.element,
-              });
-            } else if(station._id === this.userStationCharging){
-              station.status = "connected"
-              const pinViewBackground = new google.maps.marker.PinView({
-                background: "#00FF00",
-                scale: 1.3,
-                glyph: "",
-              });
-              marker = new google.maps.marker.AdvancedMarkerView({
-                map,
-                position: new google.maps.LatLng(station.latitude, station.longitude),
-                content: pinViewBackground.element,
-              });
-            } else{
-              station.status = "free"
-              const pinViewBackground = new google.maps.marker.PinView({
-                background: "#FF0000",
-                glyph: "",
-              });
-              marker = new google.maps.marker.AdvancedMarkerView({
-                map,
-                position: new google.maps.LatLng(station.latitude, station.longitude),
-                content: pinViewBackground.element,
-              });
-            }
 
-            StationsMarkers.push({station: station, marker: marker})})
+            marker = new google.maps.marker.AdvancedMarkerView({
+              map,
+              position: new google.maps.LatLng(station.latitude, station.longitude),
+              content: content,
+            });
 
-            StationsMarkers.forEach(m => m.marker.addListener("click", () => {
-              this.showStationCard = true
-              this.station = m.station
-              UserService.getFavouriteStations(this.currentUser._id).then((response) => {
-                let favStations = response.data
-                this.station.favorite = favStations.indexOf(m.station._id) > -1
-              })
-            }))
+            StationsMarkers.push({station: station, marker: marker})
           })
-          //   THIS PART NEEDS TO BE CHECKED AND IMPLEMENTED
-          //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
-    .catch(error => {
-        console.log(error)
-        // if (error.response.status === 401) {
-        //   console.log("trying to push")
-        //   this.$router.push('/login')
-        // }
-      })
+
+          StationsMarkers.forEach(m => m.marker.addListener("click", () => {
+            this.showStationCard = true
+            this.station = m.station
+            UserService.getFavouriteStations(this.currentUser._id).then((response) => {
+              let favStations = response.data
+              this.station.favorite = favStations.indexOf(m.station._id) > -1
+            })
+          }))
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
   emits: ['switchTab']
@@ -215,6 +157,54 @@ export default {
 #mapDiv {
   width: 100%;
   height: 80vh;
+}
+
+.free {
+  align-items: center;
+  background-color: #FF0000;
+  border-radius: 50%;
+  color: #263238;
+  display: flex;
+  font-size: 14px;
+  gap: 15px;
+  height: 32px;
+  justify-content: center;
+  padding: 4px;
+  position: relative;
+  position: relative;
+  transition: all 0.3s ease-out;
+  width: 32px;
+}
+
+.free::after {
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #FF0000;
+  content: "";
+  height: 0;
+  left: 50%;
+  position: absolute;
+  top: 95%;
+  transform: translate(-50%, 0);
+  transition: all 0.3s ease-out;
+  width: 0;
+  z-index: 1;
+}
+
+.reserved {
+  background-color: #ffa500;
+}
+
+.reserved::after {
+  border-top: 7px solid #ffa500;
+}
+
+.connected {
+  background-color: #00FF00;
+}
+
+.connected::after {
+  border-top: 7px solid #00FF00;
 }
 </style>
 

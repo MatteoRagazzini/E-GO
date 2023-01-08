@@ -41,6 +41,7 @@ export default {
   sockets: {
     connect: function () {
       console.log('socket connected')
+      this.$socket.emit('user', this.currentUser)
     },
     ChangeMarker: function (data) {
       console.log("[MAP] receive ChangeMarker: ", data)

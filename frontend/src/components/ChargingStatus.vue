@@ -1,10 +1,11 @@
+
 <template>
   <v-tabs
-      fixed-tabs
       bg-color="transparent"
       grow
       v-model="tab"
       color="green"
+      centered
     >
   <br>
     <v-tab value="CurrentCharging">
@@ -14,29 +15,26 @@
         Charging history
     </v-tab>
   </v-tabs>
-  <v-window v-model="tab">
-    <v-window-item value="CurrentCharging">
-      <div v-if="isCharging">
-        <v-container>
+  <v-window v-model="tab" fluid class="fill-height">
+    <v-window-item align="center" justify="center" value="CurrentCharging">
+      <v-container v-if="isCharging" fluid class="fill-height">
           <v-row align="center" justify="center">
             <v-progress-circular
               :rotate="360"
               :size="400"
               :width="30"
               :model-value="value"
-              color="teal"
+              color="green"
             >
-              <v-icon size="x-large">mdi-battery</v-icon>
-              {{ value }}
+             <span class="text-h5"> {{ value }}%</span>
             </v-progress-circular>
           </v-row>
-
-          <v-btn @click="endCharge">Stop Charging</v-btn>
-          <transition name="blink">
-            <v-row align="center" justify="center" class="text-h5">
-              {{chargingText}}
+           <v-row align="center" justify="center" class="text-h6">
+              {{this.chargingText}}
             </v-row>
-          </transition>
+          <v-row align="center" justify="center" class="py-8">
+            <v-btn @click="endCharge">Stop charging</v-btn>
+          </v-row>
           <v-snackbar
             v-model="showSnackbar"
             :timeout="3000"
@@ -47,15 +45,19 @@
             {{ this.snackbarText }}
           </v-snackbar>
           <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
-        </v-container>
-      </div>
-        <div v-else align="center" justify="center">
-          <h1>YOU ARE NOT CHARGING ANYTHING</h1>
+      </v-container>
+        <div v-else justify="center">
+          <h1 class="py-10">Looks like you are not charging a vehicle</h1>
+          <v-img
+            max-height="600"
+            max-width="600"
+            :src=this.url
+          ></v-img>
         </div>
       </v-window-item>
       <v-window-item value="ChargingHistory"
       >
-        <v-card>
+        <v-container id="scrollDiv">
         <v-list
         >
           <v-list-item
@@ -68,7 +70,7 @@
             ></ChargingCard>
           </v-list-item>
         </v-list>
-        </v-card>
+        </v-container>
     </v-window-item>
   </v-window>
 </template>
@@ -77,6 +79,8 @@
 
 import ChargingCard from "@/components/ChargingCard";
 import ChargeService from "@/services/charge.service";
+import imgUrl from "@/assets/Charging_status.jpg";
+
 
 export default {
   name: "ChargingStatus",
@@ -85,13 +89,14 @@ export default {
     return {
       interval: {},
       value: 0,
-      chargingText: "Your device is charging...",
       tab: "CurrentCharging",
       charges: [],
       snackbarText: "",
       snackbarColor: "green",
       showSnackbar: false,
-      currentCharge : {}
+      currentCharge: {},
+      chargingText: "Your vehicle is charging...",
+      url: imgUrl,
     }
   },
 
@@ -113,6 +118,7 @@ export default {
       this.snackbarColor = "green"
       this.snackbarText = "Charge completed"
       this.showSnackbar = true
+      this.chargingText = "Your vehicle is fully charged"
     }
   },
   mounted() {
@@ -151,7 +157,7 @@ export default {
   }
   #scrollDiv {
     width: 100%;
-    height: 70vh;
+    max-height: 70vh;
     overflow-y: scroll;
 
   }

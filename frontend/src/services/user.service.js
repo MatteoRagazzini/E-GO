@@ -75,7 +75,7 @@ class UserService {
         vehicle_id: vehicle._id,
         name: vehicle.name,
         vehicleType: vehicle.vehicleType,
-        icon: vehicle.icon,
+        img: vehicle.img,
         batteryLevel: vehicle.batteryLevel,
         isCharging: vehicle.isCharging,
         isCurrent: vehicle.isCurrent,

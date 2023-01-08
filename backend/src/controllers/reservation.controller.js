@@ -30,39 +30,82 @@ exports.createReservation = (req, res) => {
         )
 };
 
+
+
 exports.deleteReservation = (req, res) => {
-    console.log("[DEL RESERVATION] user: " + req.body.user.username, "| station: " + req.body.station.address)
-    userController.setStatus("free", req.body.user._id, "")
-        .then(r => {
-            console.log("here")
-            Reservation.find({user_id: req.body.user._id}, function (err, reservations) {
-                    if (err) console.log(err)
-                    else {
-                        const activeRes = reservations.find(r => r.isActive)
-                        if (activeRes === undefined) res.status(500).send("No active reservation found")
-                        // console.log(activeRes)
+this.deleteReservationPromise(req.body.user)
+    .then(result => res.status(200).send(result))
+    .catch(error => res.status(500).send(error))
+}
+
+// exports.deleteReservation = (req, res) => {
+//     console.log("[DEL RESERVATION] user: " + req.body.user.username)
+//     userController.setStatus("free", req.body.user._id, "")
+//         .then(r => {
+//             console.log("here")
+//             Reservation.find({user_id: req.body.user._id}, function (err, reservations) {
+//                     if (err) console.log(err)
+//                     else {
+//                         const activeRes = reservations.find(r => r.isActive)
+//                         if (activeRes === undefined) res.status(500).send("No active reservation found")
+//                         // console.log(activeRes)
+//                         else {
+//                             activeRes.stopDateTime = new Date();
+//                             activeRes.isActive = false;
+//                             const difference = activeRes.stopDateTime - activeRes.startDateTime
+//                             const minutes = Math.round(difference / 60000); // minutes
+//                             const diffDays = Math.floor(difference / 86400000); // days
+//                             const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+//                             const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+//                             activeRes.duration = diffHrs + "h:" + diffMins + "m"
+//                             activeRes.save()
+//                                 .then(reservationSaved => stationController.TowerRelease(reservationSaved.station_id.toString(), reservationSaved.tower_id.toString()))
+//                                 .then(result => {
+//                                     res.status(200).send("BOOKING CANCELED " + result)
+//                                 }).catch(err => {
+//                                 res.status(500).send(err)
+//                             })
+//                         }
+//                     }
+//                 })
+//             }
+//         )
+// };
+
+exports.deleteReservationPromise = (user) => {
+    console.log("[DEL RESERVATION] user: " + user.username)
+    return new Promise((resolve, reject) => {
+        userController.setStatus("free", user._id, "")
+            .then(r => {
+                    console.log("here")
+                    Reservation.find({user_id: user._id}, function (err, reservations) {
+                        if (err) reject(err)
                         else {
-                            activeRes.stopDateTime = new Date();
-                            activeRes.isActive = false;
-                            const difference = activeRes.stopDateTime - activeRes.startDateTime
-                            const minutes = Math.round(difference / 60000); // minutes
-                            const diffDays = Math.floor(difference / 86400000); // days
-                            const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
-                            const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
-                            activeRes.duration = diffHrs + "h:" + diffMins + "m"
-                            activeRes.save()
-                                .then(reservationSaved => stationController.TowerRelease(req.body.station._id.toString(), reservationSaved.tower_id.toString()))
-                                .then(result => {
-                                    res.status(200).send("BOOKING CANCELED " + result)
-                                }).catch(err => {
-                                res.status(500).send(err)
-                            })
+                            const activeRes = reservations.find(r => r.isActive)
+                            if (activeRes === undefined) reject("No active reservation found")
+                            else {
+                                activeRes.stopDateTime = new Date();
+                                activeRes.isActive = false;
+                                const difference = activeRes.stopDateTime - activeRes.startDateTime
+                                const diffDays = Math.floor(difference / 86400000); // days
+                                const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+                                const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+                                activeRes.duration = diffHrs + "h:" + diffMins + "m"
+                                activeRes.save()
+                                    .then(reservationSaved => stationController.TowerRelease(reservationSaved.station_id.toString(), reservationSaved.tower_id.toString()))
+                                    .then(result => {
+                                        resolve("BOOKING CANCELED " + result)
+                                    }).catch(err => {
+                                    reject(err)
+                                })
+                            }
                         }
-                    }
-                })
-            }
-        )
-};
+                    })
+                }
+            )
+    })
+}
+
 
 
 exports.getReservation = (req, res) => {

@@ -34,10 +34,6 @@ exports.occupyTower = (req, res) => {
         .catch(err => res.status(500).send(err))
 }
 
-exports.releaseTowerForTimerExpired = (station_id, tower_id) => {
-    return this.TowerRelease(station_id, tower_id)
-}
-
 exports.releaseTower = (req, res) => {
    this.TowerRelease(req.body.station_id, req.body.tower_id)
        .then(result=>res.status(200).send(result))

@@ -1,5 +1,4 @@
 <template>
-  <v-app>
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
@@ -26,6 +25,7 @@
       </v-container>
     </v-app-bar>
       <v-main>
+        <v-container class="flex-grow-1, flex-column" align="center">
         <div> status store: {{ this.status }} status user: {{this.currentUser.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
@@ -48,6 +48,7 @@
             </v-card>
           </v-window-item>
         </v-window>
+        </v-container>
       </v-main>
     <v-bottom-navigation>
       <v-tabs
@@ -74,7 +75,6 @@
         </v-tab>
       </v-tabs>
     </v-bottom-navigation>
-  </v-app>
 </template>
 
 

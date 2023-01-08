@@ -7,7 +7,6 @@
       color="green"
       centered
     >
-  <br>
     <v-tab value="CurrentCharging">
         Current charge
     </v-tab>
@@ -15,8 +14,8 @@
         Charging history
     </v-tab>
   </v-tabs>
-  <v-window v-model="tab" fluid class="fill-height">
-    <v-window-item align="center" justify="center" value="CurrentCharging">
+  <v-window align="center" justify="center" v-model="tab">
+    <v-window-item >
       <v-container v-if="isCharging" fluid class="fill-height">
           <v-row align="center" justify="center">
             <v-progress-circular
@@ -46,14 +45,14 @@
           </v-snackbar>
           <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
       </v-container>
-        <div v-else justify="center">
-          <h1 class="py-10">Looks like you are not charging a vehicle</h1>
+      <v-container v-else>
+          <h2 class="py-10">Looks like you are not charging a vehicle</h2>
           <v-img
             max-height="600"
             max-width="600"
             :src=this.url
           ></v-img>
-        </div>
+        </v-container>
       </v-window-item>
       <v-window-item value="ChargingHistory"
       >

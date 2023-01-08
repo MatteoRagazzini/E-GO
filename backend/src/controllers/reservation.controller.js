@@ -73,8 +73,9 @@ this.deleteReservationPromise(req.body.user)
 // };
 
 exports.deleteReservationPromise = (user) => {
-    console.log("[DEL RESERVATION] user: " + user.username)
     return new Promise((resolve, reject) => {
+        if(user === null) reject("parameters not ready")
+        console.log("[DEL RESERVATION] user: " + user.username)
         userController.setStatus("free", user._id, "")
             .then(r => {
                     console.log("here")

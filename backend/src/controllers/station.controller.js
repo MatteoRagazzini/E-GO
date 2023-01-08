@@ -65,9 +65,10 @@ exports.TowerOccupy = (user_id,station_id) => {
                             if(currVehicle === undefined) reject("user doesn't have a vehicle in use")
                             firstFreeTower.charging_vehicle_id = currVehicle.id
                             console.log("here")
-                            station.save().then(
-                                resolve(firstFreeTower)
-                            ).catch(err => reject(err))
+                            station.save().then( res =>{
+                                    console.log("[OCCUPY TOWER]:station occupied");
+                                    resolve(firstFreeTower)
+                            }).catch(err => reject(err))
                         }).catch(err=>(err))
                     }
                 }
@@ -87,7 +88,7 @@ exports.TowerRelease = (station_id, tower_id) => {
                     if (station == null) {
                         reject('station not found')
                     } else {
-                        console.log(station.towers.map(t=>t.id),tower_id)
+                        console.log(station.towers.filter(t=>!t.isAvailable).map(t=>t.id),tower_id)
                         const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
                         if (towerToFree === undefined) reject('tower not found')
                         else if (towerToFree.isAvailable) reject('tower not occupied')

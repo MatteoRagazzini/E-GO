@@ -77,16 +77,25 @@ export default {
         map.setZoom(15)
         if (locationMarkerIsSet) {
           console.log("entering in marker is set")
-          locationMarker.setMap(null);
+          locationMarker.map = null
           locationMarker = null;
         }
         locationMarkerIsSet = true;
-        locationMarker = new google.maps.Marker({
+
+        const icon = document.createElement("div");
+        icon.innerHTML = '<i class="fa-solid fa-user"></i>';
+
+        const faPinView = new google.maps.marker.PinView({
+          glyph: icon,
+          glyphColor: "#000000",
+          background: "#03c6fc",
+          borderColor: "#0335fc",
+        });
+
+        locationMarker = new google.maps.marker.AdvancedMarkerView({
           position: new google.maps.LatLng(this.coords),
           map: map,
-          icon: {
-            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-          }
+          content: faPinView.element
         })
       },
       deep: true

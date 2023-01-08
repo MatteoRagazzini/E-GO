@@ -13,7 +13,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYWEwNTg0OWZiNDdlN2Q5ZWU0YmZjNSIsImlhdCI6MTY3MjA4NjkzNCwiZXhwIjoxNjcyMTczMzM0fQ.kAkQaDgeb24Cnacem_yBFaYfYuFxTprE0C8XezDYIDk",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3Mjc1OTgwMywiZXhwIjoxNjcyODQ2MjAzfQ.JuUK9mEKkVROtpGGs06PADGwXnwW4s0v3kd8S8qY18A",
 						"type": "text"
 					}
 				],
@@ -36,6 +36,36 @@
 					"path": [
 						"admin",
 						"freeAllStation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/station/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\n  \"latitude\": 48.14932877520457,\n   \"longitude\": 11.580542821004014,\n    \"address\": \"Universität\",\n    \"totalTowers\": 8,\n     \"usedTowers\": 2,\n     \"towers\" : [{\n            \"id\": 1,\n            \"isAvailable\": false,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 2,\n            \"isAvailable\": false,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 3,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 4,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 5,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 6,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 7,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 8,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        }\n        ]\n  }     ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/admin/station/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"station",
+						"register"
 					]
 				}
 			},

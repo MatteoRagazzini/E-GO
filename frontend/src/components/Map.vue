@@ -19,6 +19,7 @@ import green_marker_url from "@/assets/green-marker.png"
 let locationMarker = null;
 let locationMarkerIsSet = false;
 let StationsMarkers = [];
+let map
 
 
 export default {
@@ -38,7 +39,6 @@ export default {
       showStationCard: false,
       // to be passed to the station card
       station: {},
-      map: null,
     }
   },
   sockets: {
@@ -71,7 +71,7 @@ export default {
     }
   },
   mounted() {
-    this.map = new google.maps.Map(document.getElementById("mapDiv"), {
+    map = new google.maps.Map(document.getElementById("mapDiv"), {
       center: this.coords,
       zoom: 13,
       mapId: "16c023e99af33056",
@@ -83,8 +83,8 @@ export default {
     coords: {
       handler(newPos, oldPos) {
         console.log('Prop changed: ', newPos, ' | was: ', oldPos)
-        this.map.setCenter(newPos)
-        this.map.setZoom(15)
+        map.setCenter(newPos)
+        map.setZoom(15)
         if (locationMarkerIsSet) {
           console.log("entering in marker is set")
           locationMarker.setMap(null);
@@ -93,7 +93,7 @@ export default {
         locationMarkerIsSet = true;
         locationMarker = new google.maps.Marker({
           position: new google.maps.LatLng(this.coords),
-          map: this.map,
+          map: map,
           icon: {
             url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
           }
@@ -108,7 +108,7 @@ export default {
     },
     clearMarkers() {
       console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
-      StationsMarkers.forEach(m => m.marker.setMap(null))
+      StationsMarkers.forEach(m => m.marker.map = null)
       StationsMarkers = []
     },
     buildMarkers() {
@@ -136,40 +136,54 @@ export default {
         (response) => {
           var stations = response.data
           stations.forEach(station => {
-            let marker = {}
+
+            console.log(station)
 
             // I have three different markers only because I would like to show the one which are
             // reserved and the once which are in charging
 
             // Here the correct way to do it would be revert back to the advancedMarkers and use a class
-
+            let marker = {}
 
             if (station._id === this.userStationReserved) {
               station.status = "reserved"
-              marker = new google.maps.Marker({
+              const pinViewBackground = new google.maps.marker.PinView({
+                background: "#FBBC04",
+                scale: 1.3,
+                glyph: "",
+              });
+
+              //   label: "" + (station.totalTowers - station.usedTowers),
+
+              marker = new google.maps.marker.AdvancedMarkerView({
+                map,
                 position: new google.maps.LatLng(station.latitude, station.longitude),
-                label: "" + (station.totalTowers - station.usedTowers),
-                icon: yellow_marker_icon,
-                map: this.map
-              })
+                content: pinViewBackground.element,
+              });
             } else if(station._id === this.userStationCharging){
               station.status = "connected"
-              marker = new google.maps.Marker({
+              const pinViewBackground = new google.maps.marker.PinView({
+                background: "#00FF00",
+                scale: 1.3,
+                glyph: "",
+              });
+              marker = new google.maps.marker.AdvancedMarkerView({
+                map,
                 position: new google.maps.LatLng(station.latitude, station.longitude),
-                label: "" + (station.totalTowers - station.usedTowers),
-                icon: green_marker_icon,
-                map: this.map
-              })
+                content: pinViewBackground.element,
+              });
             } else{
               station.status = "free"
-              marker = new google.maps.Marker({
+              const pinViewBackground = new google.maps.marker.PinView({
+                background: "#FF0000",
+                glyph: "",
+              });
+              marker = new google.maps.marker.AdvancedMarkerView({
+                map,
                 position: new google.maps.LatLng(station.latitude, station.longitude),
-                // animation: google.maps.Animation.DROP,
-                label: "" + (station.totalTowers - station.usedTowers),
-                map: this.map
-              })
+                content: pinViewBackground.element,
+              });
             }
-
 
             StationsMarkers.push({station: station, marker: marker})})
 

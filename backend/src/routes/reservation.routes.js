@@ -1,5 +1,5 @@
 const { authJwt } = require("../middlewares");
-const controller = require("../controllers/charge.controller");
+const controller = require("../controllers/reservation.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -11,20 +11,20 @@ module.exports = function(app) {
     });
 
     app.get(
-        "/api/charge/history/:id",
+        "/api/reservation/:id",
         [authJwt.verifyToken],
-        controller.getHistory
+        controller.getReservation
     );
 
     app.post(
-        "/api/charge/start",
+        "/api/reservation/create",
         [authJwt.verifyToken],
-        controller.startCharge
+        controller.createReservation
     );
 
     app.post(
-        "/api/charge/end",
+        "/api/reservation/delete",
         [authJwt.verifyToken],
-        controller.endCharge
+        controller.deleteReservation
     );
 };

@@ -13,6 +13,8 @@
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
+import yellow_marker_url from "@/assets/yellow-marker.png"
+import green_marker_url from "@/assets/green-marker.png"
 
 let locationMarker = null;
 let locationMarkerIsSet = false;
@@ -35,15 +37,8 @@ export default {
     return {
       showStationCard: false,
       // to be passed to the station card
-      station: {
-        id: 1,
-        totalTowers: 2,
-        usedTowers: 1,
-        ratings: 4.5,
-        title: "Station example",
-        reviews: 400,
-      },
-      map: null
+      station: {},
+      map: null,
     }
   },
   sockets: {
@@ -66,6 +61,13 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    // retrieve from the store which is always up to date with the backend the stations occupied by the user
+    userStationReserved(){
+      return  this.$store.state.userState.status === "reserved" ? this.$store.state.userState.station : ""
+    },
+    userStationCharging(){
+      return  this.$store.state.userState.status === "connected" ? this.$store.state.userState.station : ""
     }
   },
   mounted() {
@@ -110,27 +112,70 @@ export default {
       StationsMarkers = []
     },
     buildMarkers() {
+      // -----
+      UserService.getState(this.currentUser._id).then(res=>{
+        console.log(res.data)
+        this.$store.dispatch("userState/refreshStatus",res.data)
+      }).catch(err=>{
+        console.log(err)
+      })
+
+      // -----
+      const yellow_marker_icon = {
+        url: yellow_marker_url, // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
+      };
+
+      const green_marker_icon = {
+        url: green_marker_url, // url
+        scaledSize: new google.maps.Size(40, 40), // scaled size
+      };
+
+
       StationService.getStations().then(
         (response) => {
           var stations = response.data
           stations.forEach(station => {
-            const marker = new google.maps.Marker({
-              position: new google.maps.LatLng(station.latitude, station.longitude),
-              // animation: google.maps.Animation.DROP,
-              label: "" + (station.totalTowers - station.usedTowers),
-              map: this.map
-            })
+            let marker = {}
+
+            // I have three different markers only because I would like to show the one which are
+            // reserved and the once which are in charging
+
+            // Here the correct way to do it would be revert back to the advancedMarkers and use a class
+
+
+            if (station._id === this.userStationReserved) {
+              station.status = "reserved"
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                label: "" + (station.totalTowers - station.usedTowers),
+                icon: yellow_marker_icon,
+                map: this.map
+              })
+            } else if(station._id === this.userStationCharging){
+              station.status = "connected"
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                label: "" + (station.totalTowers - station.usedTowers),
+                icon: green_marker_icon,
+                map: this.map
+              })
+            } else{
+              station.status = "free"
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(station.latitude, station.longitude),
+                // animation: google.maps.Animation.DROP,
+                label: "" + (station.totalTowers - station.usedTowers),
+                map: this.map
+              })
+            }
+
 
             StationsMarkers.push({station: station, marker: marker})})
 
             StationsMarkers.forEach(m => m.marker.addListener("click", () => {
               this.showStationCard = true
-              this.station.id = m.station._id
-              this.station.title = m.station.address
-              this.station.totalTowers = m.station.totalTowers
-              this.station.usedTowers = m.station.usedTowers
-              this.station.address = "not a second address"
-
+              this.station = m.station
               UserService.getFavouriteStations(this.currentUser._id).then((response) => {
                 let favStations = response.data
                 this.station.favorite = favStations.indexOf(m.station._id) > -1
@@ -141,10 +186,10 @@ export default {
           //   POTENTIALLY I WOULD LIKE TO MOVE ALL THE POST PROCESSING OF THE PROMISE IN THE SERVICE FILES
     .catch(error => {
         console.log(error)
-        if (error.response.status === 401) {
-          console.log("trying to push")
-          this.$router.push('/login')
-        }
+        // if (error.response.status === 401) {
+        //   console.log("trying to push")
+        //   this.$router.push('/login')
+        // }
       })
     }
   },

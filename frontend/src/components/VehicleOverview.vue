@@ -1,7 +1,5 @@
 <template>
-  <v-card
-    color="white"
-    >
+  <v-card>
     <v-card-title
       color="black">
       Your vehicles

@@ -2,14 +2,8 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import Login from "@/components/Login";
 import Profile from "@/components/Profile";
-import BoardAdmin from "@/components/BoardAdmin";
-import BoardModerator from "@/components/BoardModerator";
-import BoardUser from "@/components/BoardUser";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
-import ChargingStatus from "@/components/ChargingStatus";
-import Map from "@/components/Map";
-import VehicleOverview from "@/components/VehicleOverview";
 
 
 const routes = [
@@ -36,39 +30,6 @@ const routes = [
     // lazy-loaded
     component: Profile,
   },
-  {
-    path: "/admin",
-    name: "admin",
-    // lazy-loaded
-    component: BoardAdmin,
-  },
-  {
-    path: "/mod",
-    name: "moderator",
-    // lazy-loaded
-    component: BoardModerator,
-  },
-  {
-    path: "/user",
-    name: "user",
-    // lazy-loaded
-    component: BoardUser,
-  },
-  {
-    path: "/chargingStatus",
-    name: "chargingStatus",
-    component: ChargingStatus,
-  },
-  {
-    path: "/map",
-    name: "map",
-    component: Map,
-  },
-  {
-    path: "/vehicles",
-    name: "vehicles",
-    component: VehicleOverview,
-  }
 ];
 
 
@@ -78,7 +39,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register', '/home'];
+  const publicPages = ['/login', '/register',];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('user');
 

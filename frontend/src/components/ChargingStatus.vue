@@ -1,57 +1,61 @@
 <template>
   <v-tabs
-    fixed-tabs
-    bg-color="transparent"
-    grow
-    v-model="tab"
-    color="green"
-  >
+      fixed-tabs
+      bg-color="transparent"
+      grow
+      v-model="tab"
+      color="green"
+    >
+  <br>
     <v-tab value="CurrentCharging">
-      Current charge
+        Current charge
     </v-tab>
     <v-tab value="ChargingHistory">
-      Charging history
+        Charging history
     </v-tab>
   </v-tabs>
   <v-window v-model="tab">
-    <v-window-item value="CurrentCharging"
-    >
-  <br>
-  <v-container>
-    <v-row align="center" justify="center">
-    <v-progress-circular
-      :rotate="360"
-      :size="400"
-      :width="30"
-      :model-value="value"
-      color="green"
-    >
-      <v-icon size="x-large">mdi-battery</v-icon>
-      {{ value }}%
-    </v-progress-circular>
-    </v-row>
-    <br>
-    <transition name="blink">
-    <v-row
-      align="center" justify="center" class="text-h5">
-      {{chargingText}}
-    </v-row>
-    </transition>
-    <v-snackbar
-      v-model="showSnackbar"
-      :timeout="3000"
-      absolute
-      location="bottom right"
-      :color="snackbarColor"
-    >
-      {{ this.snackbarText }}
-    </v-snackbar>
-<!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
-  </v-container>
-    </v-window-item>
-    <v-window-item value="ChargingHistory"
-    >
-      <v-container id="scrollDiv">
+    <v-window-item value="CurrentCharging">
+      <div v-if="isCharging">
+        <v-container>
+          <v-row align="center" justify="center">
+            <v-progress-circular
+              :rotate="360"
+              :size="400"
+              :width="30"
+              :model-value="value"
+              color="teal"
+            >
+              <v-icon size="x-large">mdi-battery</v-icon>
+              {{ value }}
+            </v-progress-circular>
+          </v-row>
+
+          <v-btn @click="endCharge">Stop Charging</v-btn>
+          <transition name="blink">
+            <v-row align="center" justify="center" class="text-h5">
+              {{chargingText}}
+            </v-row>
+          </transition>
+          <v-snackbar
+            v-model="showSnackbar"
+            :timeout="3000"
+            absolute
+            location="bottom right"
+            :color="snackbarColor"
+          >
+            {{ this.snackbarText }}
+          </v-snackbar>
+          <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
+        </v-container>
+      </div>
+        <div v-else align="center" justify="center">
+          <h1>YOU ARE NOT CHARGING ANYTHING</h1>
+        </div>
+      </v-window-item>
+      <v-window-item value="ChargingHistory"
+      >
+        <v-card>
         <v-list
         >
           <v-list-item
@@ -64,7 +68,7 @@
             ></ChargingCard>
           </v-list-item>
         </v-list>
-      </v-container>
+        </v-card>
     </v-window-item>
   </v-window>
 </template>
@@ -87,6 +91,7 @@ export default {
       snackbarText: "",
       snackbarColor: "green",
       showSnackbar: false,
+      currentCharge : {}
     }
   },
 
@@ -94,54 +99,47 @@ export default {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    isCharging() {
+      if(this.$store.state.userState.status === "connected") this.tab = "CurrentCharging";
+      return this.$store.state.userState.status === "connected";
     }
   },
-
-  mounted() {
-    //tbd
-    this.loadChargeHistory()
-    this.interval = setInterval(() => {
-      if (this.value === 100) {
-        clearTimeout(this.interval)
-        this.showSnackbar = true
-        this.snackbarText = "Your device is fully charged!"
-        this.snackbarColor = "green"
-        return (this.value = 100)
-      }
-      this.value += 1
-    }, 600)
+  sockets: {
+    battery: function (data) {
+      this.value = data
+    },
+    chargeCompleted:function(){
+      this.snackbarColor = "green"
+      this.snackbarText = "Charge completed"
+      this.showSnackbar = true
+    }
   },
-
+  mounted() {
+    this.loadChargeHistory()
+  },
   methods: {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
-        console.log("here")
-        this.charges = response
+        this.currentCharge = response.find(c=>!c.isCompleted)
+        console.log(this.currentCharge)
+        this.charges = response.reverse()
       }).catch(err=>console.log(err))
-      // ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id).then(res => {
-      //   console.log(res)
-      // })
-      //tbd load charges from backend
-      //   const charge = {
-      //     user_id: this.currentUser.user_id,
-      //     station_id: "639f3e9c29a8a26bac492c5f",
-      //     tower_id: 5,
-      //     vehicle_id: 3,
-      //     isCompleted: true,
-      //     startDateTime: "06.01.2023 11:11:11",
-      //     stopDateTime: "06.01.2023 11:21:21",
-      //     duration: "10 min 10 sec",
-      //     totalBatteryCharged: 100,
-      //     cost: 5
-      //   }
-      //
-      //   this.charges.push(charge)
-      // }
     },
-
-
-    beforeUnmount() {
-      clearInterval(this.interval)
+    endCharge(){
+      ChargeService.endCharge(this.currentUser).then(response=>{
+        console.log(response)
+        this.$store.dispatch("userState/goToFreeStatus")
+        this.$socket.emit('endCharge')
+        this.loadChargeHistory()
+        this.tab = "ChargingHistory"
+      }).catch(err=>{
+        console.log(err)
+        this.snackbarColor = "red"
+        this.snackbarText =  err
+        this.showSnackbar = true
+      })
+      console.log("end charge")
     },
   }
 }
@@ -155,5 +153,6 @@ export default {
     width: 100%;
     height: 70vh;
     overflow-y: scroll;
+
   }
 </style>

@@ -3,7 +3,7 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <autocompleteComponent @newLocation="updateLocation" :geoCords="this.geoCords" v-if="!this.isHidden"></autocompleteComponent>
+          <AutocompleteComponent @newLocation="updateLocation" :geoCords="this.geoCords" v-if="!this.isHidden"></AutocompleteComponent>
           <!--         this is a trick which is not nice-->
           <v-col class="flex-grow-1" v-if="this.isHidden"></v-col>
           <v-col class="flex-grow-0">
@@ -27,17 +27,19 @@
     </v-app-bar>
     <v-container>
       <v-main>
+        <div> status store: {{ this.status }} status user: {{this.currentUser.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
           >
             <v-card>
-              <googleMap :coords="this.coords"  @switchTab="switchTab"></googleMap>
+<!--              coords are passed to the map since they can be changed by the sibling "Autocomplete"-->
+              <Map :coords="this.coords"  @switchTab="switchTab"></Map>
             </v-card>
           </v-window-item>
           <v-window-item value="Vehicles"
           >
             <v-card>
-              <vehicle-overview></vehicle-overview>
+              <vehicle-overview v-if="currentUser!==undefined"></vehicle-overview>
             </v-card>
           </v-window-item>
           <v-window-item value="Charging"
@@ -73,34 +75,6 @@
           Charging
         </v-tab>
       </v-tabs>
-<!--      <v-btn :to="{-->
-<!--        name: 'map',-->
-<!--        params: {coords:1},-->
-<!--        }"-->
-<!--             value="Map">-->
-<!--        <v-icon>mdi-map</v-icon>-->
-
-<!--        Map-->
-<!--&lt;!&ndash;      </v-btn>&ndash;&gt;-->
-
-<!--      <v-btn @click="goToMap">-->
-<!--        <v-icon>mdi-map</v-icon>-->
-<!--        Map-->
-<!--      </v-btn>-->
-
-<!--      <v-btn value="charging" to="/chargingStatus" @click="hideLocationSearch">-->
-<!--        <v-badge-->
-<!--          dot-->
-<!--          avatar-->
-<!--          color="red"-->
-<!--          overlap-->
-<!--          :value="infoCharged"-->
-<!--        >-->
-<!--          <v-icon>mdi-battery</v-icon>-->
-<!--        </v-badge>-->
-<!--        Charging-->
-
-<!--      </v-btn>-->
     </v-bottom-navigation>
   </v-app>
 </template>
@@ -121,7 +95,15 @@ export default {
       infoCharged: false,
       coords: {lat:48.15143929407981,lng:11.580534476878478},
       geoCords: {lat:48.15143929407981,lng:11.580534476878478},
-      watcher: null
+      watcher: null,
+    }
+  },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+    status(){
+      return this.$store.state.userState;
     }
   },
   mounted() {
@@ -152,21 +134,12 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },
-    hideLocationSearch() {
-      if (this.isHidden !== true) {
-        this.isHidden = true
-      }
-    },
-    showLocationSearch() {
-      this.isHidden = false
-    },
   },
   components: {
     ChargingStatus,
-    Map,
     VehicleOverview,
-    autocompleteComponent: AutocompleteComponent,
-    googleMap: Map
+    AutocompleteComponent,
+    Map
   },
 }
 </script>

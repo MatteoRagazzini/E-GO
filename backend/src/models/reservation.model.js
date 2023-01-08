@@ -7,9 +7,10 @@ const Reservation = mongoose.model(
         station_id: String,
         tower_id: String,
         vehicle_id: String,
-        startDateTime: String,
-        stopDateTime: String,
-        duration: Number,
+        isActive: Boolean,
+        startDateTime: Date,
+        stopDateTime: Date,
+        duration: String,
     })
 );
 

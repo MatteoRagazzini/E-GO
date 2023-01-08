@@ -16,8 +16,8 @@ module.exports = function(app) {
         controller.freeAllStation
     )
 
-    // app.post(
-    //     "/api/station/tower/connect",
-    //     controller.connect
-    // )
+    app.post(
+        "/admin/station/register",
+        controller.registerStation
+    );
 };

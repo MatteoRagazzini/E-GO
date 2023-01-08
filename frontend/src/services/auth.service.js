@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from "@/services/auth-header";
 
 axios.defaults.headers.common = {
   "Content-Type": "application/json"

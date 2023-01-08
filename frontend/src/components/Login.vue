@@ -1,4 +1,3 @@
-
 <template>
   <v-sheet class="pa-12" rounded>
     <v-card class="mx-auto px-6 py-8 justify-center" max-width="344">
@@ -73,21 +72,12 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
-    },
-  },
-  created() {
-    if (this.loggedIn) {
-      this.$router.push("/map");
     }
   },
   methods: {
     onSubmit () {
       this.loading = true;
       this.$store.dispatch("auth/login", {"username":this.username, "password":this.password}).then(
-        () => {
-          console.log("here even if the login is not working")
-          this.$router.push("/map");
-        },
         (error) => {
 
           this.loading = false;

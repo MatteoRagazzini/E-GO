@@ -14,7 +14,7 @@
       ></v-progress-linear>
 
       <v-card-item>
-        <v-card-title>{{ this.station.title }}
+        <v-card-title>{{ this.station.address }}
           <!--       What is that icon for?-->
           <v-btn
             icon
@@ -28,13 +28,13 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-        <v-card-subtitle class="my-4 text-subtitle-1">{{ this.station.address }}</v-card-subtitle>
+        <v-card-subtitle class="my-4 text-subtitle-1">not existed</v-card-subtitle>
 
         <v-card-text>
           <div>Availability: {{ this.stationAvailability }}</div>
-          <div v-if="status==='connected'">In charging</div>
-          <div class="text-center" v-if="this.status==='reserved'">
-            <div>Click to unlock Tower {{ this.tower.id }}</div>
+          <div v-if="this.station.status==='connected'">In charging</div>
+          <div class="text-center" v-if="this.station.status==='reserved'">
+            <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
             <br>
             <v-progress-circular
               :rotate="360"
@@ -55,32 +55,36 @@
 
         </v-card-text>
         <v-card-actions>
-          <!--      IF RESERVED-->
-          <div v-if="status==='reserved'">{{ this.timerText }}</div>
-          <v-spacer v-if="status==='reserved'"></v-spacer>
-          <v-btn
-            color="red"
-            v-if="status==='reserved'"
-            @click="releaseTower"
-          >
-            Cancel
-          </v-btn>
-          <!--      IF NOT RESERVED-->
-          <v-btn v-if="status==='free'"
-            color="green"
-            variant="text"
-            @click="occupyTower('connect')"
-          >
-            Connect
-          </v-btn>
-          <v-btn v-if="status==='free'"
-            color="green"
-            variant="text"
-            @click="occupyTower('reserve')"
-          >Reserve
-          </v-btn>
-          <v-spacer v-if="status==='free'"></v-spacer>
-          <v-btn color="primary" v-if="status==='connected'">Disconnect</v-btn>
+            <!--      IF RESERVED-->
+            <div v-if="this.station.status==='reserved'">{{ this.timerText }}</div>
+            <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+            <v-btn
+              color="red"
+              v-if="this.station.status==='reserved'"
+              @click="releaseTower"
+            >
+              Cancel
+            </v-btn>
+            <!--      IF NOT RESERVED-->
+            <v-btn v-if="this.station.status==='free'"
+                   color="green"
+                   variant="text"
+                   :disabled="this.disabled"
+                   @click="occupyTower('connect')"
+            >
+              Connect
+            </v-btn>
+            <v-btn v-if="this.station.status==='free'"
+                   color="green"
+                   variant="text"
+                   :disabled="this.disabled"
+                   @click="occupyTower('reserve')"
+            >Reserve
+            </v-btn>
+            <v-spacer v-if="this.station.status==='free'"></v-spacer>
+
+            <v-btn color="primary" v-if="this.station.status==='connected'">Disconnect</v-btn>
+
           <v-btn color="primary" @click="closeStationCard">Close</v-btn>
         </v-card-actions>
     </v-card>
@@ -98,8 +102,8 @@
 
 // you pass a prop in case the user has reserved or is charging containing the station id.
 // add a field to the station prop isReserved isCharging
-// this.status = status coming form the prop
-// status can be free reserved or connected.
+// this.this.station.status = this.station.status coming form the prop
+// this.station.status can be free reserved or connected.
 // has user reserved
 // if one of these != null
 // you print the station with station_id === that in a different colour
@@ -110,12 +114,13 @@
 import userService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import ChargeService from "@/services/charge.service";
+import ReservationService from "@/services/reservation.service";
 
 export default {
   data: () => ({
     loading: false,
     heartColor: "white",
-    status: "free",
+    // this.station.status: "free",
     timerText: "",
     timerValue: 100,
     firstValue: 0,
@@ -125,7 +130,7 @@ export default {
     showSnackbar: false,
     snackbarText: "",
     snackbarColor: "",
-    tower: {},
+    reservation: {},
   }),
   sockets: {
     connect: function () {
@@ -142,13 +147,25 @@ export default {
     expired: function (data) {
       console.log('Expired')
       this.resetTimer()
-      this.status = "free";
+      this.station.status = "free"
+      this.$store.dispatch("userState/goToFreeStatus")
+    },
+    endCharge: function (){
+      console.log('Expired')
+      this.resetTimer()
+      this.station.status = "free"
+      this.$store.dispatch("userState/goToFreeStatus")
     }
   },
   computed: {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
+    },
+    disabled(){
+      // this is representing if the user has already interacted with a station. In this case all the others are disabled
+      // return this.$store.state.userState.status.isCharging;
+      return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
@@ -166,55 +183,78 @@ export default {
     occupyTower(option) {
           this.loading = true
       console.log(this.currentUser._id)
-          StationService.occupyTower(this.currentUser._id, this.station.id).then(
-            (tower) => {
-              this.tower = tower
-              this.loading = false
-              this.status = "reserved";
-              console.log("[STATION]: reserved " + tower)
-              this.$socket.emit('startTimer', {station: this.station.id, tower: tower.id, reason: option})
-              this.snackbarColor = "green"
-              this.snackbarText = "Station successfully reserved"
-              this.showSnackbar = true
-            }).catch(err => {
+        ReservationService.createReservation(this.currentUser, this.station).then(
+        (reservation) => {
+            console.log(reservation)
+            this.reservation = reservation
+            this.loading = false
+            this.station.status = "reserved"
+            this.$store.dispatch("userState/goToReservedStatus", this.station._id)
+            console.log("[STATION]: reserved tower" + reservation.tower_id)
+            this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
+            this.snackbarColor = "green"
+            this.snackbarText = "Station successfully reserved"
+            this.showSnackbar = true
+          })
+          .catch(err=> {
             console.log(err)
             this.snackbarColor = "red"
-            this.snackbarText = "Station is full"
+            this.snackbarText = err
             this.showSnackbar = true
             this.loading = false
           })
+          // StationService.occupyTower(this.currentUser._id, this.station._id).then(
+          //   (tower) => {
+          //     this.tower = tower
+          //     this.loading = false
+          //     this.this.station.status = "reserved";
+          //     console.log("[STATION]: reserved " + tower)
+          //     this.$socket.emit('startTimer', {station: this.station._id, tower: tower.id, reason: option})
+          //     this.snackbarColor = "green"
+          //     this.snackbarText = "Station successfully reserved"
+          //     this.showSnackbar = true
+          //   }).catch(err => {
+          //   console.log(err)
+          //
+          // })
     },
     releaseTower(){
-      StationService.releaseTower(this.station.id, this.tower.id).then( res => {
-        console.log(res)
-      this.$socket.emit('cancelTimer', {station: this.station.id, tower: this.tower.id})
-      this.resetTimer()
-      this.snackbarColor = "green"
-      this.snackbarText = "Station successfully unbooked"
-      this.showSnackbar = true
-    }).catch(err=> console.log(err))
+      ReservationService.deleteReservation(this.currentUser, this.station)
+        .then(res=>{
+          console.log(res)
+            this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
+            this.resetTimer()
+            this.station.status = "reserved"
+            this.$store.dispatch("userState/goToFreeStatus")
+            this.snackbarColor = "green"
+            this.snackbarText = "Station successfully unbooked"
+            this.showSnackbar = true
+        })
+        .catch(err => console.log(err))
     },
   changeFavorite() {
     if (!this.station.favorite) {
       this.station.favorite = true
-      userService.addFavouriteStation(this.currentUser._id, this.station.id)
+      userService.addFavouriteStation(this.currentUser._id, this.station._id)
     } else {
       this.station.favorite = false
-      userService.removeFavouriteStation(this.currentUser._id, this.station.id)
+      userService.removeFavouriteStation(this.currentUser._id, this.station._id)
     }
     // inform user
   },
     startCharge(){
-      ChargeService.startCharge(this.currentUser._id, this.station.id, this.tower.id)
+      ChargeService.startCharge(this.currentUser, this.station, this.reservation.tower_id)
         .then(res=>{
           console.log(res)
           this.$socket.emit('startCharge')
           this.snackbarColor = "green"
           this.snackbarText = "Charge Started"
           this.showSnackbar = true
+          this.station.status = "connected";
+          // this updates the value in the store, so that if I go to the map it's changed real time
+          this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
           this.switchTab("Charging")
           this.closeStationCard();
-          this.status = "connected";
         })
         .catch(err=>console.log(err))
     },
@@ -225,16 +265,7 @@ export default {
 ,
 props: {
   showStationCard: Boolean,
-  station: {
-  id: String,
-    //ratings: Number,
-    title: String,
-    //reviews: Number,
-    address: String,
-    usedTowers: Number,
-    totalTowers: Number,
-    favorite: Boolean,
-  }
+  station: Object
 },
   emits: ['switchTab','close']
 }

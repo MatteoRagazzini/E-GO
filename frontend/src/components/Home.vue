@@ -25,7 +25,6 @@
         </v-row>
       </v-container>
     </v-app-bar>
-    <v-container>
       <v-main>
         <div> status store: {{ this.status }} status user: {{this.currentUser.status}}</div>
         <v-window v-model="tab">
@@ -50,7 +49,6 @@
           </v-window-item>
         </v-window>
       </v-main>
-    </v-container>
     <v-bottom-navigation>
       <v-tabs
         v-model="tab"

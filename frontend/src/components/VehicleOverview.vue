@@ -1,15 +1,11 @@
 <template>
-  <v-card>
-    <v-card-title
-      color="black">
-      Your vehicles
-    </v-card-title>
-    <v-progress-circular
-      indeterminate
-      color="green"
-      v-if="loading"
-    ></v-progress-circular>
+<!--  <p class="font-weight-bold text-h5">Your vehicles</p>-->
     <v-container id="scrollDiv">
+      <v-progress-circular
+        indeterminate
+        color="green"
+        v-if="loading"
+      ></v-progress-circular>
       <v-list
       >
         <v-list-item
@@ -24,34 +20,31 @@
           </v-list-item>
       </v-list>
     </v-container>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-        <v-btn
-          color="green"
-          @click="showDialog"
-          variant="tonal"
-        >
-          Add
+  <div class="d-flex justify-center align-baseline py-6">
+      <v-btn
+        color="green"
+        @click="showDialog"
+        variant="tonal"
+      >
+        Add
 
-          <v-dialog
-            v-model="dialog">
-            <AddVehicleDialog
-              @save="closeDialog"
-            ></AddVehicleDialog>
-          </v-dialog>
-        </v-btn>
-      <v-spacer></v-spacer>
-    </v-card-actions>
-  </v-card>
-    <v-snackbar
-      v-model="showSnackbar"
-      :timeout="3000"
-      absolute
-      location="bottom right"
-      :color="snackbarColor"
-    >
-      {{ this.snackbarText }}
-    </v-snackbar>
+        <v-dialog
+          v-model="dialog">
+          <AddVehicleDialog
+            @save="closeDialog"
+          ></AddVehicleDialog>
+        </v-dialog>
+      </v-btn>
+  </div>
+  <v-snackbar
+    v-model="showSnackbar"
+    :timeout="3000"
+    absolute
+    location="bottom right"
+    :color="snackbarColor"
+  >
+    {{ this.snackbarText }}
+  </v-snackbar>
 </template>
 
 <script>
@@ -169,7 +162,7 @@ export default {
 <style scoped>
 #scrollDiv {
   width: 100%;
-  height: 70vh;
+  max-height: 70vh;
   overflow-y: scroll;
 }
 </style>

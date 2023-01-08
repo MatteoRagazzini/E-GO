@@ -28,35 +28,50 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-        <v-card-subtitle class="my-4 text-subtitle-1">not existed</v-card-subtitle>
-
         <v-card-text>
-          <div>Availability: {{ this.stationAvailability }}</div>
-          <div v-if="this.station.status==='connected'">In charging</div>
+          <div><span class="font-weight-bold">Availability:</span> {{ this.stationAvailability }}</div>
+          <br>
+          <v-chip
+            class="ma-2"
+            color="green"
+            text-color="white"
+            v-if="this.station.status==='connected'"
+          >
+            <v-icon start icon="mdi-lightning-bolt"></v-icon>
+            In charging
+          </v-chip>
           <div class="text-center" v-if="this.station.status==='reserved'">
             <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
-            <br>
-            <v-progress-circular
-              :rotate="360"
-              :size="100"
-              :width="20"
+            <div class="py-6">
+              <v-tooltip
+                v-model="show"
+                location="top">
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    color="success"
+                    icon="mdi-lock-open-variant"
+                    @click="startCharge"
+                    size="x-large"
+                    v-bind="props"
+                  ></v-btn>
+                </template>
+                <span
+                >Click to unlock Tower {{ this.reservation.tower_id }}</span>
+              </v-tooltip>
+            </div>
+            <v-progress-linear
               :model-value="this.timerValue"
-              color="#C6F68D"
+              color="green"
+              height="25"
             >
-            <v-btn
-              color="success"
-              icon="mdi-lightning-bolt"
-              @click="startCharge"
-              size="x-large"
-            ></v-btn>
-            </v-progress-circular>
+              {{this.timerText}}
+            </v-progress-linear>
           </div>
           <br>
 
         </v-card-text>
         <v-card-actions>
             <!--      IF RESERVED-->
-            <div v-if="this.station.status==='reserved'">{{ this.timerText }}</div>
             <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
             <v-btn
               color="red"
@@ -131,6 +146,7 @@ export default {
     snackbarText: "",
     snackbarColor: "",
     reservation: {},
+    show: false,
   }),
   sockets: {
     connect: function () {
@@ -140,7 +156,14 @@ export default {
 
       if(this.firstValue === 0)this.firstValue = data
 
-      this.timerText = "Reserved for " + data + "sec"
+      if(data <= 60){
+        this.timerText = "Reserved for " + data + "sec"
+      }else{
+        let minutes = Math.round(data/60)
+        let seconds = data-minutes*60
+        this.timerText = "Reserved for " + minutes + "min " + seconds + "sec"
+      }
+
       this.timerValue = 100/this.firstValue*data
       // this.timerValue = 50
     },

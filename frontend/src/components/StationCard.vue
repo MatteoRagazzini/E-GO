@@ -203,28 +203,14 @@ export default {
             this.showSnackbar = true
             this.loading = false
           })
-          // StationService.occupyTower(this.currentUser._id, this.station._id).then(
-          //   (tower) => {
-          //     this.tower = tower
-          //     this.loading = false
-          //     this.this.station.status = "reserved";
-          //     console.log("[STATION]: reserved " + tower)
-          //     this.$socket.emit('startTimer', {station: this.station._id, tower: tower.id, reason: option})
-          //     this.snackbarColor = "green"
-          //     this.snackbarText = "Station successfully reserved"
-          //     this.showSnackbar = true
-          //   }).catch(err => {
-          //   console.log(err)
-          //
-          // })
     },
     releaseTower(){
-      ReservationService.deleteReservation(this.currentUser, this.station)
+      ReservationService.deleteReservation(this.currentUser)
         .then(res=>{
           console.log(res)
             this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
             this.resetTimer()
-            this.station.status = "reserved"
+            this.station.status = "free"
             this.$store.dispatch("userState/goToFreeStatus")
             this.snackbarColor = "green"
             this.snackbarText = "Station successfully unbooked"

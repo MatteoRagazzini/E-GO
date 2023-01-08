@@ -18,12 +18,11 @@ class ReservationService {
       });
   }
 
-  deleteReservation(user, station){
+  deleteReservation(user){
     console.log("inside delete frontend")
     return axios.post(API_URL + 'delete',
       {
-        user: user,
-        station: station
+        user: user
       },
       { headers: authHeader()})
       .then(response => {
@@ -32,18 +31,5 @@ class ReservationService {
         throw new Error(error.response.data)
       });
   }
-  //
-  //
-  // getChargeHistory(user_id,){
-  //   return axios.get(API_URL + 'history/'+ user_id,
-  //     { headers: authHeader()})
-  //     .then(response => {
-  //       return response.data;
-  //     }).catch(function (error){
-  //       console.log(error)
-  //       throw new Error(error.response.data)
-  //     });
-  // }
-
 }
 export default new ReservationService();

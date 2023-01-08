@@ -1,30 +1,31 @@
 <template>
-  <v-progress-circular
-    indeterminate
-    color="green"
-    v-if="loading"
-  ></v-progress-circular>
   <v-card
-    id="scrollable"
-    height="690"
-    color="white">
+    color="white"
+    >
     <v-card-title
       color="black">
       Your vehicles
     </v-card-title>
-    <v-list
-    >
-      <v-list-item
-          v-for="vehicle in this.vehicles"
-          :key="vehicle._id"
-          :items="vehicles"
+    <v-progress-circular
+      indeterminate
+      color="green"
+      v-if="loading"
+    ></v-progress-circular>
+    <v-container id="scrollDiv">
+      <v-list
       >
-        <VehicleCard
-          :vehicle="vehicle"
-          @useVehicle="useVehicle"
-          @removeVehicle="removeVehicle"></VehicleCard>
-        </v-list-item>
-    </v-list>
+        <v-list-item
+            v-for="vehicle in this.vehicles"
+            :key="vehicle._id"
+            :items="vehicles"
+        >
+          <VehicleCard
+            :vehicle="vehicle"
+            @useVehicle="useVehicle"
+            @removeVehicle="removeVehicle"></VehicleCard>
+          </v-list-item>
+      </v-list>
+    </v-container>
     <v-card-actions>
       <v-spacer></v-spacer>
         <v-btn
@@ -168,8 +169,9 @@ export default {
 </script>
 
 <style scoped>
-.v-card {
-  display: flex !important;
-  flex-direction: column;
+#scrollDiv {
+  width: 100%;
+  height: 70vh;
+  overflow-y: scroll;
 }
 </style>

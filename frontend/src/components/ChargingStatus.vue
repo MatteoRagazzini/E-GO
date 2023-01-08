@@ -24,10 +24,10 @@
       :size="400"
       :width="30"
       :model-value="value"
-      color="teal"
+      color="green"
     >
       <v-icon size="x-large">mdi-battery</v-icon>
-      {{ value }}
+      {{ value }}%
     </v-progress-circular>
     </v-row>
     <br>
@@ -51,18 +51,20 @@
     </v-window-item>
     <v-window-item value="ChargingHistory"
     >
-      <v-list
-      >
-        <v-list-item
-          v-for="charge in this.charges"
-          :key="charge._id"
-          :items="charges"
+      <v-container id="scrollDiv">
+        <v-list
         >
-          <ChargingCard
-            :charge="charge"
-          ></ChargingCard>
-        </v-list-item>
-      </v-list>
+          <v-list-item
+            v-for="charge in this.charges"
+            :key="charge._id"
+            :items="charges"
+          >
+            <ChargingCard
+              :charge="charge"
+            ></ChargingCard>
+          </v-list-item>
+        </v-list>
+      </v-container>
     </v-window-item>
   </v-window>
 </template>
@@ -148,5 +150,10 @@ export default {
 <style scoped>
   .v-progress-circular {
     margin: 1rem;
+  }
+  #scrollDiv {
+    width: 100%;
+    height: 70vh;
+    overflow-y: scroll;
   }
 </style>

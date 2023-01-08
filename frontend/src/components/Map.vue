@@ -163,6 +163,7 @@ export default {
   align-items: center;
   background-color: #FF0000;
   border-radius: 50%;
+  border: #263238 solid 2px;
   color: #263238;
   display: flex;
   font-size: 14px;
@@ -171,7 +172,6 @@ export default {
   justify-content: center;
   padding: 4px;
   position: relative;
-  position: relative;
   transition: all 0.3s ease-out;
   width: 32px;
 }
@@ -179,7 +179,7 @@ export default {
 .free::after {
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 7px solid #FF0000;
+  border-top: 7px solid #263238;
   content: "";
   height: 0;
   left: 50%;
@@ -195,16 +195,9 @@ export default {
   background-color: #ffa500;
 }
 
-.reserved::after {
-  border-top: 7px solid #ffa500;
-}
-
 .connected {
   background-color: #00FF00;
 }
 
-.connected::after {
-  border-top: 7px solid #00FF00;
-}
 </style>
 

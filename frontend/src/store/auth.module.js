@@ -38,6 +38,9 @@ export const auth = {
         }
       );
     },
+    updateProfile({ commit }, user){
+      commit('updatedProfile', user)
+    }
   },
   mutations: {
     loginSuccess(state, user) {
@@ -58,5 +61,8 @@ export const auth = {
     registerFailure(state) {
       state.status.loggedIn = false;
     },
+    updatedProfile(state, user) {
+      state.user = user
+    }
   }
 };

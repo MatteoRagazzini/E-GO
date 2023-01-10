@@ -47,9 +47,15 @@
           Sign In
         </v-btn>
         <br>
-          <div v-if="message" class="alert alert-danger" role="alert">
-            {{ message }}
-          </div>
+        <v-snackbar
+          v-model="showSnackbar"
+          :timeout="3000"
+          absolute
+          location="bottom right"
+          color="red"
+        >
+          {{ this.message }}
+        </v-snackbar>
       </v-form>
     </v-card>
   </v-sheet>
@@ -68,6 +74,7 @@ export default {
     loading: false,
     message: "",
     url: imgUrl,
+    showSnackbar: false,
   }),
   computed: {
     loggedIn() {
@@ -89,6 +96,9 @@ export default {
             error.toString();
         }
       ).catch((error)=>{
+        this.loading = false;
+        this.message=error
+        this.showSnackbar = true
         console.log(error);
       });
     },

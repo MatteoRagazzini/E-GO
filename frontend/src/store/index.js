@@ -12,7 +12,8 @@ const store = createStore({
     auth,
     userState
   },
-  plugins:[dataState]
+  // plugins:[dataState, createPersistedState]
+  plugins:[createPersistedState()]
 });
 
 export default store;

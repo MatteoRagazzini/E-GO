@@ -108,6 +108,7 @@ io.on('connection', function(socket) {
             battery++;
             socket.emit("battery", battery)
             if(battery===100){
+                battery = (Math.round(Math.random() * (95 - 80) + 80));
                 socket.emit("chargeCompleted")
                 clearInterval(timer)
             }
@@ -117,6 +118,7 @@ io.on('connection', function(socket) {
     socket.on("endCharge",()=>{
         clearInterval(timer)
         clearTimeout(timeout)
+        battery = (Math.round(Math.random() * (95 - 80) + 80));
         io.emit("ChangeMarker", "dec");
         socket.emit("endCharge")
     })

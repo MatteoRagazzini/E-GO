@@ -18,6 +18,19 @@ exports.moderatorBoard = (req, res) => {
     res.status(200).send("Moderator Content.");
 };
 
+exports.updateProfile = (req, res) => {
+    this.findUser(req.body.user_id)
+        .then(user=>{
+            console.log(user)
+            user.username = req.body.username
+            user.email = req.body.email
+            user.profilePicture = req.body.profilePicture
+            user.save()
+        }).catch(err=>reject(err))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
+}
+
 //HELPER FUNCTIONS//
 
 exports.findUser = (user_id) => {

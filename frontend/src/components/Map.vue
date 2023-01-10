@@ -13,6 +13,7 @@
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import StationCard from "@/components/StationCard.vue";
+import ChargeService from "@/services/charge.service";
 
 let locationMarker = null;
 let locationMarkerIsSet = false;
@@ -106,6 +107,9 @@ export default {
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
+    setMapCenter(newPos){
+      map.setCenter(newPos)
+    },
     refreshUserState(){
       UserService.getState(this.currentUser._id).then(res => {
         console.log(res.data)
@@ -157,7 +161,7 @@ export default {
         .catch(error => {
           console.log(error)
         })
-    }
+    },
   },
   emits: ['switchTab']
 }
@@ -171,7 +175,7 @@ export default {
 
 .free {
   align-items: center;
-  background-color: #FF0000;
+  background-color: #f63232;
   border-radius: 50%;
   border: #263238 solid 2px;
   color: #263238;
@@ -202,11 +206,11 @@ export default {
 }
 
 .reserved {
-  background-color: #ffa500;
+  background-color: #ff9445;
 }
 
 .connected {
-  background-color: #00FF00;
+  background-color: #74c000;
 }
 
 </style>

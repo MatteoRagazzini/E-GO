@@ -1,7 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 
 import Login from "@/components/Login";
-import Profile from "@/components/Profile";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
 
@@ -23,12 +22,6 @@ const routes = [
   {
     path: "/register",
     component: Register,
-  },
-  {
-    path: "/profile",
-    name: "profile",
-    // lazy-loaded
-    component: Profile,
   },
 ];
 

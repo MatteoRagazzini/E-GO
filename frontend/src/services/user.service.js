@@ -131,6 +131,24 @@ class UserService {
         throw new Error(error.response.data)
       });
   }
+
+  updateProfile(user_id, username, email, profilePicture){
+    return axios
+      .post('http://localhost:3000/api/user/updateProfile', {
+        user_id: user_id,
+        username: username,
+        email: email,
+        profilePicture: profilePicture,
+      },{ headers: authHeader() })
+      .then(response => {
+        console.log(response.data)
+        return response.data;
+      }).catch(function (error){
+        console.log(error)
+        throw new Error(error.response.data)
+      });
+  }
+
 }
 
 export default new UserService();

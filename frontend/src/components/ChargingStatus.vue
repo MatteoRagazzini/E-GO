@@ -14,8 +14,8 @@
         Charging history
     </v-tab>
   </v-tabs>
-  <v-window align="center" justify="center" v-model="tab">
-    <v-window-item >
+  <v-window justify="center" v-model="tab">
+    <v-window-item value="CurrentCharging">
       <v-container v-if="isCharging" fluid class="fill-height">
           <v-row align="center" justify="center">
             <v-progress-circular
@@ -121,6 +121,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.isCharging)
     this.loadChargeHistory()
   },
   methods: {

@@ -2,6 +2,8 @@
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 
+const FRONTEND_PORT = process.env.FRONTEND_LOCAL_PORT || 8081;
+
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
@@ -31,6 +33,6 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 8081,
+      port: FRONTEND_PORT,
   },
 })

@@ -1,5 +1,13 @@
+const {
+    DB_USER,
+    DB_PASSWORD,
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+} = process.env;
+
 module.exports = {
-    HOST: "localhost",
-    PORT: 27017,
-    DB: "bezkoder_db"
+    url: `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`,
+    user: DB_USER,
+    pwd: DB_PASSWORD
 };

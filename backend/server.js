@@ -1,16 +1,17 @@
 
 const express = require('express');
 const cors = require('cors')
-const mongoose = require('mongoose')
+
 const bodyParser = require('body-parser')
 const reservationController = require("./src/controllers/reservation.controller");
 
 const {createServer} = require('http');
 const {Server} = require("socket.io");
 const app = express();
-const port = 3000
-const socketPort = 3002
 const path = require('path')
+
+require("dotenv").config();
+
 
 //Per gestire i parametri passati nel corpo della richiesta http.
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +28,14 @@ app.use('/static', express.static(__dirname + '/public'));
 //     res.status(404).send({url: req.originalUrl + ' not found'})
 // });
 
+
+// set port, listen for requests
+const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
+
+const SOCKET_PORT = process.env.SOCKET_DOCKER_PORT || 8080;
+
+
+
 require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
 require('./src/routes/user.routes')(app);
@@ -39,7 +48,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
     cors: {
-        origins: ['http://localhost:8080'],
+        origins: [`http://localhost:${SOCKET_PORT}`],
         method: ["GET","POST"]
     }
 });
@@ -117,12 +126,12 @@ io.on('connection', function(socket) {
 
 global.appRoot = path.resolve(__dirname);
 
+
 const db = require("./src/models");
 const Role = db.role;
 
-const dbConfig = require("./src/config/db.config.js")
 db.mongoose
-    .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+    .connect(db.url, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
@@ -142,11 +151,10 @@ db.mongoose
 
 
 
-httpServer.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+// httpServer.listen(SOCKET_PORT, () => console.log(`Listening on port ${SOCKET_PORT}`));
 
-
-app.listen(3000, () => {
-    console.log(`Example app listening on port ${port}`)
+app.listen(SERVER_PORT, () => {
+    console.log(`Example app listening on port ${SERVER_PORT}`)
 })
 
 

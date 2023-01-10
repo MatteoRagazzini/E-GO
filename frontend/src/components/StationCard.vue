@@ -98,14 +98,14 @@
             </v-btn>
             <v-spacer v-if="this.station.status==='free'"></v-spacer>
 
-            <v-btn color="primary" v-if="this.station.status==='connected'">Disconnect</v-btn>
+            <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
 
           <v-btn color="primary" @click="closeStationCard">Close</v-btn>
         </v-card-actions>
     </v-card>
     <v-snackbar
       v-model="showSnackbar"
-      :timeout="3000"
+      :timeout="2000"
       absolute
       location="bottom right"
       :color="snackbarColor"
@@ -195,65 +195,68 @@ export default {
     }
   },
   methods: {
-    resetTimer(){
+    resetTimer() {
       this.firstValue = 0;
       this.timerValue = 100;
       this.timerText = "";
     },
     closeStationCard() {
+      this.showSnackbar = false;
       this.$emit('close');
     },
     occupyTower(option) {
-          this.loading = true
+      this.loading = true
       console.log(this.currentUser._id)
-        ReservationService.createReservation(this.currentUser, this.station).then(
+      ReservationService.createReservation(this.currentUser, this.station).then(
         (reservation) => {
-            console.log(reservation)
-            this.reservation = reservation
-            this.loading = false
-            this.station.status = "reserved"
-            this.$store.dispatch("userState/goToReservedStatus", this.station._id)
-            console.log("[STATION]: reserved tower" + reservation.tower_id)
-            this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
-            this.snackbarColor = "green"
-            this.snackbarText = "Station successfully reserved"
-            this.showSnackbar = true
-          })
-          .catch(err=> {
-            console.log(err)
-            this.snackbarColor = "red"
-            this.snackbarText = err
-            this.showSnackbar = true
-            this.loading = false
-          })
+          console.log(reservation)
+          this.reservation = reservation
+          this.loading = false
+          this.station.status = "reserved"
+          this.$store.dispatch("userState/goToReservedStatus", this.station._id)
+          console.log("[STATION]: reserved tower" + reservation.tower_id)
+          this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
+          this.snackbarColor = "green"
+          this.snackbarText = "Station successfully reserved"
+          this.showSnackbar = true
+        })
+        .catch(err => {
+          console.log(err)
+          this.snackbarColor = "red"
+          this.snackbarText = err
+          this.showSnackbar = true
+          this.loading = false
+        })
     },
-    releaseTower(){
+    releaseTower() {
+      this.loading = true
       ReservationService.deleteReservation(this.currentUser)
-        .then(res=>{
+        .then(res => {
           console.log(res)
-            this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
-            this.resetTimer()
-            this.station.status = "free"
-            this.$store.dispatch("userState/goToFreeStatus")
-            this.snackbarColor = "green"
-            this.snackbarText = "Station successfully unbooked"
-            this.showSnackbar = true
+          this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
+          this.resetTimer()
+          this.station.status = "free"
+          this.$store.dispatch("userState/goToFreeStatus")
+          this.snackbarColor = "green"
+          this.snackbarText = "Station successfully unbooked"
+          this.showSnackbar = true
+          this.loading = false
         })
         .catch(err => console.log(err))
     },
-  changeFavorite() {
-    if (!this.station.favorite) {
-      this.station.favorite = true
-      userService.addFavouriteStation(this.currentUser._id, this.station._id)
-    } else {
-      this.station.favorite = false
-      userService.removeFavouriteStation(this.currentUser._id, this.station._id)
-    }
-    // inform user
-  },
-    startCharge(){
+    changeFavorite() {
+      if (!this.station.favorite) {
+        this.station.favorite = true
+        userService.addFavouriteStation(this.currentUser._id, this.station._id)
+      } else {
+        this.station.favorite = false
+        userService.removeFavouriteStation(this.currentUser._id, this.station._id)
+      }
+      // inform user
+    },
+    startCharge() {
       ChargeService.startCharge(this.currentUser, this.station, this.reservation.tower_id)
-        .then(res=>{
+        .then(res => {
           console.log(res)
           this.$socket.emit('startCharge')
           this.snackbarColor = "green"
@@ -265,12 +268,33 @@ export default {
           this.switchTab("Charging")
           this.closeStationCard();
         })
-        .catch(err=>console.log(err))
+        .catch(err => console.log(err))
     },
-    switchTab(tab){
+    switchTab(tab) {
       this.$emit("switchTab", tab)
+    },
+    loadChargeHistory() {
+      ChargeService.getChargeHistory(this.currentUser._id).then(response => {
+        this.currentCharge = response.find(c => !c.isCompleted)
+        console.log(this.currentCharge)
+        this.charges = response.reverse()
+      }).catch(err => console.log(err))
+    },
+    endCharge() {
+      ChargeService.endCharge(this.currentUser).then(response => {
+        console.log(response)
+        this.$store.dispatch("userState/goToFreeStatus")
+        this.$socket.emit('endCharge')
+        this.loadChargeHistory()
+        this.tab = "ChargingHistory"
+      }).catch(err => {
+        console.log(err)
+        this.snackbarColor = "red"
+        this.snackbarText = err
+        this.showSnackbar = true
+      })
     }
-}
+  }
 ,
 props: {
   showStationCard: Boolean,

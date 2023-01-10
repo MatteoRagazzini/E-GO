@@ -72,13 +72,12 @@
     </v-app-bar>
       <v-main>
         <v-container class="flex-grow-1, flex-column" align="center">
-        <div> status store: {{ this.status }} status user: {{this.currentUser.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
           >
             <v-card>
 <!--              coords are passed to the map since they can be changed by the sibling "Autocomplete"-->
-              <Map :coords="this.coords"  @switchTab="switchTab"></Map>
+              <Map :coords="this.coords"  @switchTab="switchTab" ref="Map"></Map>
             </v-card>
           </v-window-item>
           <v-window-item value="Vehicles"
@@ -90,7 +89,7 @@
           <v-window-item value="Charging"
           >
             <v-card>
-              <charging-status></charging-status>
+              <charging-status @switchTab="switchTab"></charging-status>
             </v-card>
           </v-window-item>
           <v-window-item value="Profile"
@@ -188,8 +187,11 @@ export default {
     },
     updateLocation(newLocation) {
       console.log("updating location in response of the emit from the AutocompleteComponent")
-      this.coords.lat = newLocation.lat;
-      this.coords.lng = newLocation.lng;
+      if(newLocation.lat == this.coords.lat && newLocation.lng == this.coords.lng){
+        this.$refs.Map.setMapCenter(newLocation)
+      }
+        this.coords.lat = newLocation.lat;
+        this.coords.lng = newLocation.lng;
       console.log(this.coords)
     },
     logOut() {

@@ -138,7 +138,9 @@ export default {
         this.$store.dispatch("userState/goToFreeStatus")
         this.$socket.emit('endCharge')
         this.loadChargeHistory()
-        this.tab = "ChargingHistory"
+        this.value = 0
+        this.switchTab("Map")
+        //this.tab = "ChargingHistory"
       }).catch(err=>{
         console.log(err)
         this.snackbarColor = "red"
@@ -146,6 +148,9 @@ export default {
         this.showSnackbar = true
       })
       console.log("end charge")
+    },
+    switchTab(tab) {
+      this.$emit("switchTab", tab)
     },
   }
 }

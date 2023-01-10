@@ -32,7 +32,7 @@ app.use('/static', express.static(__dirname + '/public'));
 // set port, listen for requests
 const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
 
-const SOCKET_PORT = process.env.SOCKET_DOCKER_PORT || 8080;
+const SOCKET_PORT = process.env.SOCKET_DOCKER_PORT || 3001;
 
 
 

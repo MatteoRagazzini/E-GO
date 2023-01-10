@@ -1,0 +1,1 @@
+mongorestore -d bezkoder_db /bezkoder_db

@@ -11,7 +11,7 @@ import router from './router'
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 
-const FRONTEND_PORT = process.env.FRONTEND_DOCKER_PORT || 3002;
+const SOCKET_PORT = process.env.SOCKET_DOCKER_PORT || 3001;
 
 // Composables
 import { createApp } from 'vue'
@@ -30,7 +30,7 @@ app
   .use(store)
   .use(new VueSocketIO({
       debug: true,
-      connection: SocketIO(`http://localhost:${FRONTEND_PORT}`),
+      connection: SocketIO(`http://localhost:${SOCKET_PORT}`),
       vuex: {
         store,
         actionPrefix: "SOCKET_",

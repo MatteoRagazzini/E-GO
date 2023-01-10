@@ -145,13 +145,7 @@ db.mongoose
     });
 
 
-
-
-
-
-
-
-// httpServer.listen(SOCKET_PORT, () => console.log(`Listening on port ${SOCKET_PORT}`));
+httpServer.listen(SOCKET_PORT, () => console.log(`Listening on port ${SOCKET_PORT}`));
 
 app.listen(SERVER_PORT, () => {
     console.log(`Example app listening on port ${SERVER_PORT}`)

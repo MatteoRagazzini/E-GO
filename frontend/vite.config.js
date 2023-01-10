@@ -2,7 +2,7 @@
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 
-const FRONTEND_PORT = process.env.FRONTEND_LOCAL_PORT || 8081;
+const FRONTEND_PORT = process.env.FRONTEND_DOCKER_PORT || 8081;
 
 // Utilities
 import { defineConfig } from 'vite'

@@ -1,11 +1,12 @@
 import axios from 'axios';
 import authHeader from "@/services/auth-header";
 
-const API_URL = 'http://localhost:3000/api/reservation/';
+const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
+const STATION_API = `http://localhost:${SERVER_PORT}/api/reservation/`
 
 class ReservationService {
   createReservation(user, station){
-    return axios.post(API_URL + 'create',
+    return axios.post(STATION_API + 'create',
       {
         user: user,
         station: station
@@ -20,7 +21,7 @@ class ReservationService {
 
   deleteReservation(user){
     console.log("inside delete frontend")
-    return axios.post(API_URL + 'delete',
+    return axios.post(STATION_API + 'delete',
       {
         user: user
       },

@@ -2,38 +2,24 @@ import axios from 'axios';
 import authHeader from './auth-header';
 import {auth} from "@/store/auth.module";
 
-const API_URL = 'http://localhost:3000/api/test/';
+const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
+
+const USER_API = `http://localhost:${SERVER_PORT}/api/user/`;
 
 class UserService {
-  getPublicContent() {
-    return axios.get(API_URL + 'all');
-  }
-
-  getUserBoard() {
-    console.log("user board")
-    return axios.get(API_URL + 'user', { headers: authHeader() });
-  }
-
-  getModeratorBoard() {
-    return axios.get(API_URL + 'mod', { headers: authHeader() });
-  }
-
-  getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
-  }
 
   getVehicles(user_id){
-    return axios.get('http://localhost:3000/api/user/vehicles/'+ user_id, { headers: authHeader() });
+    return axios.get(USER_API+'vehicles/'+ user_id, { headers: authHeader() });
   }
 
   getVehicle(user_id, vehicle_id){
-    return axios.get('http://localhost:3000/api/user/' + user_id + '/vehicles/' + vehicle_id, { headers: authHeader() });
+    return axios.get(USER_API + user_id + '/vehicles/' + vehicle_id, { headers: authHeader() });
   }
 
   addVehicle(user_id, vehicle){
     console.log(user_id +","+ vehicle)
     return axios
-      .post('http://localhost:3000/api/user/addVehicle', {
+      .post(USER_API + 'addVehicle', {
         user_id: user_id,
         name: vehicle.name,
         vehicleType: vehicle.type,
@@ -54,7 +40,7 @@ class UserService {
   removeVehicle(user_id, vehicle_id) {
     console.log(user_id + "," + vehicle_id)
     return axios
-      .post('http://localhost:3000/api/user/removeVehicle', {
+      .post(USER_API+ 'removeVehicle', {
         user_id: user_id,
         vehicle_id: vehicle_id,
       }, {headers: authHeader()})
@@ -70,7 +56,7 @@ class UserService {
   updateVehicle(user_id, vehicle) {
     console.log(user_id , vehicle)
     return axios
-      .post('http://localhost:3000/api/user/setVehicleInUse', {
+      .post( USER_API + 'setVehicleInUse', {
         user_id: user_id,
         vehicle_id: vehicle._id,
         name: vehicle.name,
@@ -91,17 +77,17 @@ class UserService {
 
     // This should return the favourite stations of the user
   getFavouriteStations(user_id){
-    return axios.get('http://localhost:3000/api/user/favouriteStations/'+ user_id, { headers: authHeader() });
+    return axios.get(USER_API + 'favouriteStations/'+ user_id, { headers: authHeader() });
   }
 
   getState(user_id){
-    return axios.get('http://localhost:3000/api/user/state/'+ user_id, { headers: authHeader() });
+    return axios.get(USER_API + 'state/'+ user_id, { headers: authHeader() });
   }
 
   addFavouriteStation(user_id, station_id){
     console.log(user_id +","+station_id)
     return axios
-      .post('http://localhost:3000/api/user/addFavouriteStation', {
+      .post(USER_API + 'addFavouriteStation', {
         user_id: user_id,
         station_id: station_id,
         img:""
@@ -118,7 +104,7 @@ class UserService {
   removeFavouriteStation(user_id, station_id){
     console.log(user_id +","+station_id)
     return axios
-      .post('http://localhost:3000/api/user/removeFavouriteStation', {
+      .post(USER_API + 'removeFavouriteStation', {
         user_id: user_id,
         station_id: station_id,
         img:""

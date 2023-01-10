@@ -5,12 +5,13 @@ axios.defaults.headers.common = {
   "Content-Type": "application/json"
 }
 
-const API_URL = 'http://localhost:3000/api/auth/';
+const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
+const AUTH_API = `http://localhost:${SERVER_PORT}/api/auth/`;
 
 class AuthService {
   login(user) {
     return axios
-      .post(API_URL + 'signin', {
+      .post(AUTH_API + 'signin', {
         username: user.username,
         password: user.password
       })
@@ -34,7 +35,7 @@ class AuthService {
   }
 
   register(user) {
-    return axios.post(API_URL + 'signup', {
+    return axios.post(AUTH_API + 'signup', {
       username: user.username,
       email: user.email,
       password: user.password

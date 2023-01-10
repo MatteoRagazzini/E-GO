@@ -75,8 +75,7 @@ export default {
     coords: {
       handler(newPos, oldPos) {
         console.log('Prop changed: ', newPos, ' | was: ', oldPos)
-        map.setCenter(newPos)
-        map.setZoom(15)
+        this.setMapCenter(newPos)
         if (locationMarkerIsSet) {
           console.log("entering in marker is set")
           locationMarker.map = null
@@ -109,6 +108,7 @@ export default {
     },
     setMapCenter(newPos){
       map.setCenter(newPos)
+      map.setZoom(15)
     },
     refreshUserState(){
       UserService.getState(this.currentUser._id).then(res => {

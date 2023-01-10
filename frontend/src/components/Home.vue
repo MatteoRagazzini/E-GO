@@ -71,7 +71,6 @@
       </v-container>
     </v-app-bar>
       <v-main>
-        <v-container class="flex-grow-1, flex-column" align="center">
         <v-window v-model="tab">
           <v-window-item value="Map"
           >
@@ -86,7 +85,7 @@
               <vehicle-overview v-if="currentUser!==undefined"></vehicle-overview>
             </v-card>
           </v-window-item>
-          <v-window-item value="Charging"
+          <v-window-item value="Charges"
           >
             <v-card>
               <charging-status @switchTab="switchTab"></charging-status>
@@ -99,7 +98,6 @@
             </v-card>
           </v-window-item>
         </v-window>
-        </v-container>
       </v-main>
     <v-bottom-navigation>
       <v-tabs
@@ -119,10 +117,10 @@
 
           Map
         </v-tab>
-        <v-tab value="Charging">
+        <v-tab value="Charges">
           <v-icon>mdi-battery</v-icon>
 
-          Charging
+          Charges
         </v-tab>
       </v-tabs>
     </v-bottom-navigation>

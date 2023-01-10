@@ -4,10 +4,8 @@
   >
     <v-toolbar
     >
-      <v-toolbar-title>
 <!--        <v-icon>mdi-account</v-icon>-->
-        Your profile
-      </v-toolbar-title>
+      <span class="px-3 text-h6">Your profile</span>
       <v-spacer></v-spacer>
       <v-btn
         color="green"

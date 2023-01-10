@@ -16,12 +16,10 @@
       </v-chip>
     </v-card-title>
     <v-card-text>
-      <div>
-        <span class="font-weight-bold">StartTime:</span> {{ this.charge.startDateTime }}
-      </div>
-      <div>
-        <span class="font-weight-bold">EndTime:</span> {{ this.charge.stopDateTime }}
-      </div>
+      <span class="font-weight-bold">StartTime:</span> {{ this.charge.startDateTime }}
+      <br>
+      <span class="font-weight-bold">EndTime:</span> {{ this.charge.stopDateTime }}
+      <br>
       <span class="font-weight-bold">Duration:</span> {{ this.charge.duration }}
       <br>
       <span class="font-weight-bold">Station:</span> {{ this.charge.station_name }}

@@ -43,21 +43,12 @@
           <div class="text-center" v-if="this.station.status==='reserved'">
             <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
             <div class="py-6">
-              <v-tooltip
-                v-model="show"
-                location="top">
-                <template v-slot:activator="{ props }">
-                  <v-btn
-                    color="success"
-                    icon="mdi-lock-open-variant"
-                    @click="startCharge"
-                    size="x-large"
-                    v-bind="props"
-                  ></v-btn>
-                </template>
-                <span
-                >Click to unlock Tower {{ this.reservation.tower_id }}</span>
-              </v-tooltip>
+             <v-btn
+                  color="success"
+                  icon="mdi-lock-open-variant"
+                  @click="startCharge"
+                  size="x-large"
+                ></v-btn>
             </div>
             <v-progress-linear
               :model-value="this.timerValue"
@@ -160,7 +151,7 @@ export default {
         this.timerText = "Reserved for " + data + "sec"
       }else{
         let minutes = Math.round(data/60)
-        let seconds = data-minutes*60
+        let seconds = Math.abs(data-minutes*60)
         this.timerText = "Reserved for " + minutes + "min " + seconds + "sec"
       }
 

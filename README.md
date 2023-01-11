@@ -1,8 +1,12 @@
 # E-GO
-E-GO - one page web application for using charging stations for electric vehicles 
+
+E-GO - is a single page web application that emulates an electric vehicles charging platform. 
 
 
-$ How to run it 
-once downnloaded the repo: 
+## How to run it 
+once downnloaded the repo:
+```
 cd /E-GO 
 docker-compose up
+
+```

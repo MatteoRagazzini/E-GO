@@ -18,8 +18,8 @@
           <!--       What is that icon for?-->
           <v-btn
             icon
-            :color="this.station.favorite === true ? 'pink' : 'grey'"
-            @click="changeFavorite"
+            :color="this.station.favourite == true ? 'pink' : 'grey'"
+            @click="changeFavourite"
             variant="plain"
           >
             <v-icon>mdi-heart</v-icon>
@@ -117,7 +117,7 @@
 
 
 <script>
-import userService from "@/services/user.service";
+import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import ChargeService from "@/services/charge.service";
 import ReservationService from "@/services/reservation.service";
@@ -185,6 +185,9 @@ export default {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }
   },
+  mounted() {
+    console.log("Favourite: " + this.station.favourite)
+  },
   methods: {
     resetTimer() {
       this.firstValue = 0;
@@ -207,15 +210,11 @@ export default {
           this.$store.dispatch("userState/goToReservedStatus", this.station._id)
           console.log("[STATION]: reserved tower" + reservation.tower_id)
           this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
-          this.snackbarColor = "green"
-          this.snackbarText = "Station successfully reserved"
-          this.showSnackbar = true
+          this.displaySnackbar("Station successfully reserved", "green")
         })
         .catch(err => {
           console.log(err)
-          this.snackbarColor = "red"
-          this.snackbarText = err
-          this.showSnackbar = true
+          this.displaySnackbar(err, "red")
           this.loading = false
         })
     },
@@ -228,31 +227,28 @@ export default {
           this.resetTimer()
           this.station.status = "free"
           this.$store.dispatch("userState/goToFreeStatus")
-          this.snackbarColor = "green"
-          this.snackbarText = "Station successfully unbooked"
-          this.showSnackbar = true
+          this.displaySnackbar("Station successfully unbooked", "green")
           this.loading = false
         })
         .catch(err => console.log(err))
     },
-    changeFavorite() {
-      if (!this.station.favorite) {
-        this.station.favorite = true
-        userService.addFavouriteStation(this.currentUser._id, this.station._id)
+    changeFavourite() {
+      if (!this.station.favourite) {
+        this.station.favourite = true
+        UserService.addFavouriteStation(this.currentUser._id, this.station._id).then(res => this.$socket.emit("changeFavourite"))
+        this.displaySnackbar("Station successfully added to favourite stations", "green")
       } else {
-        this.station.favorite = false
-        userService.removeFavouriteStation(this.currentUser._id, this.station._id)
+        this.station.favourite = false
+        UserService.removeFavouriteStation(this.currentUser._id, this.station._id).then(res => this.$socket.emit("changeFavourite"))
+        this.displaySnackbar("Station successfully removed from favourite stations", "green")
       }
-      // inform user
     },
     startCharge() {
       ChargeService.startCharge(this.currentUser, this.station, this.reservation.tower_id)
         .then(res => {
           console.log(res)
           this.$socket.emit('startCharge')
-          this.snackbarColor = "green"
-          this.snackbarText = "Charge Started"
-          this.showSnackbar = true
+          this.showSnackbar("Charge Started", "green")
           this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
@@ -280,10 +276,13 @@ export default {
         this.tab = "ChargingHistory"
       }).catch(err => {
         console.log(err)
-        this.snackbarColor = "red"
-        this.snackbarText = err
-        this.showSnackbar = true
+        this.displaySnackbar(err, "red")
       })
+    },
+    displaySnackbar(snackbarText, snackBarColor){
+      this.snackbarColor = snackBarColor
+      this.snackbarText = snackbarText
+      this.showSnackbar = true
     }
   }
 ,

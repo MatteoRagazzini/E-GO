@@ -113,6 +113,10 @@ io.on('connection', function(socket) {
         io.emit("ChangeMarker", "dec");
         socket.emit("endCharge")
     })
+
+    socket.on("changeFavourite",()=>{
+        socket.emit("ChangeMarker")
+    })
 })
 
 //Whenever someone connects this gets executed

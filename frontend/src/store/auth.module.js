@@ -40,6 +40,9 @@ export const auth = {
     },
     updateProfile({ commit }, user){
       commit('updatedProfile', user)
+    },
+    setShowOnlyFavourites({ commit }, user){
+      commit('setShowOnlyFavourites', user)
     }
   },
   mutations: {
@@ -62,6 +65,9 @@ export const auth = {
       state.status.loggedIn = false;
     },
     updatedProfile(state, user) {
+      state.user = user
+    },
+    setShowOnlyFavourites(state, user){
       state.user = user
     }
   }

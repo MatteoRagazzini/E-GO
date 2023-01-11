@@ -31,6 +31,17 @@ exports.updateProfile = (req, res) => {
         .catch(err => res.status(500).send(err))
 }
 
+exports.setShowOnlyFavourites = (req, res) => {
+    this.findUser(req.body.user_id)
+        .then(user=>{
+            console.log(user)
+            user.showOnlyFavourites = req.body.showOnlyFavourites
+            user.save()
+        }).catch(err=>reject(err))
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err))
+}
+
 //HELPER FUNCTIONS//
 
 exports.findUser = (user_id) => {

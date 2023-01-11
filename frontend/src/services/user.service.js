@@ -149,6 +149,22 @@ class UserService {
       });
   }
 
+  setShowOnlyFavourites(user_id, showOnlyFavourites){
+    return axios
+      .post('http://localhost:3000/api/user/setShowOnlyFavourites', {
+        user_id: user_id,
+        showOnlyFavourites: showOnlyFavourites,
+      },{ headers: authHeader() })
+      .then(response => {
+        console.log(response.data)
+        return response.data;
+      }).catch(function (error){
+        console.log(error)
+        throw new Error(error.response.data)
+      });
+  }
+
+
 }
 
 export default new UserService();

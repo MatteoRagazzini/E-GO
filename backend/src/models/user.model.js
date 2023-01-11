@@ -11,6 +11,7 @@ const User = mongoose.model(
         occupiedStationId:String,
         isChargingAVehicle: Boolean,
         hasReserved : Boolean,
+        showOnlyFavourites: Boolean,
         favouriteStations : [
             {
                 type: mongoose.Schema.Types.ObjectId,

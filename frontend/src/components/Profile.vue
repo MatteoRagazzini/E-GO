@@ -140,7 +140,7 @@ export default {
       UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
       UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
       //update user in store
-      const updatedUser = this.currentUser
+      let updatedUser = this.currentUser
       updatedUser.username = this.username
       updatedUser.email = this.email
       updatedUser.profilePicture = this.avatar

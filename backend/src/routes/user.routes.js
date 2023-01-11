@@ -50,6 +50,9 @@ module.exports = function (app) {
 
     app.post("/api/user/updateProfile", [authJwt.verifyToken], controller.updateProfile);
 
+    app.post("/api/user/setShowOnlyFavourites", [authJwt.verifyToken], controller.setShowOnlyFavourites);
+
+
     // app.post("/api/user/isCharging", [authJwt.verifyToken], controller.isCharging);
 
 }

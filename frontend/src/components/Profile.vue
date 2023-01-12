@@ -22,15 +22,16 @@
       </v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-avatar
-        size="164"
-        class="py-5"
-      >
-<!--        <v-icon size="x-large">mdi-account-circle</v-icon>-->
-            <v-img
-              :src=this.avatarImg
-            ></v-img>
-      </v-avatar>
+        <div align="center">
+        <v-avatar
+          size="164"
+          class="py-5"
+        >
+              <v-img
+                :src=this.avatarImg
+              ></v-img>
+        </v-avatar>
+      </div>
       <v-autocomplete
         v-model="this.avatar"
         :items="avatars"

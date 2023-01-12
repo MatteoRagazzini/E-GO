@@ -46,12 +46,14 @@
           <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
       </v-container>
       <v-container v-else>
+        <div align="center">
           <h2 class="py-10">Looks like you are not charging a vehicle</h2>
           <v-img
             max-height="600"
             max-width="600"
             :src=this.url
           ></v-img>
+        </div>
         </v-container>
       </v-window-item>
       <v-window-item value="ChargingHistory"

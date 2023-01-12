@@ -27,14 +27,14 @@ app
   .use(vuetify)
   .use(router)
   .use(store)
-  .use(new VueSocketIO({
-      debug: true,
-      connection: SocketIO('http://localhost:3002'),
-      vuex: {
-        store,
-        actionPrefix: "SOCKET_",
-        mutationPrefix: "SOCKET_"
-      }
-    })
-  )
+  // .use(new VueSocketIO({
+  //     debug: true,
+  //     connection: SocketIO('http://localhost:3002'),
+  //     vuex: {
+  //       store,
+  //       actionPrefix: "SOCKET_",
+  //       mutationPrefix: "SOCKET_"
+  //     }
+  //   })
+  // )
 .mount('#app')

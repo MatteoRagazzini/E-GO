@@ -4,7 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const reservationController = require("./src/controllers/reservation.controller");
-
+const randomId = require("random-id");
 const {createServer} = require('http');
 const {Server} = require("socket.io");
 const app = express();
@@ -37,6 +37,14 @@ require('./src/routes/reservation.routes')(app);
 
 const httpServer = createServer(app);
 
+const { InMemorySessionStore } = require("./sessionStore");
+const sessionStore = new InMemorySessionStore();
+
+const { InMemoryMessageStore } = require("./messageStore");
+const messageStore = new InMemoryMessageStore();
+
+
+
 const io = new Server(httpServer, {
     cors: {
         origins: ['http://localhost:8080'],
@@ -44,76 +52,140 @@ const io = new Server(httpServer, {
     }
 });
 
-io.on('connection', function(socket) {
-    let timer = null;
-    let timeout = null;
-    let time = null;
-    let user = null;
-    let battery = (Math.round(Math.random() * (95 - 80) + 80));
-    console.log('[SOCKET] A user connected');
-    //Whenever someone disconnects this piece of code executed
-    socket.on('disconnect', function () {
-        console.log('A user disconnected');
+io.use((socket, next) => {
+    const sessionId = socket.handshake.auth.sessionId;
+    if (sessionId) {
+        console.log("sessionId", sessionId)
+        console.log(sessionStore.findAllSessions())
+        const session = sessionStore.findSession(sessionId);
+        if (session) {
+            socket.sessionId = sessionId;
+            socket.userId = session.userId;
+            return next();
+        }
+    }
+    const userId = socket.handshake.auth.userId;
+    if (!userId) {
+        console.log("userId",userId)
+        return next(new Error("invalid userId"));
+    }
+
+    console.log("[NEW SOCKET]: userId = ", userId)
+    socket.sessionId = randomId();
+    socket.userId = userId;
+    next();
+});
+
+io.on("connection", (socket) => {
+      socket.emit("session", {
+          sessionId: socket.sessionId,
+          userId: socket.userId,
+      });
+    socket.join(socket.userId);
+    socket.on("disconnect", () => {
+        sessionStore.saveSession(socket.sessionId, {
+            sessionId: socket.sessionId,
+            userId: socket.userId,
+        });
     });
-    socket.on('user', (userInfo)=>{
-        user = userInfo
-    })
-
-    socket.on("startTimer", (data) => {
-        console.log("[SOCKET] ", data)
-        io.emit("ChangeMarker", "inc");
-        // in case of reserving I send back a longer timer
-        if(data.reason === "reserve") time = 500;
-        else time = 25;
-        socket.emit("timer", time)
-        timer = setInterval(() => {
-            console.log(time)
-            time--;
-            socket.emit("timer", time)
-        }, 1000)
-        timeout = setTimeout(() => {
-            clearInterval(timer)
-            reservationController.deleteReservationPromise(user).then(res => {
-                console.log("[SOCKET] ", res)
-                socket.emit("expired")
-                io.emit("ChangeMarker", "dec");
-            }).catch(err=>{
-                console.log(err)
-            })
-        }, time*1000)
-    });
-
-    socket.on("cancelTimer", () => {
-        clearInterval(timer)
-        clearTimeout(timeout)
-        socket.emit("expired")
-        io.emit("ChangeMarker", "dec");
-    })
-
-    socket.on("startCharge",()=>{
-        clearInterval(timer)
-        clearTimeout(timeout)
-        // to change the marker to green
-        socket.emit("ChangeMarker")
-        timer = setInterval(() => {
-            battery++;
-            socket.emit("battery", battery)
-            if(battery===100){
-                battery = (Math.round(Math.random() * (95 - 80) + 80));
-                socket.emit("chargeCompleted")
-                clearInterval(timer)
-            }
-        }, 1000)
-    })
-
-    socket.on("endCharge",()=>{
-        clearInterval(timer)
-        clearTimeout(timeout)
-        battery = (Math.round(Math.random() * (95 - 80) + 80));
-        io.emit("ChangeMarker", "dec");
-        socket.emit("endCharge")
-    })
-})
+});
+//
+// io.on('connection', function(socket) {
+//     let timer = null;
+//     let timeout = null;
+//     let time = null;
+//     let user = null;
+//     let battery = (Math.round(Math.random() * (95 - 80) + 80));
+//     console.log('[SOCKET] A user connected');
+//     //Whenever someone disconnects this piece of code executed
+//
+//     sessionStore.saveSession(socket.sessionID, {
+//         userID: socket.userID,
+//         connected: true,
+//     });
+//
+//     // emit session details
+//     socket.emit("session", {
+//         sessionID: socket.sessionID,
+//         userID: socket.userID,
+//     });
+//
+//     // join the "userID" room
+//     socket.join(socket.userID);
+//
+//
+//     // emit session details
+//     socket.emit("session", {
+//         sessionID: socket.sessionID,
+//         userID: socket.userID,
+//     });
+//
+//     // join the "userID" room
+//     socket.join(socket.userID);
+//
+//
+//     socket.on('disconnect', function () {
+//         console.log('A user disconnected');
+//     });
+//     socket.on('user', (userInfo)=>{
+//         user = userInfo
+//     })
+//
+//     socket.on("startTimer", (data) => {
+//         console.log("[SOCKET] ", data)
+//         io.emit("ChangeMarker", "inc");
+//         // in case of reserving I send back a longer timer
+//         if(data.reason === "reserve") time = 500;
+//         else time = 25;
+//         socket.emit("timer", time)
+//         timer = setInterval(() => {
+//             console.log(time)
+//             time--;
+//             socket.emit("timer", time)
+//         }, 1000)
+//         timeout = setTimeout(() => {
+//             clearInterval(timer)
+//             reservationController.deleteReservationPromise(user).then(res => {
+//                 console.log("[SOCKET] ", res)
+//                 socket.emit("expired")
+//                 io.emit("ChangeMarker", "dec");
+//             }).catch(err=>{
+//                 console.log(err)
+//             })
+//         }, time*1000)
+//     });
+//
+//     socket.on("cancelTimer", () => {
+//         clearInterval(timer)
+//         clearTimeout(timeout)
+//         socket.emit("expired")
+//         io.emit("ChangeMarker", "dec");
+//     })
+//
+//     socket.on("startCharge",()=>{
+//         clearInterval(timer)
+//         clearTimeout(timeout)
+//         // to change the marker to green
+//         socket.emit("ChangeMarker")
+//         timer = setInterval(() => {
+//             battery++;
+//             socket.emit("battery", battery)
+//             if(battery===100){
+//                 battery = (Math.round(Math.random() * (95 - 80) + 80));
+//                 socket.emit("chargeCompleted")
+//                 clearInterval(timer)
+//             }
+//         }, 1000)
+//     })
+//
+//     socket.on("endCharge",()=>{
+//         clearInterval(timer)
+//         clearTimeout(timeout)
+//         battery = (Math.round(Math.random() * (95 - 80) + 80));
+//         io.emit("ChangeMarker", "dec");
+//         socket.emit("endCharge")
+//     })
+// })
 
 //Whenever someone connects this gets executed
 

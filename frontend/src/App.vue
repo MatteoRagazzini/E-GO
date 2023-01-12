@@ -41,6 +41,7 @@
 
 <script>
 import Home from "@/components/Home";
+import socket from "@/socket";
 
 export default {
   data: () => ({
@@ -53,27 +54,21 @@ export default {
       'Second',
       'Third'
     ],
+    usernameAlreadySelected: false
   }),
   computed: {
     currentUser() {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_ADMIN');
-      }
+  },
+  created() {
+    const sessionID = localStorage.getItem("sessionID");
 
-      return false;
-    },
-    showModeratorBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_MODERATOR');
-      }
-
-      return false;
+    if (sessionID) {
+      socket.auth = { sessionID };
+      socket.connect();
     }
-
   },
   methods: {
     logOut() {
@@ -83,6 +78,9 @@ export default {
   },
   components:{
     home: Home
+  },
+  destroyed() {
+    socket.off("connect_error");
   }
 };
 </script>

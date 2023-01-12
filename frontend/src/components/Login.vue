@@ -3,7 +3,7 @@
     <v-card class="mx-auto px-6 py-8 justify-center" max-width="344">
       <v-form
         v-model="form"
-        @submit.prevent="onSubmit"
+        @submit.prevent="onSubmit()"
       >
 
         <v-img
@@ -63,6 +63,7 @@
 <script>
 
 import imgUrl from "@/assets/Logo_Matteo.png";
+import socket from "@/socket";
 
 
 export default {

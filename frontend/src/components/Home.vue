@@ -140,6 +140,7 @@ import imgUrlFox from "@/assets/fox.png";
 import imgUrlMonkey from "@/assets/monkey.png";
 import imgUrlPanda from "@/assets/panda.png";
 import imgUrlNone from "@/assets/none.jpg";
+import socket from "@/socket";
 
 export default {
   name: "Home",
@@ -162,6 +163,46 @@ export default {
     status(){
       return this.$store.state.userState;
     }
+  },
+  created() {
+
+    const sessionId = localStorage.getItem("sessionId");
+
+    if (sessionId) {
+      console.log(sessionId)
+      socket.auth = {sessionId};
+      socket.connect();
+    }else{
+      let userId = this.currentUser._id
+      socket.auth = {userId};
+      socket.connect();
+    }
+
+    socket.on("users", (users) => {
+      console.log(users)
+    });
+
+    socket.on("user connected", (user) =>{
+      console.log( "new user connected",user)
+    });
+
+
+    socket.on("connect_error", (err) => {
+      console.log("the server rejected the socket connection")
+      // this.$store.dispatch('auth/logout');
+      // this.$router.push('/login');
+    });
+
+    socket.on("session", ({ sessionId, userId }) => {
+      console.log("session received",sessionId, userId)
+      // attach the session ID to the next reconnection attempts
+      socket.auth = { sessionId };
+      // store it in the localStorage
+      localStorage.setItem("sessionId", sessionId);
+      // save the ID of the user
+      socket.userID = userId;
+    });
+
   },
   mounted() {
     const isSupported = 'navigator' in window && 'geolocation' in navigator
@@ -193,6 +234,7 @@ export default {
       console.log(this.coords)
     },
     logOut() {
+      localStorage.setItem("sessionId", "");
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     },

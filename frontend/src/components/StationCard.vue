@@ -248,11 +248,11 @@ export default {
         .then(res => {
           console.log(res)
           this.$socket.emit('startCharge')
-          this.showSnackbar("Charge Started", "green")
+          this.displaySnackbar("Charge Started", "green")
           this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
-          this.switchTab("Charging")
+          this.switchTab("Charges")
           this.closeStationCard();
         })
         .catch(err => console.log(err))

@@ -35,10 +35,11 @@ require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);
 require('./src/routes/reservation.routes')(app);
 
+app.use((req, res) => res.status(404).send({url: req.originalUrl + " not found"}));
+
 const httpServer = createServer(app);
 
-const { InMemorySessionStore } = require("./sessionStore");
-const sessionStore = new InMemorySessionStore();
+const sessionStore = require("./sessionStore");
 
 const { InMemoryMessageStore } = require("./messageStore");
 const messageStore = new InMemoryMessageStore();
@@ -51,6 +52,7 @@ const io = new Server(httpServer, {
         method: ["GET","POST"]
     }
 });
+
 
 io.use((socket, next) => {
     const sessionId = socket.handshake.auth.sessionId;
@@ -76,12 +78,22 @@ io.use((socket, next) => {
     next();
 });
 
+var timeouts = {}
+
 io.on("connection", (socket) => {
       socket.emit("session", {
           sessionId: socket.sessionId,
           userId: socket.userId,
       });
     socket.join(socket.userId);
+
+    let userId = socket.userId;
+    timeouts[userId] = setTimeout(() => {
+        socket.emit('Error', { error: { msg: 'You took too long' } });
+        socket.emit('AFK');
+    }, 60000);
+
+
     socket.on("disconnect", () => {
         sessionStore.saveSession(socket.sessionId, {
             sessionId: socket.sessionId,

@@ -141,6 +141,7 @@ import imgUrlMonkey from "@/assets/monkey.png";
 import imgUrlPanda from "@/assets/panda.png";
 import imgUrlNone from "@/assets/none.jpg";
 import socket from "@/socket";
+import * as timers from "timers";
 
 export default {
   name: "Home",
@@ -165,7 +166,6 @@ export default {
     }
   },
   created() {
-
     const sessionId = localStorage.getItem("sessionId");
 
     if (sessionId) {
@@ -176,6 +176,7 @@ export default {
       let userId = this.currentUser._id
       socket.auth = {userId};
       socket.connect();
+
     }
 
     socket.on("users", (users) => {
@@ -189,8 +190,8 @@ export default {
 
     socket.on("connect_error", (err) => {
       console.log("the server rejected the socket connection")
-      // this.$store.dispatch('auth/logout');
-      // this.$router.push('/login');
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/login');
     });
 
     socket.on("session", ({ sessionId, userId }) => {

@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Login from "@/components/Login";
 import Register from "@/components/Register";
 import Home from "@/components/Home";
+import socket from "@/socket";
 
 
 const routes = [

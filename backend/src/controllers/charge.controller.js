@@ -120,7 +120,7 @@ exports.endCharge = (req, res) => {
                             activeCharge.save()
                                 .then(chargeSaved => {
                                     console.log(chargeSaved)
-                                    stationController.TowerRelease(chargeSaved.station_id.toString(), chargeSaved.tower_id.toString())
+                                    stationController.releaseTower(chargeSaved.station_id.toString(), chargeSaved.tower_id.toString())
                                 })
                                 .then(result => {
                                     console.log(result)

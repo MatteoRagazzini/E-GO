@@ -15,33 +15,4 @@ module.exports = function(app) {
         [authJwt.verifyToken],
         controller.retrieveStations
     );
-
-    app.get(
-        "/api/station/retrieve/:id",
-        [authJwt.verifyToken],
-        controller.retrieveStation
-    );
-
-    app.post(
-        "/api/station/tower/occupy",
-        [authJwt.verifyToken],
-        controller.occupyTower
-    );
-
-    app.post(
-        "/api/station/tower/release",
-        [authJwt.verifyToken],
-        controller.releaseTower
-    );
-
-    app.post(
-        "/api/station/tower/unlock",
-        [authJwt.verifyToken],
-        controller.releaseTower
-    );
-
-    // app.post(
-    //     "/api/station/tower/connect",
-    //     controller.connect
-    // )
 };

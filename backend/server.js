@@ -29,7 +29,8 @@ app.use('/static', express.static(__dirname + '/public'));
 
 require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
-require('./src/routes/user.routes')(app);
+// require('./src/routes/user.routes')(app);
+require('./src/routes/user.routes2')(app);
 require('./src/routes/station.routes')(app);
 require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);

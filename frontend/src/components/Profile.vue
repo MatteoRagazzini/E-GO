@@ -85,13 +85,13 @@
       </v-btn>
     </v-card-actions>
     <v-snackbar
-      v-model="hasSaved"
+      v-model="showSnackbar"
       :timeout="2000"
       absolute
-      color="green"
+      :color="snackbarColor"
       location="bottom left"
     >
-      Your profile has been updated
+      {{this.snackbarText}}
     </v-snackbar>
   </v-card>
 </template>
@@ -111,9 +111,11 @@ export default {
   name: 'Profile',
   data () {
     return {
+      showSnackbar: false,
+      snackbarText: "",
+      snackbarColor: "",
       username:"",
       email:"",
-      hasSaved: false,
       isEditing: null,
       paymentOption: "Pay per use",
       paymentOptions: [
@@ -139,15 +141,24 @@ export default {
       this.isEditing = !this.isEditing
       //update user in backend
       UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
-      UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
-      //update user in store
-      let updatedUser = this.currentUser
-      updatedUser.username = this.username
-      updatedUser.email = this.email
-      updatedUser.profilePicture = this.avatar
-      this.$store.dispatch("auth/updateProfile", updatedUser)
-      this.$emit("save", this.avatar)
-      this.hasSaved = true
+        .then(res=>{
+          //update user in store
+          let updatedUser = this.currentUser
+          updatedUser.username = this.username
+          updatedUser.email = this.email
+          updatedUser.profilePicture = this.avatar
+          this.$store.dispatch("auth/updateProfile", updatedUser)
+          this.$emit("save", this.avatar)
+          this.showSnackbar = true
+          this.snackbarColor = "green"
+          this.snackbarText = "Profile saved correctly!"
+        }).catch(err=>{
+        this.showSnackbar = true
+        this.snackbarColor = "red"
+        this.snackbarText =  err.response.data.message
+      })
+
+
     },
 
     selectAvatar(){

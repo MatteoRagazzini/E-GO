@@ -28,75 +28,75 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-        <v-card-text>
-          <div><span class="font-weight-bold">Availability:</span> {{ this.stationAvailability }}</div>
-          <br>
-          <v-chip
-            class="ma-2"
-            color="green"
-            text-color="white"
-            v-if="this.station.status==='connected'"
-          >
-            <v-icon start icon="mdi-lightning-bolt"></v-icon>
-            In charging
-          </v-chip>
-          <div class="text-center" v-if="this.station.status==='reserved'">
-            <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
-            <div class="py-6">
-             <v-btn
-                  color="success"
-                  icon="mdi-lock-open-variant"
-                  @click="startCharge"
-                  size="x-large"
-                ></v-btn>
-            </div>
-            <v-progress-linear
-              :model-value="this.timerValue"
-              color="green"
-              height="25"
-            >
-              {{this.timerText}}
-            </v-progress-linear>
-          </div>
-          <br>
-
-        </v-card-text>
-        <v-card-actions>
-            <!--      IF RESERVED-->
-            <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+      <v-card-text>
+        <div><span class="font-weight-bold">Availability:</span> {{ this.stationAvailability }}</div>
+        <br>
+        <v-chip
+          class="ma-2"
+          color="green"
+          text-color="white"
+          v-if="this.station.status==='connected'"
+        >
+          <v-icon start icon="mdi-lightning-bolt"></v-icon>
+          In charging
+        </v-chip>
+        <div class="text-center" v-if="this.station.status==='reserved'">
+          <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
+          <div class="py-6">
             <v-btn
-              color="red"
-              v-if="this.station.status==='reserved'"
-              @click="releaseTower"
-            >
-              Cancel
-            </v-btn>
-            <!--      IF NOT RESERVED-->
-            <v-btn v-if="this.station.status==='free'"
-                   color="green"
-                   variant="text"
-                   :disabled="this.disabled"
-                   @click="occupyTower('connect')"
-            >
-              Connect
-            </v-btn>
-            <v-btn v-if="this.station.status==='free'"
-                   color="green"
-                   variant="text"
-                   :disabled="this.disabled"
-                   @click="occupyTower('reserve')"
-            >Reserve
-            </v-btn>
-            <v-spacer v-if="this.station.status==='free'"></v-spacer>
+              color="success"
+              icon="mdi-lock-open-variant"
+              @click="startCharge"
+              size="x-large"
+            ></v-btn>
+          </div>
+          <v-progress-linear
+            :model-value="this.timerValue"
+            color="green"
+            height="25"
+          >
+            {{ this.timerText }}
+          </v-progress-linear>
+        </div>
+        <br>
 
-            <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
+      </v-card-text>
+      <v-card-actions>
+        <!--      IF RESERVED-->
+        <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+        <v-btn
+          color="red"
+          v-if="this.station.status==='reserved'"
+          @click="releaseTower"
+        >
+          Cancel
+        </v-btn>
+        <!--      IF NOT RESERVED-->
+        <v-btn v-if="this.station.status==='free'"
+               color="green"
+               variant="text"
+               :disabled="this.disabled"
+               @click="occupyTower('connect')"
+        >
+          Connect
+        </v-btn>
+        <v-btn v-if="this.station.status==='free'"
+               color="green"
+               variant="text"
+               :disabled="this.disabled"
+               @click="occupyTower('reserve')"
+        >Reserve
+        </v-btn>
+        <v-spacer v-if="this.station.status==='free'"></v-spacer>
 
-          <v-btn color="primary" @click="closeStationCard">Close</v-btn>
-        </v-card-actions>
+        <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
+
+        <v-btn color="primary" @click="closeStationCard">Close</v-btn>
+      </v-card-actions>
     </v-card>
     <v-snackbar
       v-model="showSnackbar"
-      :timeout="2000"
+      :timeout="1800"
       absolute
       location="bottom right"
       :color="snackbarColor"
@@ -113,7 +113,6 @@
 // has user reserved
 // if one of these != null
 // you print the station with station_id === that in a different colour
-
 
 
 <script>
@@ -145,17 +144,17 @@ export default {
     },
     timer: function (data) {
 
-      if(this.firstValue === 0)this.firstValue = data
+      if (this.firstValue === 0) this.firstValue = data
 
-      if(data <= 60){
+      if (data <= 60) {
         this.timerText = "Reserved for " + data + "sec"
-      }else{
-        let minutes = Math.round(data/60)
-        let seconds = Math.abs(data-minutes*60)
+      } else {
+        let minutes = Math.round(data / 60)
+        let seconds = Math.abs(data - minutes * 60)
         this.timerText = "Reserved for " + minutes + "min " + seconds + "sec"
       }
 
-      this.timerValue = 100/this.firstValue*data
+      this.timerValue = 100 / this.firstValue * data
       // this.timerValue = 50
     },
     expired: function (data) {
@@ -164,7 +163,7 @@ export default {
       this.station.status = "free"
       this.$store.dispatch("userState/goToFreeStatus")
     },
-    endCharge: function (){
+    endCharge: function () {
       console.log('Expired')
       this.resetTimer()
       this.station.status = "free"
@@ -176,7 +175,7 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    disabled(){
+    disabled() {
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
       // return this.$store.state.userState.status.isCharging;
       return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
@@ -184,9 +183,6 @@ export default {
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }
-  },
-  mounted() {
-    console.log("Favourite: " + this.station.favourite)
   },
   methods: {
     resetTimer() {
@@ -235,12 +231,23 @@ export default {
     changeFavourite() {
       if (!this.station.favourite) {
         this.station.favourite = true
-        UserService.addFavouriteStation(this.currentUser._id, this.station._id).then(res => this.$socket.emit("changeFavourite"))
-        this.displaySnackbar("Station successfully added to favourite stations", "green")
+        UserService.addFavouriteStation(this.currentUser._id, this.station._id)
+          .then(res => {
+            this.$socket.emit("changeFavourite")
+            this.displaySnackbar("Station successfully added to favourite stations", "green")
+          }).catch(err => {
+          this.displaySnackbar(err, "red")
+        })
       } else {
         this.station.favourite = false
-        UserService.removeFavouriteStation(this.currentUser._id, this.station._id).then(res => this.$socket.emit("changeFavourite"))
-        this.displaySnackbar("Station successfully removed from favourite stations", "green")
+        UserService.removeFavouriteStation(this.currentUser._id, this.station._id)
+          .then(res => {
+            this.$socket.emit("changeFavourite")
+            this.displaySnackbar("Station successfully removed from favourite stations", "green")
+          })
+          .catch(err => {
+            this.displaySnackbar(err, "red")
+          })
       }
     },
     startCharge() {
@@ -279,18 +286,18 @@ export default {
         this.displaySnackbar(err, "red")
       })
     },
-    displaySnackbar(snackbarText, snackBarColor){
+    displaySnackbar(snackbarText, snackBarColor) {
       this.snackbarColor = snackBarColor
       this.snackbarText = snackbarText
       this.showSnackbar = true
     }
   }
-,
-props: {
-  showStationCard: Boolean,
-  station: Object
-},
-  emits: ['switchTab','close']
+  ,
+  props: {
+    showStationCard: Boolean,
+    station: Object
+  },
+  emits: ['switchTab', 'close']
 }
 </script>
 

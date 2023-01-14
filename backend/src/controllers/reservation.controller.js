@@ -10,7 +10,7 @@ exports.createReservation = (req, res) => {
 
     console.log("[RESERVE] user: " + req.body.user.username, "| station: " + req.body.station.address)
     userController.setStatus("reserved",req.body.user._id, req.body.station._id)
-        .then(result => stationController.TowerOccupy(req.body.user._id, req.body.station._id)
+        .then(result => stationController.occupyTower(req.body.user._id, req.body.station._id)
             .then(tower => {
                 const reservation = new Reservation({
                     user_id: req.body.user._id,
@@ -93,7 +93,7 @@ exports.deleteReservationPromise = (user) => {
                                 const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
                                 activeRes.duration = diffHrs + "h:" + diffMins + "m"
                                 activeRes.save()
-                                    .then(reservationSaved => stationController.TowerRelease(reservationSaved.station_id.toString(), reservationSaved.tower_id.toString()))
+                                    .then(reservationSaved => stationController.releaseTower(reservationSaved.station_id.toString(), reservationSaved.tower_id.toString()))
                                     .then(result => {
                                         resolve("BOOKING CANCELED " + result)
                                     }).catch(err => {

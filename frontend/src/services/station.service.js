@@ -7,36 +7,5 @@ class StationService {
   getStations() {
     return axios.get(API_URL + 'retrieve',{ headers: authHeader()});
   }
-  getStation(station_id) {
-    return axios.get(API_URL + 'retrieve/'+ station_id,{ headers: authHeader()});
-  }
-  occupyTower(user_id,station_id){
-    return axios.post(API_URL + 'tower/occupy',
-      {
-        user_id: user_id,
-        station_id: station_id
-      },
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
-  }
-
-  releaseTower(station_id, tower_id){
-    return axios.post(API_URL + 'tower/release',
-      {
-        station_id: station_id,
-        tower_id: tower_id
-      },
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
-  }
-
 }
 export default new StationService();

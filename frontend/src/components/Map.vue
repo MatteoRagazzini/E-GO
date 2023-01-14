@@ -9,7 +9,7 @@
     <v-icon>mdi-heart</v-icon>
   </v-btn>
 
-  <div id="mapDiv" >
+  <div id="mapDiv">
   </div>
 
   <StationCard
@@ -21,10 +21,10 @@
     v-model="showSnackbar"
     :timeout="2000"
     absolute
-    color="green"
+    :color="this.snackbarColor"
     location="bottom left"
   >
-    {{this.snackbarText}}
+    {{ this.snackbarText }}
   </v-snackbar>
 </template>
 
@@ -60,6 +60,7 @@ export default {
       favStations: [],
       showOnlyFavourites: false,
       showSnackbar: false,
+      snackbarColor: "green",
       snackbarText: "",
     }
   },
@@ -69,7 +70,6 @@ export default {
       this.$socket.emit('user', this.currentUser)
     },
     ChangeMarker: function (data) {
-      console.log("[MAP] receive ChangeMarker: ", data)
       this.clearMarkers()
       if (data === 'inc') this.station.usedTowers++
       else if (data === 'dec') this.station.usedTowers--
@@ -92,6 +92,7 @@ export default {
       zoom: 13,
       mapId: "16c023e99af33056",
     })
+
     this.refreshUserState();
     this.clearMarkers();
     this.buildMarkers();
@@ -128,23 +129,23 @@ export default {
     }
   },
   methods: {
-    setShowOnlyFavourites(){
-    if(this.showOnlyFavourites === false){
-      this.showOnlyFavourites = true
-    }else{
-      this.showOnlyFavourites = false
-    }
+    setShowOnlyFavourites() {
+      this.showOnlyFavourites = !this.showOnlyFavourites
 
-      UserService.setShowOnlyFavourites(this.currentUser._id, this.showOnlyFavourites)
-      let updatedUser = this.currentUser
-      updatedUser.showOnlyFavourites = this.showOnlyFavourites
-      this.$store.dispatch("auth/setShowOnlyFavourites", updatedUser)
-
-      if(this.showOnlyFavourites === true){
-        this.snackbarText = "Your are only displaying your favourite stations"
-      } else {
-        this.snackbarText = "Your are displaying all stations"
-      }
+      UserService.setShowOnlyFavourites(this.currentUser._id, this.showOnlyFavourites).then(res => {
+        let updatedUser = this.currentUser
+        updatedUser.showOnlyFavourites = this.showOnlyFavourites
+        this.$store.dispatch("auth/setShowOnlyFavourites", updatedUser)
+        this.showOnlyFavourites ?
+          this.snackbarText = "Your are now only displaying your favourite stations" :
+          this.snackbarText = "Your are displaying all stations"
+        this.snackbarColor = "green"
+      })
+        .catch(err => {
+          console.log(err)
+          this.snackbarText = err.response.data.message
+          this.snackbarColor = "red"
+        })
 
       this.showSnackbar = true
 
@@ -154,13 +155,12 @@ export default {
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
-    setMapCenter(newPos){
+    setMapCenter(newPos) {
       map.setCenter(newPos)
       map.setZoom(15)
     },
-    refreshUserState(){
+    refreshUserState() {
       UserService.getState(this.currentUser._id).then(res => {
-        console.log(res.data)
         this.$store.dispatch("userState/refreshStatus", res.data)
       }).catch(err => {
         console.log(err)
@@ -170,7 +170,6 @@ export default {
       return this.userStatus.station === station_id ? this.userStatus.status : "free"
     },
     clearMarkers() {
-      console.log("[CLEAN MARKERS]: number markers " + StationsMarkers.length)
       StationsMarkers.forEach(m => {
         if (m.marker !== null) {
           m.marker.map = null
@@ -181,7 +180,7 @@ export default {
     buildMarkers() {
       UserService.getFavouriteStations(this.currentUser._id).then((response) => {
         this.favStations = response.data
-      }).catch(err => console.log(err))
+      }).catch(err => console.log(err.response.data.message))
 
       StationService.getStations().then(
         (stations) => {
@@ -196,7 +195,7 @@ export default {
             station.status = this.getStationStatus(station._id)
             station.favourite = this.favStations.indexOf(station._id) > -1
             if (this.showOnlyFavourites) {
-              if (station.favourite){
+              if (station.favourite) {
 
                 marker = new google.maps.marker.AdvancedMarkerView({
                   map,
@@ -204,7 +203,7 @@ export default {
                   content: content,
                 });
               }
-            }else{
+            } else {
               marker = new google.maps.marker.AdvancedMarkerView({
                 map,
                 position: new google.maps.LatLng(station.latitude, station.longitude),

@@ -28,7 +28,7 @@ exports.getVehicles = (req, res) => {
 
 exports.addVehicle = (req, res) => {
     console.log(req.body.vehicle)
-    User.update({_id:req.params.user_id}, {$push: {vehicles: req.body}}, {new: true},
+    User.updateOne({_id:req.params.user_id}, {$push: {vehicles: req.body}}, {new: true},
         (err, r) => queryCallbackWithError(res, err, r, r == null))
 };
 

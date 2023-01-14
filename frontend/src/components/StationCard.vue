@@ -274,7 +274,6 @@ export default {
       ChargeService.getChargeHistory(this.currentUser._id)
         .then(response => {
           this.currentCharge = response.data.find(c=>!c.isCompleted)
-          //this.charges = response.data.reverse()
         })
         .catch(err => {
           this.displaySnackbar(err.response.data.message, "red")

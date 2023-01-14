@@ -36,7 +36,7 @@
           </v-row>
           <v-snackbar
             v-model="showSnackbar"
-            :timeout="3000"
+            :timeout="1800"
             absolute
             location="bottom right"
             :color="snackbarColor"

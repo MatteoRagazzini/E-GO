@@ -18,7 +18,7 @@
     :station="this.station"/>
   <v-snackbar
     v-model="showSnackbar"
-    :timeout="2000"
+    :timeout="1800"
     absolute
     :color="this.snackbarColor"
     location="bottom left"

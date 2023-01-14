@@ -86,7 +86,7 @@
     </v-card-actions>
     <v-snackbar
       v-model="showSnackbar"
-      :timeout="2000"
+      :timeout="1800"
       absolute
       :color="snackbarColor"
       location="bottom left"

@@ -11,7 +11,7 @@ class ReservationService {
   }
 
   deleteReservation(user) {
-    return axios.delete(API_URL + '/' + user._id, {headers: authHeader()})
+    return axios.put(API_URL + '/' + user._id, {headers: authHeader()})
   }
 }
 

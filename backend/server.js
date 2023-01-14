@@ -96,6 +96,7 @@ io.on('connection', function(socket) {
         clearInterval(timer)
         clearTimeout(timeout)
         // to change the marker to green
+        socket.emit("updateHistory")
         socket.emit("ChangeMarker")
         timer = setInterval(() => {
             battery++;
@@ -103,6 +104,7 @@ io.on('connection', function(socket) {
             if(battery===100){
                 battery = (Math.round(Math.random() * (95 - 80) + 80));
                 socket.emit("chargeCompleted")
+                socket.emit("updateHistory")
                 clearInterval(timer)
             }
         }, 1000)
@@ -114,6 +116,8 @@ io.on('connection', function(socket) {
         battery = (Math.round(Math.random() * (95 - 80) + 80));
         io.emit("ChangeMarker", "dec");
         socket.emit("endCharge")
+        socket.emit("resetValue")
+        socket.emit("updateHistory")
     })
 
     socket.on("changeFavourite",()=>{

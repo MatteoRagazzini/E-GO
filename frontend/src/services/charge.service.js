@@ -6,31 +6,22 @@ const API_URL = 'http://localhost:3000/charges';
 class ChargeService {
   //ideally I would like to pass the vehicle_id directly here
   startCharge(user, station, tower_id){
-    return axios.post(API_URL + 'start',
+    return axios.post(API_URL,
       {
         user: user,
         station: station,
         tower_id: tower_id,
       },
       { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
   }
 
-  endCharge(user){
-    return axios.post(API_URL + 'end',
+  endCharge(user, batteryLevel){
+    console.log(batteryLevel)
+    return axios.put(API_URL + '/' + user._id,
       {
-        user: user
-      },
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
+        batteryLevel: batteryLevel
+    },
+    { headers: authHeader()})
   }
 
 

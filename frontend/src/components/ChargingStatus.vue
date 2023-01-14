@@ -59,7 +59,9 @@
       <v-window-item value="ChargingHistory"
       >
         <v-container id="scrollDiv">
-        <v-list
+          <span v-if="!this.chargesExist">No charges yet</span>
+
+          <v-list v-else
         >
           <v-list-item
             v-for="charge in this.charges"
@@ -98,6 +100,7 @@ export default {
       currentCharge: {},
       chargingText: "Your vehicle is charging...",
       url: imgUrl,
+      chargesExist: false
     }
   },
 
@@ -120,6 +123,12 @@ export default {
       this.snackbarText = "Charge completed"
       this.showSnackbar = true
       this.chargingText = "Your vehicle is fully charged"
+    },
+    updateHistory:function(){
+      this.loadChargeHistory()
+    },
+    resetValue:function(){
+      this.value = 0;
     }
   },
   mounted() {
@@ -132,25 +141,26 @@ export default {
         .then(response=>{
           console.log(response)
           this.currentCharge = response.data.find(c=>!c.isCompleted)
-          console.log(this.currentCharge)
-          this.charges = response.data.reverse()
+          if(response.data.length > 0){
+            this.chargesExist = true
+            this.charges = response.data.reverse()
+          }
       }).catch(err=>console.log(err))
     },
     endCharge(){
-      ChargeService.endCharge(this.currentUser).then(response=>{
-        console.log(response)
-        this.$store.dispatch("userState/goToFreeStatus")
-        this.$socket.emit('endCharge')
-        this.loadChargeHistory()
-        this.value = 0
-        this.switchTab("Map")
-        //this.tab = "ChargingHistory"
-      }).catch(err=>{
-        console.log(err)
-        this.snackbarColor = "red"
-        this.snackbarText =  err
-        this.showSnackbar = true
-      })
+      ChargeService.endCharge(this.currentUser, this.value)
+        .then(response=>{
+          this.$store.dispatch("userState/goToFreeStatus")
+          this.$socket.emit('endCharge')
+          //this.loadChargeHistory()
+          //this.value = 0
+          this.switchTab("Map")
+          //this.tab = "ChargingHistory"
+        }).catch(err=>{
+          this.snackbarColor = "red"
+          this.snackbarText =  err
+          this.showSnackbar = true
+        })
       console.log("end charge")
     },
     switchTab(tab) {

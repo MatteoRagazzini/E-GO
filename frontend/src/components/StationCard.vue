@@ -136,6 +136,7 @@ export default {
     snackbarColor: "",
     reservation: {},
     show: false,
+    value: 0,
   }),
   sockets: {
     connect: function () {
@@ -155,6 +156,9 @@ export default {
 
       this.timerValue = 100 / this.firstValue * data
       // this.timerValue = 50
+    },
+    battery: function (data) {
+      this.value = data
     },
     expired: function (data) {
       console.log('Expired')
@@ -255,6 +259,7 @@ export default {
           this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
+          this.loadChargeHistory()
           this.switchTab("Charges")
           this.closeStationCard();
         })
@@ -268,21 +273,20 @@ export default {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id)
         .then(response => {
-          console.log(response)
           this.currentCharge = response.data.find(c=>!c.isCompleted)
-          console.log(this.currentCharge)
-          this.charges = response.data.reverse()
+          //this.charges = response.data.reverse()
         })
         .catch(err => {
           this.displaySnackbar(err.response.data.message, "red")
         })
     },
     endCharge() {
-      ChargeService.endCharge(this.currentUser).then(response => {
-        this.$store.dispatch("userState/goToFreeStatus")
-        this.$socket.emit('endCharge')
-        this.loadChargeHistory()
-        this.tab = "ChargingHistory"
+      ChargeService.endCharge(this.currentUser, this.value)
+        .then(response => {
+          this.$store.dispatch("userState/goToFreeStatus")
+          this.$socket.emit('endCharge')
+          this.loadChargeHistory()
+          this.tab = "ChargingHistory"
       }).catch(err => {
         this.displaySnackbar(err.response.data.message, "red")
       })

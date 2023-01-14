@@ -37,7 +37,8 @@ exports.startCharge = (req, res) => {
         });
 
         userController.setStatus("connected", req.body.user._id, req.body.station._id)
-            .then(r => charge.save(err => {
+            .then(r =>
+                charge.save(err => {
                     if (err) {
                         res.status(500).send({message: err});
                         return;
@@ -91,13 +92,12 @@ exports.startCharge = (req, res) => {
 
 
 exports.endCharge = (req, res) => {
-    console.log("[END CHARGE] user: " + req.body.user.username)
-    if (req.body.constructor === Object && Object.keys(req.body).length === 0) res.status(500).send("Charge object is missing")
+    //console.log("[END CHARGE] user: " + req.body.user.username)
+    if (req.params.user_id === null) res.status(500).send("Charge object is missing")
     else {
-        userController.setStatus("free", req.body.user._id, "")
+        userController.setStatus("free", req.params.user_id, "")
             .then(r => {
-                console.log(r)
-                Charge.find({user_id: req.body.user._id}, function (err, charges) {
+                Charge.find({user_id: req.params.user_id}, function (err, charges) {
                     if (err) console.log(err)
                     else {
                         console.log(charges)
@@ -114,7 +114,11 @@ exports.endCharge = (req, res) => {
                             const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
                             activeCharge.duration = diffHrs + "h:" + diffMins + "m"
                             // to make with a sense
+                             if (req.body.batteryLevel !== null && req.body.batteryLevel > 0){
+                                 activeCharge.totalBatteryCharged = req.body.batteryLevel
+                             }else{
                             activeCharge.totalBatteryCharged = 100
+                             }
                             // considering a cost of 10 cents per minutes
                             activeCharge.cost = (minutes * 0.10).toFixed(2)
                             activeCharge.save()

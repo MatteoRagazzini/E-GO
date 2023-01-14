@@ -30,9 +30,9 @@ module.exports = function(app) {
 
     app.route(("/charges/:user_id"),[authJwt.verifyToken])
         .get(controller.getHistory)
+        .put(controller.endCharge)
 
     app.route("/charges", [authJwt.verifyToken])
         .post(controller.startCharge)
-        .post(controller.endCharge)
     ;
 };

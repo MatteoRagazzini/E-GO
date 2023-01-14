@@ -4,11 +4,14 @@ const UserController = require("./user.controller")
 
 
 exports.retrieveStations = (req, res) => {
-    Station.find({}, function (err, station) {
-        if (err)
-            res.send(err);
-        res.json(station);
-    });
+    // Station.find({}, function (err, station) {
+    //     if (err)
+    //         res.send(err);
+    //     res.json(station);
+    // });
+    Station.find({})
+        .then(stations => res.status(200).json(stations))
+        .catch(err => res.status(400).send(err))
 };
 
 exports.findStationByID = (station_id) => {

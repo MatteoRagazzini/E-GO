@@ -134,7 +134,6 @@ export default {
       if (this.currentVehicle !== vehicle._id){
 
         const vehicleToUseIndex = this.vehicles.findIndex((obj) => obj._id === vehicle._id)
-        const vehicleToUse = this.vehicles.find((obj) => obj._id === vehicle._id)
 
         if (this.currentVehicle != null) {
           const vehicleToUseIndexOld = this.vehicles.findIndex((obj) => obj._id === this.currentVehicle)

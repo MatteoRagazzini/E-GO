@@ -1,35 +1,18 @@
 import axios from 'axios';
 import authHeader from "@/services/auth-header";
 
-const API_URL = 'http://localhost:3000/api/reservation/';
+const API_URL = 'http://localhost:3000/reservations';
+
 
 class ReservationService {
-  createReservation(user, station){
-    return axios.post(API_URL + 'create',
-      {
-        user: user,
-        station: station
-      },
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
+
+  createReservation(user, station) {
+    return axios.post(API_URL, {user: user, station: station}, {headers: authHeader()})
   }
 
-  deleteReservation(user){
-    console.log("inside delete frontend")
-    return axios.post(API_URL + 'delete',
-      {
-        user: user
-      },
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        throw new Error(error.response.data)
-      });
+  deleteReservation(user) {
+    return axios.delete(API_URL + '/' + user._id, {headers: authHeader()})
   }
 }
+
 export default new ReservationService();

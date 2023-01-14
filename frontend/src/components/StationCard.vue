@@ -28,71 +28,71 @@
       </v-card-item>
 
       <v-divider class="mx-4 mb-1"></v-divider>
-        <v-card-text>
-          <div><span class="font-weight-bold">Availability:</span> {{ this.stationAvailability }}</div>
-          <br>
-          <v-chip
-            class="ma-2"
-            color="green"
-            text-color="white"
-            v-if="this.station.status==='connected'"
-          >
-            <v-icon start icon="mdi-lightning-bolt"></v-icon>
-            In charging
-          </v-chip>
-          <div class="text-center" v-if="this.station.status==='reserved'">
-            <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
-            <div class="py-6">
-             <v-btn
-                  color="success"
-                  icon="mdi-lock-open-variant"
-                  @click="startCharge"
-                  size="x-large"
-                ></v-btn>
-            </div>
-            <v-progress-linear
-              :model-value="this.timerValue"
-              color="green"
-              height="25"
-            >
-              {{this.timerText}}
-            </v-progress-linear>
-          </div>
-          <br>
-
-        </v-card-text>
-        <v-card-actions>
-            <!--      IF RESERVED-->
-            <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+      <v-card-text>
+        <div><span class="font-weight-bold">Availability:</span> {{ this.stationAvailability }}</div>
+        <br>
+        <v-chip
+          class="ma-2"
+          color="green"
+          text-color="white"
+          v-if="this.station.status==='connected'"
+        >
+          <v-icon start icon="mdi-lightning-bolt"></v-icon>
+          In charging
+        </v-chip>
+        <div class="text-center" v-if="this.station.status==='reserved'">
+          <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
+          <div class="py-6">
             <v-btn
-              color="red"
-              v-if="this.station.status==='reserved'"
-              @click="releaseTower"
-            >
-              Cancel
-            </v-btn>
-            <!--      IF NOT RESERVED-->
-            <v-btn v-if="this.station.status==='free'"
-                   color="green"
-                   variant="text"
-                   :disabled="this.disabled"
-                   @click="occupyTower('connect')"
-            >
-              Connect
-            </v-btn>
-            <v-btn v-if="this.station.status==='free'"
-                   color="green"
-                   variant="text"
-                   :disabled="this.disabled"
-                   @click="occupyTower('reserve')"
-            >Reserve
-            </v-btn>
-            <v-spacer v-if="this.station.status==='free'"></v-spacer>
+              color="success"
+              icon="mdi-lock-open-variant"
+              @click="startCharge"
+              size="x-large"
+            ></v-btn>
+          </div>
+          <v-progress-linear
+            :model-value="this.timerValue"
+            color="green"
+            height="25"
+          >
+            {{ this.timerText }}
+          </v-progress-linear>
+        </div>
+        <br>
 
-            <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
+      </v-card-text>
+      <v-card-actions>
+        <!--      IF RESERVED-->
+        <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+        <v-btn
+          color="red"
+          v-if="this.station.status==='reserved'"
+          @click="releaseTower"
+        >
+          Cancel
+        </v-btn>
+        <!--      IF NOT RESERVED-->
+        <v-btn v-if="this.station.status==='free'"
+               color="green"
+               variant="text"
+               :disabled="this.disabled"
+               @click="occupyTower('connect')"
+        >
+          Connect
+        </v-btn>
+        <v-btn v-if="this.station.status==='free'"
+               color="green"
+               variant="text"
+               :disabled="this.disabled"
+               @click="occupyTower('reserve')"
+        >Reserve
+        </v-btn>
+        <v-spacer v-if="this.station.status==='free'"></v-spacer>
 
-          <v-btn color="primary" @click="closeStationCard">Close</v-btn>
-        </v-card-actions>
+        <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
+
+        <v-btn color="primary" @click="closeStationCard">Close</v-btn>
+      </v-card-actions>
     </v-card>
     <v-snackbar
       v-model="showSnackbar"
@@ -115,12 +115,12 @@
 // you print the station with station_id === that in a different colour
 
 
-
 <script>
 import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import ChargeService from "@/services/charge.service";
 import ReservationService from "@/services/reservation.service";
+import reservationService from "@/services/reservation.service";
 
 export default {
   data: () => ({
@@ -145,17 +145,17 @@ export default {
     },
     timer: function (data) {
 
-      if(this.firstValue === 0)this.firstValue = data
+      if (this.firstValue === 0) this.firstValue = data
 
-      if(data <= 60){
+      if (data <= 60) {
         this.timerText = "Reserved for " + data + "sec"
-      }else{
-        let minutes = Math.round(data/60)
-        let seconds = Math.abs(data-minutes*60)
+      } else {
+        let minutes = Math.round(data / 60)
+        let seconds = Math.abs(data - minutes * 60)
         this.timerText = "Reserved for " + minutes + "min " + seconds + "sec"
       }
 
-      this.timerValue = 100/this.firstValue*data
+      this.timerValue = 100 / this.firstValue * data
       // this.timerValue = 50
     },
     expired: function (data) {
@@ -164,7 +164,7 @@ export default {
       this.station.status = "free"
       this.$store.dispatch("userState/goToFreeStatus")
     },
-    endCharge: function (){
+    endCharge: function () {
       console.log('Expired')
       this.resetTimer()
       this.station.status = "free"
@@ -176,7 +176,7 @@ export default {
       this.user = this.$store.state.auth.user;
       return this.user
     },
-    disabled(){
+    disabled() {
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
       // return this.$store.state.userState.status.isCharging;
       return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
@@ -184,9 +184,6 @@ export default {
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
     }
-  },
-  mounted() {
-    console.log("Favourite: " + this.station.favourite)
   },
   methods: {
     resetTimer() {
@@ -200,37 +197,33 @@ export default {
     },
     occupyTower(option) {
       this.loading = true
-      console.log(this.currentUser._id)
       ReservationService.createReservation(this.currentUser, this.station).then(
-        (reservation) => {
-          console.log(reservation)
-          this.reservation = reservation
-          this.loading = false
+        (response) => {
+          this.reservation = response.data
           this.station.status = "reserved"
           this.$store.dispatch("userState/goToReservedStatus", this.station._id)
-          console.log("[STATION]: reserved tower" + reservation.tower_id)
-          this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
+          this.$socket.emit('startTimer', {station: this.station._id, tower: this.reservation.tower_id, reason: option})
           this.displaySnackbar("Station successfully reserved", "green")
         })
         .catch(err => {
-          console.log(err)
-          this.displaySnackbar(err, "red")
-          this.loading = false
+          this.displaySnackbar(err.response.data.message, "red")
         })
+      this.loading = false
     },
     releaseTower() {
       this.loading = true
       ReservationService.deleteReservation(this.currentUser)
         .then(res => {
-          console.log(res)
           this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
           this.resetTimer()
           this.station.status = "free"
           this.$store.dispatch("userState/goToFreeStatus")
           this.displaySnackbar("Station successfully unbooked", "green")
-          this.loading = false
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.displaySnackbar(err.response.data.message, "red")
+        })
+      this.loading = false
     },
     changeFavourite() {
       if (!this.station.favourite) {
@@ -239,8 +232,14 @@ export default {
         this.displaySnackbar("Station successfully added to favourite stations", "green")
       } else {
         this.station.favourite = false
-        UserService.removeFavouriteStation(this.currentUser._id, this.station._id).then(res => this.$socket.emit("changeFavourite"))
-        this.displaySnackbar("Station successfully removed from favourite stations", "green")
+        UserService.removeFavouriteStation(this.currentUser._id, this.station._id)
+          .then(res => {
+            this.$socket.emit("changeFavourite")
+            this.displaySnackbar("Station successfully removed from favourite stations", "green")
+          })
+          .catch(err => {
+            this.displaySnackbar(err.response.data.message, "red")
+          })
       }
     },
     startCharge() {
@@ -255,42 +254,46 @@ export default {
           this.switchTab("Charges")
           this.closeStationCard();
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.displaySnackbar(err.response.data.message, "red")
+        })
     },
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
     loadChargeHistory() {
-      ChargeService.getChargeHistory(this.currentUser._id).then(response => {
-        this.currentCharge = response.find(c => !c.isCompleted)
-        console.log(this.currentCharge)
-        this.charges = response.reverse()
-      }).catch(err => console.log(err))
+      ChargeService.getChargeHistory(this.currentUser._id)
+        .then(response => {
+          this.currentCharge = response.find(c => !c.isCompleted)
+          console.log(this.currentCharge)
+          this.charges = response.reverse()
+        })
+        .catch(err => {
+          this.displaySnackbar(err.response.data.message, "red")
+        })
     },
     endCharge() {
       ChargeService.endCharge(this.currentUser).then(response => {
-        console.log(response)
         this.$store.dispatch("userState/goToFreeStatus")
         this.$socket.emit('endCharge')
         this.loadChargeHistory()
         this.tab = "ChargingHistory"
       }).catch(err => {
-        console.log(err)
-        this.displaySnackbar(err, "red")
+        this.displaySnackbar(err.response.data.message, "red")
       })
     },
-    displaySnackbar(snackbarText, snackBarColor){
+    displaySnackbar(snackbarText, snackBarColor) {
       this.snackbarColor = snackBarColor
       this.snackbarText = snackbarText
       this.showSnackbar = true
     }
   }
-,
-props: {
-  showStationCard: Boolean,
-  station: Object
-},
-  emits: ['switchTab','close']
+  ,
+  props: {
+    showStationCard: Boolean,
+    station: Object
+  },
+  emits: ['switchTab', 'close']
 }
 </script>
 

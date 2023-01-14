@@ -33,7 +33,8 @@ require('./src/routes/user.routes')(app);
 require('./src/routes/station.routes')(app);
 require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);
-require('./src/routes/reservation.routes')(app);
+// require('./src/routes/reservation.routes')(app);
+require('./src/routes/reservation.routes2')(app);
 
 const httpServer = createServer(app);
 

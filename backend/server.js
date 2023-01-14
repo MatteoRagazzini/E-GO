@@ -79,8 +79,10 @@ io.use((socket, next) => {
 });
 
 var timeouts = {}
+var time = {}
 
 io.on("connection", (socket) => {
+
       socket.emit("session", {
           sessionId: socket.sessionId,
           userId: socket.userId,
@@ -88,13 +90,29 @@ io.on("connection", (socket) => {
     socket.join(socket.userId);
 
     let userId = socket.userId;
-    timeouts[userId] = setTimeout(() => {
-        socket.emit('Error', { error: { msg: 'You took too long' } });
-        socket.emit('AFK');
-    }, 60000);
+    // timeouts[userId] = setTimeout(() => {
+    //     socket.emit('Error', { error: { msg: 'You took too long' } });
+    //     socket.emit('AFK');
+    // }, 1800);
+
+
+    if(timeouts[userId]===undefined){
+        time[userId] = 100
+    }
+
+    if(timeouts[userId]!==undefined){
+        clearInterval(timeouts[userId])
+    }
+
+        timeouts[userId] = setInterval(() => {
+            console.log(time)
+            time[userId]--;
+            socket.emit(time[userId])
+        }, 1000)
 
 
     socket.on("disconnect", () => {
+
         sessionStore.saveSession(socket.sessionId, {
             sessionId: socket.sessionId,
             userId: socket.userId,

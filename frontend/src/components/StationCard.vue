@@ -16,7 +16,7 @@
       <v-card-item>
         <v-card-title>{{ this.station.address }}
           <v-btn
-            :color="this.station.favourite == true ? 'pink' : 'grey'"
+            :color="this.station.favourite === true ? 'pink' : 'grey'"
             @click="changeFavourite"
             variant="plain"
           >
@@ -104,27 +104,16 @@
   </v-dialog>
 </template>
 
-// you pass a prop in case the user has reserved or is charging containing the station id.
-// add a field to the station prop isReserved isCharging
-// this.this.station.status = this.station.status coming form the prop
-// this.station.status can be free reserved or connected.
-// has user reserved
-// if one of these != null
-// you print the station with station_id === that in a different colour
-
-
 <script>
 import UserService from "@/services/user.service";
-import StationService from "@/services/station.service";
 import ChargeService from "@/services/charge.service";
 import ReservationService from "@/services/reservation.service";
-import reservationService from "@/services/reservation.service";
+
 
 export default {
   data: () => ({
     loading: false,
     heartColor: "white",
-    // this.station.status: "free",
     timerText: "",
     timerValue: 100,
     firstValue: 0,
@@ -155,7 +144,6 @@ export default {
       }
 
       this.timerValue = 100 / this.firstValue * data
-      // this.timerValue = 50
     },
     battery: function (data) {
       this.value = data
@@ -180,7 +168,6 @@ export default {
     },
     disabled() {
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
-      // return this.$store.state.userState.status.isCharging;
       return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
     },
     stationAvailability() {
@@ -223,7 +210,6 @@ export default {
           this.displaySnackbar("Station successfully unbooked", "green")
         })
         .catch(err => {
-          console.log(err)
           this.displaySnackbar(err.response.data.message, "red")
         })
       this.loading = false
@@ -236,7 +222,7 @@ export default {
             this.$socket.emit("changeFavourite")
             this.displaySnackbar("Station successfully added to favourite stations", "green")
           }).catch(err => {
-          this.displaySnackbar(err, "red")
+          this.displaySnackbar(err.response.data.message, "red")
         })
       } else {
         this.station.favourite = false
@@ -253,13 +239,12 @@ export default {
     startCharge() {
       ChargeService.startCharge(this.currentUser, this.station, this.reservation.tower_id)
         .then(res => {
-          console.log(res)
           this.$socket.emit('startCharge')
           this.displaySnackbar("Charge Started", "green")
           this.station.status = "connected";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
-          this.loadChargeHistory()
+          this.loadCurrentCharge()
           this.switchTab("Charges")
           this.closeStationCard();
         })
@@ -270,10 +255,10 @@ export default {
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
-    loadChargeHistory() {
+    loadCurrentCharge() {
       ChargeService.getChargeHistory(this.currentUser._id)
         .then(response => {
-          this.currentCharge = response.data.find(c=>!c.isCompleted)
+          this.currentCharge = response.data.find(c => !c.isCompleted)
         })
         .catch(err => {
           this.displaySnackbar(err.response.data.message, "red")
@@ -284,9 +269,9 @@ export default {
         .then(response => {
           this.$store.dispatch("userState/goToFreeStatus")
           this.$socket.emit('endCharge')
-          this.loadChargeHistory()
+          this.currentCharge = {}
           this.tab = "ChargingHistory"
-      }).catch(err => {
+        }).catch(err => {
         this.displaySnackbar(err.response.data.message, "red")
       })
     },

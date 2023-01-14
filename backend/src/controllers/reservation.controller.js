@@ -2,11 +2,9 @@ const db = require("../models");
 const Reservation = db.reservation;
 const userController = require("../controllers/user.controller");
 const stationController = require("../controllers/station.controller");
-const {releaseTower} = require("./station.controller");
 
 
 exports.createReservation = (req, res) => {
-    console.log("[RESERVE] user: " + req.body.user.username, "| station: " + req.body.station.address)
     userController.setStatus("reserved", req.body.user._id, req.body.station._id)
         .then(result => stationController.occupyTower(req.body.user._id, req.body.station._id))
         .then(tower => {
@@ -22,9 +20,9 @@ exports.createReservation = (req, res) => {
             });
             reservation.save()
                 .then(res.status(200).send(reservation))
-                .catch(err => res.status(400).send({ message: err }))
+                .catch(err => res.status(400).send({message: err}))
         })
-        .catch(err => res.status(400).send({ message: err }))
+        .catch(err => res.status(400).send({message: err}))
 };
 
 
@@ -37,38 +35,37 @@ exports.deleteReservation = (req, res) => {
 }
 
 
-
 exports.deleteReservationPromise = (user_id) => {
     return new Promise((resolve, reject) => {
-    if (user_id === null) reject({message: "parameters not ready"})
+        if (user_id === null) reject({message: "parameters not ready"})
 
-    userController.setStatus("free", user_id, "")
-        .then(r => {
-            Reservation.find({user_id: user_id}, function (err, reservations) {
-                if (err) reject({message: "No reservations found for the user"})
-                else {
-                    const activeRes = reservations.find(r => r.isActive)
-                    if (activeRes === undefined) reject({message: "No active reservation found"})
+        userController.setStatus("free", user_id, "")
+            .then(r => {
+                Reservation.find({user_id: user_id}, function (err, reservations) {
+                    if (err) reject({message: "No reservations found for the user"})
                     else {
-                        activeRes.stopDateTime = new Date();
-                        activeRes.isActive = false;
-                        const difference = activeRes.stopDateTime - activeRes.startDateTime
+                        const activeRes = reservations.find(r => r.isActive)
+                        if (activeRes === undefined) reject({message: "No active reservation found"})
+                        else {
+                            activeRes.stopDateTime = new Date();
+                            activeRes.isActive = false;
+                            const difference = activeRes.stopDateTime - activeRes.startDateTime
 
-                        const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
-                        const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
+                            const diffHrs = Math.floor((difference % 86400000) / 3600000); // hours
+                            const diffMins = Math.round(((difference % 86400000) % 3600000) / 60000); // minutes
 
-                        activeRes.duration = diffHrs + "h:" + diffMins + "m"
-                        activeRes.save()
-                            .then(reservationSaved => stationController.releaseTower(reservationSaved.station_id, reservationSaved.tower_id))
-                            .then(result => {
-                                resolve(result)
-                            }).catch(err => {
-                            reject(err)
-                        })
+                            activeRes.duration = diffHrs + "h:" + diffMins + "m"
+                            activeRes.save()
+                                .then(reservationSaved => stationController.releaseTower(reservationSaved.station_id, reservationSaved.tower_id))
+                                .then(result => {
+                                    resolve(result)
+                                }).catch(err => {
+                                reject(err)
+                            })
+                        }
                     }
-                }
-            })
-        }).catch(err=>reject(err))
+                })
+            }).catch(err => reject(err))
     })
 }
 

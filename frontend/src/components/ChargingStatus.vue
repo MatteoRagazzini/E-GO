@@ -141,7 +141,7 @@ export default {
             this.charges = response.data.reverse()
           }
       }).catch(err=>{
-        this.displaySnackbar(err, "red")
+        this.displaySnackbar(err.response.data.message, "red")
       })
     },
     endCharge(){
@@ -151,7 +151,7 @@ export default {
           this.$socket.emit('endCharge')
           this.switchTab("Map")
         }).catch(err=>{
-          this.displaySnackbar(err, "red")
+          this.displaySnackbar(err.response.data.message, "red")
         })
     },
     switchTab(tab) {

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors')
 const mongoose = require('mongoose')
@@ -13,12 +12,9 @@ const socketPort = 3002
 const path = require('path')
 
 //Per gestire i parametri passati nel corpo della richiesta http.
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors())
-
-
-
 
 
 app.use('/static', express.static(__dirname + '/public'));
@@ -27,14 +23,10 @@ app.use('/static', express.static(__dirname + '/public'));
 //     res.status(404).send({url: req.originalUrl + ' not found'})
 // });
 
-require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
-// require('./src/routes/user.routes')(app);
 require('./src/routes/user.routes')(app);
 require('./src/routes/station.routes')(app);
-//require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);
-// require('./src/routes/reservation.routes')(app);
 require('./src/routes/reservation.routes')(app);
 
 const httpServer = createServer(app);
@@ -42,11 +34,11 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
         origins: ['http://localhost:8080'],
-        method: ["GET","POST"]
+        method: ["GET", "POST"]
     }
 });
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     let timer = null;
     let timeout = null;
     let time = null;
@@ -57,7 +49,7 @@ io.on('connection', function(socket) {
     socket.on('disconnect', function () {
         console.log('A user disconnected');
     });
-    socket.on('user', (userInfo)=>{
+    socket.on('user', (userInfo) => {
         user = userInfo
     })
 
@@ -65,7 +57,7 @@ io.on('connection', function(socket) {
         console.log("[SOCKET] ", data)
         io.emit("ChangeMarker", "inc");
         // in case of reserving I send back a longer timer
-        if(data.reason === "reserve") time = 500;
+        if (data.reason === "reserve") time = 500;
         else time = 25;
         socket.emit("timer", time)
         timer = setInterval(() => {
@@ -79,10 +71,10 @@ io.on('connection', function(socket) {
                 console.log("[SOCKET] ", res)
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err)
             })
-        }, time*1000)
+        }, time * 1000)
     });
 
     socket.on("cancelTimer", () => {
@@ -92,7 +84,7 @@ io.on('connection', function(socket) {
         io.emit("ChangeMarker", "dec");
     })
 
-    socket.on("startCharge",()=>{
+    socket.on("startCharge", () => {
         clearInterval(timer)
         clearTimeout(timeout)
         // to change the marker to green
@@ -101,7 +93,7 @@ io.on('connection', function(socket) {
         timer = setInterval(() => {
             battery++;
             socket.emit("battery", battery)
-            if(battery===100){
+            if (battery === 100) {
                 battery = (Math.round(Math.random() * (95 - 80) + 80));
                 socket.emit("chargeCompleted")
                 socket.emit("updateHistory")
@@ -110,7 +102,7 @@ io.on('connection', function(socket) {
         }, 1000)
     })
 
-    socket.on("endCharge",()=>{
+    socket.on("endCharge", () => {
         clearInterval(timer)
         clearTimeout(timeout)
         battery = (Math.round(Math.random() * (95 - 80) + 80));
@@ -120,7 +112,7 @@ io.on('connection', function(socket) {
         socket.emit("updateHistory")
     })
 
-    socket.on("changeFavourite",()=>{
+    socket.on("changeFavourite", () => {
         socket.emit("ChangeMarker")
     })
 })
@@ -146,12 +138,6 @@ db.mongoose
         console.error("Connection error", err);
         process.exit();
     });
-
-
-
-
-
-
 
 
 httpServer.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));

@@ -10,12 +10,6 @@ module.exports = function(app) {
         next();
     });
 
-    // app.get(
-    //     "/api/station/retrieve",
-    //     [authJwt.verifyToken],
-    //     controller.retrieveStations
-    // );
-
     app.route("/stations", [authJwt.verifyToken])
         .get(controller.retrieveStations)
 

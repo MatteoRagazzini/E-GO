@@ -53,13 +53,13 @@
       </v-autocomplete>
       <v-text-field
         v-model="username"
-        :disabled="!isEditing"
+        disabled=true
         color="white"
         label="Username"
       ></v-text-field>
       <v-text-field
         v-model="email"
-        :disabled="!isEditing"
+        disabled=true
         color="white"
         label="E-mail"
       ></v-text-field>

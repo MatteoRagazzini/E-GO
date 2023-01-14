@@ -36,8 +36,6 @@ exports.findStationByID = (station_id) => {
 
 
 exports.occupyTower = (user_id, station_id) => {
-
-
     return new Promise((resolve, reject) => {
 
         if (user_id === undefined || station_id === undefined) reject("Impossible to release tower due to undefined parameters")
@@ -57,7 +55,7 @@ exports.occupyTower = (user_id, station_id) => {
                             if (currVehicle === undefined) reject("user doesn't have a vehicle in use")
                             firstFreeTower.charging_vehicle_id = currVehicle.id
                         })
-                        .catch(err => reject(err))
+                        .catch(err => reject("Impossible to change user status"))
                     station.save()
                         .then(res => {
                             resolve(firstFreeTower)
@@ -73,15 +71,16 @@ exports.releaseTower = (station_id, tower_id) => {
 
     return new Promise((resolve, reject) => {
 
-        if (station_id === undefined || tower_id === undefined) reject("Impossible to release tower due to undefined parameters")
+        if (station_id === undefined || tower_id === undefined) reject({message:"Impossible to release tower due to undefined parameters"})
         console.log("[RELEASE TOWER] station: " + station_id, "| tower: " + tower_id)
 
 
         this.findStationByID(station_id)
             .then(station => {
                 const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
-                if (towerToFree === undefined) reject('tower not found')
-                else if (towerToFree.isAvailable) reject('tower not occupied')
+                console.log(towerToFree)
+                if (towerToFree === undefined) reject({message:'tower not found'})
+                else if (towerToFree.isAvailable) reject({message:'tower not occupied'})
                 else {
                     towerToFree.isAvailable = true
                     towerToFree.charging_vehicle_id = ""

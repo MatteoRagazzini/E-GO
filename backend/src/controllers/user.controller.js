@@ -51,17 +51,16 @@ exports.findUser = (user_id) => {
     })
 };
 
-// exports.setStatus = (status, user_id, station_id) => {
-//     return new Promise((resolve, reject) => {
-//         this.findUser(user_id).then(user => {
-//             user.status = status
-//             user.occupiedStationId = station_id
-//             user.save()
-//                 .then(resolve("status updated to " + status))
-//                 .catch(reject("problem in saving"))
-//         }).catch(err => reject(err))
-//     })
-// }
+exports.setStatus = (status, user_id, station_id) => {
+    return new Promise((resolve, reject) => {
+        User.findByIdAndUpdate(user_id,{status:status,occupiedStationId:station_id},{new: true},
+            (err, r) =>{
+            if(err) reject(err)
+                else resolve(r)
+            })
+    })
+
+}
 
 function performOperationVehicle(user, req, operation, NewVehicle = {}) {
     return new Promise((resolve, reject) => {
@@ -279,22 +278,22 @@ exports.getState = (req, res) => {
 // }
 //
 // // we need to pass true or false based on if it's charging or not.
-// exports.setIsCharging = (user_id, isCharging) => {
-//     return new Promise((resolve, reject) => {
-//         this.findUser(user_id)
-//             .then(user => {
-//                 user.isChargingAVehicle = isCharging;
-//                 user.save().then(
-//                     resolve(user)
-//                 ).catch(error => {
-//                         reject(error)
-//                     }
-//                 )
-//             }).catch(err => {
-//             console.log(err)
-//         })
-//     })
-// }
+exports.setIsCharging = (user_id, isCharging) => {
+    return new Promise((resolve, reject) => {
+        this.findUser(user_id)
+            .then(user => {
+                user.isChargingAVehicle = isCharging;
+                user.save().then(
+                    resolve(user)
+                ).catch(error => {
+                        reject(error)
+                    }
+                )
+            }).catch(err => {
+            console.log(err)
+        })
+    })
+}
 
 
 

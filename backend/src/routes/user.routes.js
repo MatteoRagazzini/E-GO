@@ -10,49 +10,24 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/api/test/all", controller.allAccess);
+    app.route("/users/:user_id", [authJwt.verifyToken],)
+        .get(controller.getState) //DONE // retrive status
+        .put(controller.updateUser) //DONE
 
-    app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+    app.route("/users/:user_id/vehicles", [authJwt.verifyToken],)
+        .get(controller.getVehicles) //DONE
+        .post(controller.addVehicle) //DONE
 
-    app.get(
-        "/api/test/mod",
-        [authJwt.verifyToken, authJwt.isModerator],
-        controller.moderatorBoard
-    );
+    app.route("/users/:user_id/vehicles/:vehicle_id", [authJwt.verifyToken],)
+        // .get(controller.getVehicle) //DONE
+        .put(controller.updateVehicle) //DONE
+        .delete(controller.deleteVehicle) //DONE
 
-    app.get(
-        "/api/test/admin",
-        [authJwt.verifyToken, authJwt.isAdmin],
-        controller.adminBoard
-    );
+    app.route("/users/:user_id/favouriteStations", [authJwt.verifyToken],)
+        .get(controller.getFavouriteStations) //DONE
+        .post(controller.addFavouriteStation) //DONE
 
-    app.post("/api/user/addVehicle", [authJwt.verifyToken], controller.addVehicle);
-
-    app.post("/api/user/removeVehicle", [authJwt.verifyToken], controller.removeVehicle);
-
-    app.get("/api/user/vehicles/:id", [authJwt.verifyToken], controller.getVehicles);
-
-    app.get("/api/user/:idUser/vehicles/:idVehicle", [authJwt.verifyToken], controller.getVehicle);
-
-    app.post("/api/user/updateVehicle", [authJwt.verifyToken], controller.updateVehicle);
-
-    app.post("/api/user/setVehicleInUse", [authJwt.verifyToken], controller.setVehicleInUse);
-
-    app.post("/api/user/addFavouriteStation", [authJwt.verifyToken], controller.addFavouriteStation);
-
-    app.post("/api/user/removeFavouriteStation", [authJwt.verifyToken], controller.removeFavouriteStation);
-
-    app.get("/api/user/favouriteStations/:id", [authJwt.verifyToken], controller.getFavouriteStations);
-
-    app.get("/api/user/state/:id", [authJwt.verifyToken], controller.getState);
-
-    app.post("/api/user/connect", [authJwt.verifyToken], controller.connect);
-
-    app.post("/api/user/updateProfile", [authJwt.verifyToken], controller.updateProfile);
-
-    app.post("/api/user/setShowOnlyFavourites", [authJwt.verifyToken], controller.setShowOnlyFavourites);
-
-
-    // app.post("/api/user/isCharging", [authJwt.verifyToken], controller.isCharging);
+    app.route("/users/:user_id/favouriteStations/:station_id", [authJwt.verifyToken],)
+        .delete(controller.deleteFavouriteStation)
 
 }

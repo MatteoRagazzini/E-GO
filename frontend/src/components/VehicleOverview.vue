@@ -135,6 +135,7 @@ export default {
 
       this.vehicles.forEach(v => v.isCurrent = false)
 
+
       this.vehicles[vehicleToUseIndex].isCurrent = true
       this.currentVehicle = vehicle._id
 

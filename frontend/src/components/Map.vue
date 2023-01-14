@@ -1,5 +1,4 @@
 <template>
-  <!--  <v-btn @click="this.clearMarkers">delete</v-btn>-->
   <v-btn
     id="showFavourite"
     icon
@@ -161,7 +160,9 @@ export default {
     },
     refreshUserState() {
       UserService.getState(this.currentUser._id).then(res => {
-        this.$store.dispatch("userState/refreshStatus", res.data)
+        const user =  res.data
+        let newState = {status:user.status , station:user.occupiedStationId}
+        this.$store.dispatch("userState/refreshStatus", newState)
       }).catch(err => {
         console.log(err)
       })

@@ -15,9 +15,7 @@
 
       <v-card-item>
         <v-card-title>{{ this.station.address }}
-          <!--       What is that icon for?-->
           <v-btn
-            icon
             :color="this.station.favourite == true ? 'pink' : 'grey'"
             @click="changeFavourite"
             variant="plain"
@@ -120,6 +118,7 @@ import UserService from "@/services/user.service";
 import StationService from "@/services/station.service";
 import ChargeService from "@/services/charge.service";
 import ReservationService from "@/services/reservation.service";
+import reservationService from "@/services/reservation.service";
 
 export default {
   data: () => ({
@@ -196,37 +195,34 @@ export default {
     },
     occupyTower(option) {
       this.loading = true
-      console.log(this.currentUser._id)
       ReservationService.createReservation(this.currentUser, this.station).then(
-        (reservation) => {
-          console.log(reservation)
-          this.reservation = reservation
-          this.loading = false
+        (response) => {
+          this.reservation = response.data
           this.station.status = "reserved"
           this.$store.dispatch("userState/goToReservedStatus", this.station._id)
-          console.log("[STATION]: reserved tower" + reservation.tower_id)
-          this.$socket.emit('startTimer', {station: this.station._id, tower: reservation.tower_id, reason: option})
+          this.$socket.emit('startTimer', {station: this.station._id, tower: this.reservation.tower_id, reason: option})
           this.displaySnackbar("Station successfully reserved", "green")
         })
         .catch(err => {
-          console.log(err)
-          this.displaySnackbar(err, "red")
-          this.loading = false
+          this.displaySnackbar(err.response.data.message, "red")
         })
+      this.loading = false
     },
     releaseTower() {
       this.loading = true
       ReservationService.deleteReservation(this.currentUser)
         .then(res => {
-          console.log(res)
           this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
           this.resetTimer()
           this.station.status = "free"
           this.$store.dispatch("userState/goToFreeStatus")
           this.displaySnackbar("Station successfully unbooked", "green")
-          this.loading = false
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+          this.displaySnackbar(err.response.data.message, "red")
+        })
+      this.loading = false
     },
     changeFavourite() {
       if (!this.station.favourite) {
@@ -246,7 +242,7 @@ export default {
             this.displaySnackbar("Station successfully removed from favourite stations", "green")
           })
           .catch(err => {
-            this.displaySnackbar(err, "red")
+            this.displaySnackbar(err.response.data.message, "red")
           })
       }
     },
@@ -262,28 +258,32 @@ export default {
           this.switchTab("Charges")
           this.closeStationCard();
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.displaySnackbar(err.response.data.message, "red")
+        })
     },
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
     loadChargeHistory() {
-      ChargeService.getChargeHistory(this.currentUser._id).then(response => {
-        this.currentCharge = response.find(c => !c.isCompleted)
-        console.log(this.currentCharge)
-        this.charges = response.reverse()
-      }).catch(err => console.log(err))
+      ChargeService.getChargeHistory(this.currentUser._id)
+        .then(response => {
+          this.currentCharge = response.find(c => !c.isCompleted)
+          console.log(this.currentCharge)
+          this.charges = response.reverse()
+        })
+        .catch(err => {
+          this.displaySnackbar(err.response.data.message, "red")
+        })
     },
     endCharge() {
       ChargeService.endCharge(this.currentUser).then(response => {
-        console.log(response)
         this.$store.dispatch("userState/goToFreeStatus")
         this.$socket.emit('endCharge')
         this.loadChargeHistory()
         this.tab = "ChargingHistory"
       }).catch(err => {
-        console.log(err)
-        this.displaySnackbar(err, "red")
+        this.displaySnackbar(err.response.data.message, "red")
       })
     },
     displaySnackbar(snackbarText, snackBarColor) {

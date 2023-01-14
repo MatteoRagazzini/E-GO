@@ -10,7 +10,7 @@ class UserService {
   }
 
   addVehicle(user_id, vehicle) {
-    return axios.post(API_URL + user_id + '/vehicles', {vehicle}, {headers: authHeader()})
+    return axios.post(API_URL + user_id + '/vehicles', vehicle, {headers: authHeader()})
   }
 
   removeVehicle(user_id, vehicle_id) {

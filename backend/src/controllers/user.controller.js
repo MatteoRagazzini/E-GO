@@ -15,17 +15,22 @@ exports.updateUser = (req, res) => {
 
 
 exports.getVehicles = (req, res) => {
-    this.findUser(req.params.user_id)
-        .then(user => res.status(200).json(user.vehicles))
-        .catch(err => res.status(400).send({message: err}))
+    User.findById(req.params.user_id,
+        (err, r) => queryCallback(res, err, r.vehicles,))
 }
+//
+// exports.addVehicle = (req, res) => {
+//     this.findUser(req.params.user_id)
+//         .then(user => performOperationVehicle(user, req, 'push', req.body.vehicle), )
+//         .then(result => res.status(200).send(result))
+//         .catch(err => res.status(400).send({message: err}))
+// }
 
 exports.addVehicle = (req, res) => {
-    this.findUser(req.params.user_id)
-        .then(user => performOperationVehicle(user, req, 'push', req.body.vehicle))
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(400).send({message: err}))
-}
+    console.log(req.body.vehicle)
+    User.update({_id:req.params.user_id}, {$push: {vehicles: req.body}}, {new: true},
+        (err, r) => queryCallbackWithError(res, err, r, r == null))
+};
 
 exports.updateVehicle = (req, res) => {
     this.findUser(req.params.user_id)

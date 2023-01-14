@@ -43,7 +43,6 @@
           >
             {{ this.snackbarText }}
           </v-snackbar>
-          <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
       </v-container>
       <v-container v-else>
         <div align="center">
@@ -119,9 +118,7 @@ export default {
       this.value = data
     },
     chargeCompleted:function(){
-      this.snackbarColor = "green"
-      this.snackbarText = "Charge completed"
-      this.showSnackbar = true
+      this.displaySnackbar("Charge completed", "green")
       this.chargingText = "Your vehicle is fully charged"
     },
     updateHistory:function(){
@@ -132,40 +129,39 @@ export default {
     }
   },
   mounted() {
-    console.log(this.isCharging)
     this.loadChargeHistory()
   },
   methods: {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id)
         .then(response=>{
-          console.log(response)
           this.currentCharge = response.data.find(c=>!c.isCompleted)
           if(response.data.length > 0){
             this.chargesExist = true
             this.charges = response.data.reverse()
           }
-      }).catch(err=>console.log(err))
+      }).catch(err=>{
+        this.displaySnackbar(err, "red")
+      })
     },
     endCharge(){
       ChargeService.endCharge(this.currentUser, this.value)
         .then(response=>{
           this.$store.dispatch("userState/goToFreeStatus")
           this.$socket.emit('endCharge')
-          //this.loadChargeHistory()
-          //this.value = 0
           this.switchTab("Map")
-          //this.tab = "ChargingHistory"
         }).catch(err=>{
-          this.snackbarColor = "red"
-          this.snackbarText =  err
-          this.showSnackbar = true
+          this.displaySnackbar(err, "red")
         })
-      console.log("end charge")
     },
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
+    displaySnackbar(snackbarText, snackBarColor) {
+      this.snackbarColor = snackBarColor
+      this.snackbarText = snackbarText
+      this.showSnackbar = true
+    }
   }
 }
 </script>

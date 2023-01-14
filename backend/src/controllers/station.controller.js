@@ -68,7 +68,6 @@ exports.occupyTower = (user_id, station_id) => {
 
 exports.releaseTower = (station_id, tower_id) => {
 
-
     return new Promise((resolve, reject) => {
 
         if (station_id === undefined || tower_id === undefined) reject({message:"Impossible to release tower due to undefined parameters"})
@@ -91,5 +90,51 @@ exports.releaseTower = (station_id, tower_id) => {
                 }
             })
             .catch(err => reject(err))
+    })
+}
+
+exports.registerStation = (req, res) => {
+
+    const station = new Station({
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        address: req.body.address,
+        totalTowers: req.body.totalTowers,
+        usedTowers: req.body.usedTowers,
+        towers: req.body.towers
+    });
+
+    station.save(err => {
+        if (err) {
+            res.status(500).send({message: err});
+            return;
+        }
+        res.status(200).send({message: "Station was registered successfully!"});
+    });
+};
+
+
+exports.freeAllStation = (req, res) => {
+    Station.find({}, function (err, stations) {
+        if (err)
+            res.send(err);
+        else {
+            if (stations == null) {
+                res.status(404).send({
+                    description: 'Stations not found'
+                });
+            } else {
+                stations.forEach(s => {
+                        s.towers.forEach(t => {
+                            t.isAvailable = true
+                            t.charging_vehicle_id = ""
+                        })
+                        s.usedTowers = 0
+                        s.save()
+                    }
+                )
+                res.status(200).send("All stations free")
+            }
+        }
     })
 }

@@ -10,21 +10,29 @@ module.exports = function(app) {
         next();
     });
 
-    app.get(
-        "/api/charge/history/:id",
-        [authJwt.verifyToken],
-        controller.getHistory
-    );
+    // app.get(
+    //     "/api/charge/history/:id",
+    //     [authJwt.verifyToken],
+    //     controller.getHistory
+    // );
+    //
+    // app.post(
+    //     "/api/charge/start",
+    //     [authJwt.verifyToken],
+    //     controller.startCharge
+    // );
+    //
+    // app.post(
+    //     "/api/charge/end",
+    //     [authJwt.verifyToken],
+    //     controller.endCharge
+    // );
 
-    app.post(
-        "/api/charge/start",
-        [authJwt.verifyToken],
-        controller.startCharge
-    );
+    app.route(("/charges/:user_id"),[authJwt.verifyToken])
+        .get(controller.getHistory)
 
-    app.post(
-        "/api/charge/end",
-        [authJwt.verifyToken],
-        controller.endCharge
-    );
+    app.route("/charges", [authJwt.verifyToken])
+        .post(controller.startCharge)
+        .post(controller.endCharge)
+    ;
 };

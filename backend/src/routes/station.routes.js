@@ -21,5 +21,5 @@ module.exports = function(app) {
 
     app.route("/stations", [authJwt.verifyToken, authJwt.isAdmin])
         .post(controller.registerStation)
-        .put(controller.freeAllStations) //DONE
+        .put(controller.freeAllStations)
 };

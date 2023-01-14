@@ -268,9 +268,10 @@ export default {
     loadChargeHistory() {
       ChargeService.getChargeHistory(this.currentUser._id)
         .then(response => {
-          this.currentCharge = response.find(c => !c.isCompleted)
+          console.log(response)
+          this.currentCharge = response.data.find(c=>!c.isCompleted)
           console.log(this.currentCharge)
-          this.charges = response.reverse()
+          this.charges = response.data.reverse()
         })
         .catch(err => {
           this.displaySnackbar(err.response.data.message, "red")

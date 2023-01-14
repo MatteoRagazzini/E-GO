@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from "@/services/auth-header";
 
-const API_URL = 'http://localhost:3000/api/charge/';
+const API_URL = 'http://localhost:3000/charges';
 
 class ChargeService {
   //ideally I would like to pass the vehicle_id directly here
@@ -34,15 +34,8 @@ class ChargeService {
   }
 
 
-  getChargeHistory(user_id,){
-    return axios.get(API_URL + 'history/'+ user_id,
-      { headers: authHeader()})
-      .then(response => {
-        return response.data;
-      }).catch(function (error){
-        console.log(error)
-        throw new Error(error.response.data)
-      });
+  getChargeHistory(user_id){
+    return axios.get(API_URL + '/'+ user_id, { headers: authHeader()})
   }
 
 }

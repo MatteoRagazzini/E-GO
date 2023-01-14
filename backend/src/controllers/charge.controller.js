@@ -139,11 +139,19 @@ exports.endCharge = (req, res) => {
 
 exports.getHistory = (req, res) => {
 // getting the charge only of the specific user
-    Charge.find({user_id: req.params.id}, function (err, station) {
-        if (err)
-            res.send(err);
-        res.json(station);
-    });
+//     this.findUser(req.params.user_id)
+//         .then(user => res.status(200).json(user.chargeHistory))
+//         .catch(err => res.status(400).send(err))
+
+    Charge.find({user_id: req.params.user_id})
+        .then(charges => res.status(200).json(charges))
+        .catch(err => res.status(400).send(err))
+
+//     Charge.find({user_id: req.params.user_id}, function (err, station) {
+//         if (err)
+//             res.send(err);
+//         res.json(station);
+//     });
 };
 
 //

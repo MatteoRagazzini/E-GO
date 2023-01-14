@@ -128,10 +128,12 @@ export default {
   },
   methods: {
     loadChargeHistory() {
-      ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
-        this.currentCharge = response.find(c=>!c.isCompleted)
-        console.log(this.currentCharge)
-        this.charges = response.reverse()
+      ChargeService.getChargeHistory(this.currentUser._id)
+        .then(response=>{
+          console.log(response)
+          this.currentCharge = response.data.find(c=>!c.isCompleted)
+          console.log(this.currentCharge)
+          this.charges = response.data.reverse()
       }).catch(err=>console.log(err))
     },
     endCharge(){

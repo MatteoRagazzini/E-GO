@@ -114,7 +114,7 @@ exports.registerStation = (req, res) => {
 };
 
 
-exports.freeAllStation = (req, res) => {
+exports.freeAllStations = (req, res) => {
     Station.find({}, function (err, stations) {
         if (err)
             res.send(err);

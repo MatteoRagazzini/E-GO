@@ -22,9 +22,9 @@ exports.createReservation = (req, res) => {
             });
             reservation.save()
                 .then(res.status(200).send(reservation))
-                .catch(err => res.status(400).send(err))
+                .catch(err => res.status(400).send({ message: err }))
         })
-        .catch(err => res.status(400).send(err))
+        .catch(err => res.status(400).send({ message: err }))
 };
 
 

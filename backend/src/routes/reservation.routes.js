@@ -15,7 +15,6 @@ module.exports = function(app) {
     ;
 
     app.route("/reservations/:user_id", [authJwt.verifyToken])
-        // .get(controller.getReservation)
         .delete(controller.deleteReservation)
     ;
 };

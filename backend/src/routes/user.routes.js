@@ -11,21 +11,20 @@ module.exports = function (app) {
     });
 
     app.route("/users/:user_id", [authJwt.verifyToken],)
-        .get(controller.getState) //DONE // retrive status
-        .put(controller.updateUser) //DONE
+        .get(controller.getState)
+        .put(controller.updateUser)
 
     app.route("/users/:user_id/vehicles", [authJwt.verifyToken],)
-        .get(controller.getVehicles) //DONE
-        .post(controller.addVehicle) //DONE
+        .get(controller.getVehicles)
+        .post(controller.addVehicle)
 
     app.route("/users/:user_id/vehicles/:vehicle_id", [authJwt.verifyToken],)
-        // .get(controller.getVehicle) //DONE
-        .put(controller.updateVehicle) //DONE
-        .delete(controller.deleteVehicle) //DONE
+        .put(controller.updateVehicle)
+        .delete(controller.deleteVehicle)
 
     app.route("/users/:user_id/favouriteStations", [authJwt.verifyToken],)
-        .get(controller.getFavouriteStations) //DONE
-        .post(controller.addFavouriteStation) //DONE
+        .get(controller.getFavouriteStations)
+        .post(controller.addFavouriteStation)
 
     app.route("/users/:user_id/favouriteStations/:station_id", [authJwt.verifyToken],)
         .delete(controller.deleteFavouriteStation)

@@ -58,7 +58,6 @@
       </v-container>
     </v-app-bar>
       <v-main>
-        <div>{{this.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
           >

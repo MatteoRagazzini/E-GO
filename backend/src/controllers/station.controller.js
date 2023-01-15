@@ -28,30 +28,30 @@ exports.findStationByID = (station_id) => {
 exports.occupyTower = (user_id, station_id) => {
     return new Promise((resolve, reject) => {
 
-        if (user_id === undefined || station_id === undefined) reject({message: "Impossible to release tower due to undefined parameters"})
+        if (user_id === undefined || station_id === undefined) reject( "Impossible to release tower due to undefined parameters")
 
         this.findStationByID(station_id)
             .then(station => {
                 const firstFreeTower = station.towers.find(s => s.isAvailable)
                 if (firstFreeTower === undefined) {
-                    reject({message: 'All towers occupied'})
+                    reject('All towers occupied')
                 } else {
                     firstFreeTower.isAvailable = false;
                     station.usedTowers = station.towers.filter(s => !s.isAvailable).length
                     UserController.setIsCharging(user_id, true)
                         .then(user => {
                             const currVehicle = user.vehicles.find(v => v.isCurrent)
-                            if (currVehicle === undefined) reject({message: "user doesn't have a vehicle in use"})
+                            if (currVehicle === undefined) reject( "Add a vehicle and put it in use to continue")
                             firstFreeTower.charging_vehicle_id = currVehicle.id
+                            station.save()
+                                .then(res => {
+                                    resolve(firstFreeTower)
+                                })
+                                .catch(err => reject(err))
                         })
-                        .catch(err => reject({message: "Impossible to change user status"}))
-                    station.save()
-                        .then(res => {
-                            resolve(firstFreeTower)
-                        })
-                        .catch(err => reject({message: err}))
+                        .catch(err => reject("Impossible to change user status"))
                 }
-            }).catch(err => reject({message: err}))
+            }).catch(err => reject(err))
     })
 }
 

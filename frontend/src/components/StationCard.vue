@@ -195,7 +195,7 @@ export default {
           this.displaySnackbar("Station successfully reserved", "green")
         })
         .catch(err => {
-          console.log(err)
+          console.log(err.response.data.message)
           this.displaySnackbar(err.response.data.message, "red")
         })
       this.loading = false

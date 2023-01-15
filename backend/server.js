@@ -77,7 +77,7 @@ io.on('connection', function (socket) {
             clearInterval(timer)
             reservationController.deleteReservationPromise(user).then(res => {
                 console.log("[SOCKET] ", res)
-                socket.emit("expired")
+                socket.emit("towerReleased")
                 io.emit("ChangeMarker", "dec");
             }).catch(err => {
                 console.log(err)
@@ -88,7 +88,7 @@ io.on('connection', function (socket) {
     socket.on("cancelTimer", () => {
         clearInterval(timer)
         clearTimeout(timeout)
-        socket.emit("expired")
+        socket.emit("towerReleased")
         io.emit("ChangeMarker", "dec");
     })
 
@@ -115,7 +115,7 @@ io.on('connection', function (socket) {
         clearTimeout(timeout)
         battery = (Math.round(Math.random() * (95 - 80) + 80));
         io.emit("ChangeMarker", "dec");
-        socket.emit("endCharge")
+        socket.emit("towerReleased")
         socket.emit("resetValue")
         socket.emit("updateHistory")
     })

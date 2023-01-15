@@ -148,14 +148,7 @@ export default {
     battery: function (data) {
       this.value = data
     },
-    expired: function (data) {
-      console.log('Expired')
-      this.resetTimer()
-      this.station.status = "free"
-      this.$store.dispatch("userState/goToFreeStatus")
-    },
-    endCharge: function () {
-      console.log('Expired')
+    towerReleased: function () {
       this.resetTimer()
       this.station.status = "free"
       this.$store.dispatch("userState/goToFreeStatus")
@@ -211,6 +204,7 @@ export default {
           this.displaySnackbar("Station successfully unbooked", "green")
         })
         .catch(err => {
+          console.log(err)
           this.displaySnackbar(err.response.data.message, "red")
         })
       this.loading = false

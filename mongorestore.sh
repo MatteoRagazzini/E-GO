@@ -1,1 +1,1 @@
-mongorestore -d bezkoder_db /bezkoder_db
+mongorestore -d E-GO-db /E-GO-db

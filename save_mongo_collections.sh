@@ -1,1 +1,1 @@
-mongodump -d bezkoder_db -o .
+mongodump -d E-GO-db -o .

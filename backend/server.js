@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
     let timeout = null;
     let time = null;
     let user = null;
-    let battery = (Math.round(Math.random() * (95 - 80) + 80));
+    let battery = (Math.round(Math.random() * (95 - 60) + 60));
     console.log('[SOCKET] A user connected');
     //Whenever someone disconnects this piece of code executed
     socket.on('disconnect', function () {

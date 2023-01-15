@@ -132,13 +132,12 @@ export default {
       console.log('socket connected')
     },
     timer: function (data) {
-
       if (this.firstValue === 0) this.firstValue = data
 
       if (data <= 60) {
         this.timerText = "Reserved for " + data + "sec"
       } else {
-        let minutes = Math.round(data / 60)
+        let minutes = Math.trunc(data / 60)
         let seconds = Math.abs(data - minutes * 60)
         this.timerText = "Reserved for " + minutes + "min " + seconds + "sec"
       }

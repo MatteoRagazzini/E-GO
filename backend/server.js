@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
         console.log("[SOCKET] ", data)
         io.emit("ChangeMarker", "inc");
         // in case of reserving I send back a longer timer
-        if (data.reason === "reserve") time = 500;
+        if (data.reason === "reserve") time = 1800;
         else time = 25;
         socket.emit("timer", time)
         timer = setInterval(() => {

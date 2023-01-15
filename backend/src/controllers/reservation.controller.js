@@ -4,32 +4,11 @@ const userController = require("../controllers/user.controller");
 const stationController = require("../controllers/station.controller");
 
 
-// exports.createReservation = (req, res) => {
-//     userController.setStatus("reserved", req.body.user._id, req.body.station._id)
-//         .then(result => stationController.occupyTower(req.body.user._id, req.body.station._id))
-//         .then(tower => {
-//             const reservation = new Reservation({
-//                 user_id: req.body.user._id,
-//                 station_id: req.body.station._id,
-//                 tower_id: tower.id,
-//                 vehicle_id: tower.charging_vehicle_id,
-//                 isActive: true,
-//                 startDateTime: new Date(),
-//                 stopDateTime: null,
-//                 duration: null,
-//             });
-//             reservation.save()
-//                 .then(res.status(200).send(reservation))
-//                 .catch(err => res.status(400).send({message: err}))
-//         })
-//         .catch(err => res.status(400).send({message: err}))
-// };
-
 exports.createReservation = (req, res) => {
     let reservation;
     stationController.occupyTower(req.body.user._id, req.body.station._id)
         .then(tower => {
-            userController.setStatus("reserved", req.body.user._id, req.body.station._id).then(user => {
+            userController.setStatus("RESERVED", req.body.user._id, req.body.station._id).then(user => {
                 reservation = new Reservation({
                     user_id: req.body.user._id,
                     station_id: req.body.station._id,
@@ -61,7 +40,7 @@ exports.deleteReservationPromise = (user_id) => {
     return new Promise((resolve, reject) => {
         if (user_id === null) reject({message: "parameters not ready"})
 
-        userController.setStatus("free", user_id, "")
+        userController.setStatus("FREE", user_id, "")
             .then(r => {
                 Reservation.find({user_id: user_id}, function (err, reservations) {
                     if (err) reject({message: "No reservations found for the user"})

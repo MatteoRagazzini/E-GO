@@ -36,7 +36,7 @@ exports.startCharge = (req, res) => {
             cost: null
         });
 
-        userController.setStatus("connected", req.body.user._id, req.body.station._id)
+        userController.setStatus("CONNECTED", req.body.user._id, req.body.station._id)
             .then(r =>
                 charge.save(err => {
                     if (err) {
@@ -53,7 +53,7 @@ exports.startCharge = (req, res) => {
 exports.endCharge = (req, res) => {
     if (req.params.user_id === null) res.status(400).send({message: "Charge object is missing"})
     else {
-        userController.setStatus("free", req.params.user_id, "")
+        userController.setStatus("FREE", req.params.user_id, "")
             .then(r => {
                 Charge.find({user_id: req.params.user_id}, function (err, charges) {
                     if (err) res.status(400).send({message: "Charge object is missing"})

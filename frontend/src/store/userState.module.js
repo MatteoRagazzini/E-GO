@@ -3,7 +3,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 console.log(user)
 const initialState = user
   ? { status:  user.status , station: user.occupiedStationId }
-  : { status:  "free", station: null };
+  : { status:  "FREE", station: null };
 
 export const userState = {
   namespaced: true,
@@ -24,15 +24,15 @@ export const userState = {
   },
   mutations: {
     toReservedStatus(state, station_id){
-      state.status = "reserved";
+      state.status = "RESERVED";
       state.station = station_id
     },
     toConnectedStatus(state, station_id){
-      state.status = "connected";
+      state.status = "CONNECTED";
       state.station = station_id
     },
     toFreeStatus(state){
-      state.status = "free";
+      state.status = "FREE";
     },
     refresh(state, newState){
       // this is a walk around to the fact that store is resetting everytime I refresh

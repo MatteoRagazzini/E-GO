@@ -33,12 +33,12 @@
           class="ma-2"
           color="green"
           text-color="white"
-          v-if="this.station.status==='connected'"
+          v-if="this.station.status==='CONNECTED'"
         >
           <v-icon start icon="mdi-lightning-bolt"></v-icon>
           In charging
         </v-chip>
-        <div class="text-center" v-if="this.station.status==='reserved'">
+        <div class="text-center" v-if="this.station.status==='RESERVED'">
           <div>Click to unlock Tower {{ this.reservation.tower_id }}</div>
           <div class="py-6">
             <v-btn
@@ -61,16 +61,16 @@
       </v-card-text>
       <v-card-actions>
         <!--      IF RESERVED-->
-        <v-spacer v-if="this.station.status==='reserved'"></v-spacer>
+        <v-spacer v-if="this.station.status==='RESERVED'"></v-spacer>
         <v-btn
           color="red"
-          v-if="this.station.status==='reserved'"
+          v-if="this.station.status==='RESERVED'"
           @click="releaseTower"
         >
           Cancel
         </v-btn>
         <!--      IF NOT RESERVED-->
-        <v-btn v-if="this.station.status==='free'"
+        <v-btn v-if="this.station.status==='FREE'"
                color="green"
                variant="text"
                :disabled="this.disabled"
@@ -78,16 +78,16 @@
         >
           Connect
         </v-btn>
-        <v-btn v-if="this.station.status==='free'"
+        <v-btn v-if="this.station.status==='FREE'"
                color="green"
                variant="text"
                :disabled="this.disabled"
                @click="occupyTower('reserve')"
         >Reserve
         </v-btn>
-        <v-spacer v-if="this.station.status==='free'"></v-spacer>
+        <v-spacer v-if="this.station.status==='FREE'"></v-spacer>
 
-        <v-btn color="primary" v-if="this.station.status==='connected'" @click="endCharge">Disconnect</v-btn>
+        <v-btn color="primary" v-if="this.station.status==='CONNECTED'" @click="endCharge">Disconnect</v-btn>
 
         <v-btn color="primary" @click="closeStationCard">Close</v-btn>
       </v-card-actions>
@@ -149,7 +149,7 @@ export default {
     },
     towerReleased: function () {
       this.resetTimer()
-      this.station.status = "free"
+      this.station.status = "FREE"
       this.$store.dispatch("userState/goToFreeStatus")
     }
   },
@@ -160,7 +160,7 @@ export default {
     },
     disabled() {
       // this is representing if the user has already interacted with a station. In this case all the others are disabled
-      return this.$store.state.userState.status === "reserved" || this.$store.state.userState.status === "connected";
+      return this.$store.state.userState.status === "RESERVED" || this.$store.state.userState.status === "CONNECTED";
     },
     stationAvailability() {
       return (this.station.totalTowers - this.station.usedTowers) + "/" + this.station.totalTowers
@@ -181,7 +181,7 @@ export default {
       ReservationService.createReservation(this.currentUser, this.station).then(
         (response) => {
           this.reservation = response.data
-          this.station.status = "reserved"
+          this.station.status = "RESERVED"
           this.$store.dispatch("userState/goToReservedStatus", this.station._id)
           this.$socket.emit('startTimer', {station: this.station._id, tower: this.reservation.tower_id, reason: option})
           this.displaySnackbar("Station successfully reserved", "green")
@@ -198,7 +198,7 @@ export default {
         .then(res => {
           this.$socket.emit('cancelTimer', {station: this.station._id, tower: this.reservation.tower_id})
           this.resetTimer()
-          this.station.status = "free"
+          this.station.status = "FREE"
           this.$store.dispatch("userState/goToFreeStatus")
           this.displaySnackbar("Station successfully unbooked", "green")
         })
@@ -235,7 +235,7 @@ export default {
         .then(res => {
           this.$socket.emit('startCharge')
           this.displaySnackbar("Charge Started", "green")
-          this.station.status = "connected";
+          this.station.status = "CONNECTED";
           // this updates the value in the store, so that if I go to the map it's changed real time
           this.$store.dispatch("userState/goToConnectedStatus", this.station._id)
           this.loadCurrentCharge()

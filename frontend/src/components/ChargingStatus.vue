@@ -109,8 +109,8 @@ export default {
       return this.user
     },
     isCharging() {
-      if(this.$store.state.userState.status === "connected") this.tab = "CurrentCharging";
-      return this.$store.state.userState.status === "connected";
+      if(this.$store.state.userState.status === "CONNECTED") this.tab = "CurrentCharging";
+      return this.$store.state.userState.status === "CONNECTED";
     }
   },
   sockets: {

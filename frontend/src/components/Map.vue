@@ -2,7 +2,7 @@
   <v-btn
     id="showFavourite"
     icon
-    :color="this.showOnlyFavourites == true ? 'pink' : 'grey'"
+    :color="this.showOnlyFavourites === true ? 'pink' : 'grey'"
     @click="setShowOnlyFavourites"
   >
     <v-icon>mdi-heart</v-icon>
@@ -168,7 +168,7 @@ export default {
       })
     },
     getStationStatus(station_id) {
-      return this.userStatus.station === station_id ? this.userStatus.status : "free"
+      return this.userStatus.station === station_id ? this.userStatus.status : "FREE"
     },
     clearMarkers() {
       StationsMarkers.forEach(m => {
@@ -189,7 +189,7 @@ export default {
             let marker = null
 
             const content = document.createElement("div");
-            content.classList.add("free")
+            content.classList.add("FREE")
             content.innerText = "" + (station.totalTowers - station.usedTowers)
             content.classList.add(this.getStationStatus(station._id))
 
@@ -240,7 +240,7 @@ export default {
   position: relative;
 }
 
-.free {
+.FREE {
   align-items: center;
   background-color: #f63232;
   border-radius: 50%;
@@ -257,7 +257,7 @@ export default {
   width: 32px;
 }
 
-.free::after {
+.FREE::after {
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-top: 7px solid #263238;
@@ -272,11 +272,11 @@ export default {
   z-index: 1;
 }
 
-.reserved {
+.RESERVED {
   background-color: #ff9445;
 }
 
-.connected {
+.CONNECTED {
   background-color: #74c000;
 }
 

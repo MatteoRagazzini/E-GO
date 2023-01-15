@@ -48,18 +48,20 @@
         <div align="center">
           <h2 class="py-10">Looks like you are not charging a vehicle</h2>
           <v-img
-            max-height="600"
-            max-width="600"
+            height="50vh"
+            width="60vh"
             :src=this.url
           ></v-img>
+          <span class="text-grey text-caption"><a class="text-grey text-caption" href="https://www.freepik.com/free-vector/worker-with-doubts_834551.htm#query=doubt&position=26&from_view=search&track=sph">Image by alekksall</a> on Freepik</span>
         </div>
         </v-container>
       </v-window-item>
       <v-window-item value="ChargingHistory"
       >
         <v-container id="scrollDiv">
-          <span v-if="!this.chargesExist">No charges yet</span>
-
+          <div align="center" v-if="!this.chargesExist">
+            <h2 class="py-10">You do not have any charges yet</h2>
+          </div>
           <v-list v-else
         >
           <v-list-item
@@ -81,7 +83,7 @@
 
 import ChargingCard from "@/components/ChargingCard";
 import ChargeService from "@/services/charge.service";
-import imgUrl from "@/assets/Charging_status.jpg";
+import imgUrl from "@/assets/worker_with_doubts.jpg";
 
 
 export default {

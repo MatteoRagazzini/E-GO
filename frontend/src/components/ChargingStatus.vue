@@ -162,7 +162,8 @@ export default {
       this.snackbarText = snackbarText
       this.showSnackbar = true
     }
-  }
+  },
+  emits: ['switchTab']
 }
 </script>
 

@@ -10,11 +10,13 @@ module.exports = function (app) {
         next();
     });
 
+    app.route("/charges", [authJwt.verifyToken])
+        .post(controller.startCharge)
+    ;
+
     app.route(("/charges/:user_id"), [authJwt.verifyToken])
         .get(controller.getHistory)
         .put(controller.endCharge)
 
-    app.route("/charges", [authJwt.verifyToken])
-        .post(controller.startCharge)
-    ;
+
 };

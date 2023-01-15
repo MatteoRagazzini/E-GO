@@ -9,21 +9,50 @@ exports.retrieveStations = (req, res) => {
         .catch(err => res.status(400).send({message: err}))
 };
 
-exports.findStationByID = (station_id) => {
-    return new Promise((resolve, reject) => {
-        Station.findById(station_id, function (err, station) {
-            if (err)
-                reject({message: err});
-            else {
-                if (station === null) {
-                    reject({message: 'Station not found'})
-                } else {
-                    resolve(station)
-                }
+exports.registerStation = (req, res) => {
+
+    const station = new Station({
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        address: req.body.address,
+        totalTowers: req.body.totalTowers,
+        usedTowers: req.body.usedTowers,
+        towers: req.body.towers
+    });
+
+    station.save(err => {
+        if (err) {
+            res.status(500).send({message: err});
+            return;
+        }
+        res.status(200).send({message: "Station was registered successfully!"});
+    });
+};
+
+
+exports.freeAllStations = (req, res) => {
+    Station.find({}, function (err, stations) {
+        if (err)
+            res.send({message: err});
+        else {
+            if (stations === null) {
+                res.status(404).send({message: 'Stations not found'});
+            } else {
+                stations.forEach(s => {
+                        s.towers.forEach(t => {
+                            t.isAvailable = true
+                            t.charging_vehicle_id = ""
+                        })
+                        s.usedTowers = 0
+                        s.save()
+                    }
+                )
+                res.status(200).send({message: "All stations free"})
             }
-        });
+        }
     })
 }
+
 
 exports.occupyTower = (user_id, station_id) => {
     return new Promise((resolve, reject) => {
@@ -80,46 +109,23 @@ exports.releaseTower = (station_id, tower_id) => {
     })
 }
 
-exports.registerStation = (req, res) => {
-
-    const station = new Station({
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        address: req.body.address,
-        totalTowers: req.body.totalTowers,
-        usedTowers: req.body.usedTowers,
-        towers: req.body.towers
-    });
-
-    station.save(err => {
-        if (err) {
-            res.status(500).send({message: err});
-            return;
-        }
-        res.status(200).send({message: "Station was registered successfully!"});
-    });
-};
 
 
-exports.freeAllStations = (req, res) => {
-    Station.find({}, function (err, stations) {
-        if (err)
-            res.send({message: err});
-        else {
-            if (stations === null) {
-                res.status(404).send({message: 'Stations not found'});
-            } else {
-                stations.forEach(s => {
-                        s.towers.forEach(t => {
-                            t.isAvailable = true
-                            t.charging_vehicle_id = ""
-                        })
-                        s.usedTowers = 0
-                        s.save()
-                    }
-                )
-                res.status(200).send({message: "All stations free"})
+
+
+exports.findStationByID = (station_id) => {
+    return new Promise((resolve, reject) => {
+        Station.findById(station_id, function (err, station) {
+            if (err)
+                reject({message: err});
+            else {
+                if (station === null) {
+                    reject({message: 'Station not found'})
+                } else {
+                    resolve(station)
+                }
             }
-        }
+        });
     })
 }
+

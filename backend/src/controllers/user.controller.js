@@ -18,13 +18,6 @@ exports.getVehicles = (req, res) => {
     User.findById(req.params.user_id,
         (err, r) => queryCallback(res, err, r.vehicles,))
 }
-//
-// exports.addVehicle = (req, res) => {
-//     this.findUser(req.params.user_id)
-//         .then(user => performOperationVehicle(user, req, 'push', req.body.vehicle), )
-//         .then(result => res.status(200).send(result))
-//         .catch(err => res.status(400).send({message: err}))
-// }
 
 exports.addVehicle = (req, res) => {
     console.log(req.body.vehicle)

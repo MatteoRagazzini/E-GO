@@ -7,142 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:3000/api/test/all",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/test/all",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"test",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/station/retrieve",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/test/all",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"test",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/charge/history",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjgxZDI2ZjFmMzIzNWI4Njc1ZjZlNCIsImlhdCI6MTY3MzAxMTE5MiwiZXhwIjoxNjczMDk3NTkyfQ.0SnBYQHB6wDMrfkIvkiTLmEWmmLMR6lBb0UrNeyQ78I",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:3000/api/charge/history",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"charge",
-						"history"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/user/vehicles",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjgxZDI2ZjFmMzIzNWI4Njc1ZjZlNCIsImlhdCI6MTY3MzAyMTU0NywiZXhwIjoxNjczMTA3OTQ3fQ.5hkpiVDxVaHTtoDKKHC8qDzWKag3WZ07FnPJAOX48fM",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:3000/api/user/vehicles/?id=63b81d26f1f3235b8675f6e4",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"user",
-						"vehicles",
-						""
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "63b81d26f1f3235b8675f6e4"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/user/favouriteStations",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYTljMGNiYThhYjIxZTgxZjBjZDkxYSIsImlhdCI6MTY3MjA2OTMzMiwiZXhwIjoxNjcyMTU1NzMyfQ.-XAsYlZXJun334ZLihXoRfwolgFeLI0EWyZSYzaD0S8",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:3000/api/user/favouriteStations?id=63a9c0cba8ab21e81f0cd91a",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"user",
-						"favouriteStations"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "63a9c0cba8ab21e81f0cd91a"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "http://localhost:3000/api/auth/signup",
 			"request": {
 				"method": "POST",
@@ -203,19 +67,39 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/addVehicle",
+			"name": "http://localhost:3000/users/:user_id",
 			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3Mjc1MTc5NiwiZXhwIjoxNjcyODM4MTk2fQ.bMI-sLu-QyDUD8HQf2HLz5Lv9FsZ_SRB1tPOxKTQVy0",
-						"type": "text"
-					}
-				],
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/users/:user_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/:user_id",
+			"request": {
+				"method": "PUT",
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b2d7782f4cc249c89f2231\",\n\"name\": \"bike\",\n\"vehicleType\": \"e-scooter\",\n\"img\": \"mdi-scooter\",\n\"batteryLevel\": 30,\n\"isCharging\": false,\n\"isCurrent\": false\n} ",
+					"raw": "            {\n                \"username\" : \"crazy chicken\",\n                \"email\": \"test\"\n            }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -223,35 +107,61 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/addVehicle",
+					"raw": "http://localhost:3000/users/:user_id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"addVehicle"
+						"users",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/updateVehicle",
+			"name": "http://localhost:3000/users/:user_id/vehicles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/users/:user_id/vehicles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						":user_id",
+						"vehicles"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/:user_id/vehicles",
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3Mjc1MTc5NiwiZXhwIjoxNjcyODM4MTk2fQ.bMI-sLu-QyDUD8HQf2HLz5Lv9FsZ_SRB1tPOxKTQVy0",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b2d7782f4cc249c89f2231\",\n\"vehicle_id\": \"63b42c1763f0af6336ed66cc\",\n\"name\": \"bike\",\n\"vehicleType\": \"e-bicycle\",\n\"img\": \"mdi-bicycle\",\n\"batteryLevel\": 30,\n\"isCharging\": false,\n\"isCurrent\": false\n} ",
+					"raw": "{\n    \"name\": \"scooterino\",\n    \"vehicleType\": \"e-scooter\",\n    \"img\": \"tua mamma\",\n    \"batteryLevel\": 100,\n    \"isCharging\": \"true\",\n    \"isCurrent\": \"false\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -259,35 +169,35 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/updateVehicle",
+					"raw": "http://localhost:3000/users/:user_id/vehicles",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"updateVehicle"
+						"users",
+						":user_id",
+						"vehicles"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/setVehicleInUse",
+			"name": "http://localhost:3000/users/:user_id/vehicles/:vehicle_id",
 			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3Mjc1NDY0OCwiZXhwIjoxNjcyODQxMDQ4fQ.tzmCX6Dys7o_7RyFLT2DVJi952SEsUHqLtZGdSkk18c",
-						"type": "text"
-					}
-				],
+				"method": "PUT",
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b2d7782f4cc249c89f2231\",\n\"vehicle_id\": \"63b4362b8a3ab3fc548abffa\",\n\"name\": \"scooter\",\n\"vehicleType\": \"e-scooter\",\n\"img\": \"mdi-scooter\",\n\"batteryLevel\": 30,\n\"isCharging\": false,\n\"isCurrent\": true\n} ",
+					"raw": "{\n    \"name\": \"scooterino\",\n    \"vehicleType\": \"e-scooter\",\n    \"img\": \"tua mamma\",\n    \"batteryLevel\": 100,\n    \"isCharging\": \"true\",\n    \"isCurrent\": \"true\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -295,35 +205,75 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/setVehicleInUse",
+					"raw": "http://localhost:3000/users/:user_id/vehicles/:vehicle_id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"setVehicleInUse"
+						"users",
+						":user_id",
+						"vehicles",
+						":vehicle_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": "63baf0b8017cc03debde7818"
+						},
+						{
+							"key": "vehicle_id",
+							"value": "63c19d307a53e424848b0d41"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/rechargeVehicle",
+			"name": "http://localhost:3000/users/:user_id/vehicles/:vehicle_id",
 			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3MjczMzY5MCwiZXhwIjoxNjcyODIwMDkwfQ.l0KoBubE5FuvyL2sIIpz9FeZbOsJ_TfZYbo1vXAwpJQ",
-						"type": "text"
-					}
-				],
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/users/:user_id/vehicles/:vehicle_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						":user_id",
+						"vehicles",
+						":vehicle_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": "63baf0b8017cc03debde7818"
+						},
+						{
+							"key": "vehicle_id",
+							"value": "63baf10b017cc03debde78a0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/:user_id/favouriteStations",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b2d7782f4cc249c89f2231\",\n\"vehicle_id\": \"63b2d7c22f4cc249c89f223a\"\n} ",
+					"raw": "{\n            \"name\": \"scooterino\",\n        \"vehicleType\": \"e-scooter\",\n        \"img\": \"tua mamma\",\n        \"batteryLevel\": 100,\n    \"isCharging\": \"false\",\n        \"isCurrent\": \"false\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -331,23 +281,195 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/rechargeVehicle",
+					"raw": "http://localhost:3000/users/:user_id/favouriteStations",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"rechargeVehicle"
+						"users",
+						":user_id",
+						"favouriteStations"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/isCharging",
+			"name": "http://localhost:3000/users/:user_id/favouriteStations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n    { \"station_id\": \"63b93267f4c6be7db647cff1\"}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/:user_id/favouriteStations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						":user_id",
+						"favouriteStations"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/:user_id/favouriteStations/:station_id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/:user_id/favouriteStations/:station_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						":user_id",
+						"favouriteStations",
+						":station_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": "63baf0b8017cc03debde7818"
+						},
+						{
+							"key": "station_id",
+							"value": "63b93267f4c6be7db647cff1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/stations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/stations",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "63c3210d21652a0f84969ade",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/stations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\n  \"latitude\": 48.13467538908992,\n   \"longitude\": 11.567487105018968,\n    \"address\": \"Sendlinger Tor\",\n    \"totalTowers\": 16,\n     \"usedTowers\": 0,\n     \"towers\" : [{\n            \"id\": 1,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 2,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 3,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 4,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 5,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 6,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 7,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 8,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 9,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 10,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 11,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 12,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 13,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 14,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 15,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        },\n        {\n            \"id\": 16,\n            \"isAvailable\": true,\n            \"charging_vehicle_id\": \"\"\n        }\n        ]\n  }     ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/admin/station/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"station",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/charges",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -357,9 +479,54 @@
 						"type": "text"
 					}
 				],
+				"url": {
+					"raw": "http://localhost:3000/charges",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"charges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/charges/:user_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/charges/:user_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"charges",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/charges/:user_id",
+			"request": {
+				"method": "PUT",
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b81d26f1f3235b8675f6e4\",\n\"isCharging\": false\n} ",
+					"raw": "            {\n                \"username\" : \"crazy chicken\",\n                \"email\": \"test\"\n            }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -367,71 +534,59 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/isCharging",
+					"raw": "http://localhost:3000/charges/:user_id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"isCharging"
+						"charges",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/user/removeVehicle",
+			"name": "http://localhost:3000/reservations",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjgxZDI2ZjFmMzIzNWI4Njc1ZjZlNCIsImlhdCI6MTY3MzAxMTE5MiwiZXhwIjoxNjczMDk3NTkyfQ.0SnBYQHB6wDMrfkIvkiTLmEWmmLMR6lBb0UrNeyQ78I",
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\"user_id\": \"639f31dae156cbe13bb8fd53\",\n\"vehicle_id\": \"639f3c6dc4a3ee33b7209759\"\n} ",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "http://localhost:3000/api/user/removeVehicle",
+					"raw": "http://localhost:3000/reservations",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"user",
-						"removeVehicle"
+						"reservations"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:3000/api/station/tower/occupy",
+			"name": "http://localhost:3000/reservations/:user_id",
 			"request": {
 				"method": "PUT",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\"id\": \"639f3e9c29a8a26bac492c5f\"\n} ",
+					"raw": "            {\n                \"username\" : \"crazy chicken\",\n                \"email\": \"test\"\n            }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -439,90 +594,21 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/station/tower/occupy",
+					"raw": "http://localhost:3000/users/:user_id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"api",
-						"station",
-						"tower",
-						"occupy"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/station/tower/free",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzOWYzMWRhZTE1NmNiZTEzYmI4ZmQ1MyIsImlhdCI6MTY3MjA0OTI1MywiZXhwIjoxNjcyMTM1NjUzfQ.hJznRJfmjfYM2UGKVzkm1_stSdBasw1vE-G3NvCWrnM",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\"station_id\": \"63a6d09bd1080075f534305c\",\n\"tower_id\": \"2\"\n} ",
-					"options": {
-						"raw": {
-							"language": "json"
+						"users",
+						":user_id"
+					],
+					"variable": [
+						{
+							"key": "user_id",
+							"value": null
 						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3000/api/station/tower/free",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"station",
-						"tower",
-						"free"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:3000/api/user/addFavouriteStation",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJkNzc4MmY0Y2MyNDljODlmMjIzMSIsImlhdCI6MTY3MjY2NTYzMSwiZXhwIjoxNjcyNzUyMDMxfQ.llKP9fUfpMgJOcaouautVpUSsLyRp6HTG43agvK_TW8",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\"user_id\": \"63b2d7782f4cc249c89f2231\",\n\"station_id\": \"63a6d09bd1080075f534305c\"\n} ",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3000/api/user/addFavouriteStation",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"user",
-						"addFavouriteStation"
 					]
 				}
 			},

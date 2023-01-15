@@ -4,20 +4,6 @@ const stationController = require("../controllers/station.controller");
 const userController = require("../controllers/user.controller");
 const User = db.user;
 
-function findUser(user_id) {
-    return new Promise((resolve, reject) => {
-        User.findById(user_id, function (err, user) {
-            if (err)
-                reject(err);
-            else {
-                if (user == null) reject("User not found")
-                else resolve(user)
-            }
-        })
-    })
-}
-
-
 exports.startCharge = (req, res) => {
     findUser(req.body.user._id).then(user => {
         const currVehicle = user.vehicles.find(v => v.isCurrent);
@@ -48,6 +34,13 @@ exports.startCharge = (req, res) => {
             )
     })
 };
+
+exports.getHistory = (req, res) => {
+    Charge.find({user_id: req.params.user_id})
+        .then(charges => res.status(200).json(charges))
+        .catch(err => res.status(400).send({message:err}))
+};
+
 
 
 exports.endCharge = (req, res) => {
@@ -90,9 +83,18 @@ exports.endCharge = (req, res) => {
 }
 
 
-exports.getHistory = (req, res) => {
-    Charge.find({user_id: req.params.user_id})
-        .then(charges => res.status(200).json(charges))
-        .catch(err => res.status(400).send({message:err}))
-};
 
+
+
+function findUser(user_id) {
+    return new Promise((resolve, reject) => {
+        User.findById(user_id, function (err, user) {
+            if (err)
+                reject(err);
+            else {
+                if (user == null) reject("User not found")
+                else resolve(user)
+            }
+        })
+    })
+}

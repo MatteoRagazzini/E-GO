@@ -1,4 +1,5 @@
 <template>
+  <v-app>
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
@@ -111,6 +112,7 @@
         </v-tab>
       </v-tabs>
     </v-bottom-navigation>
+    </v-app>
 </template>
 
 

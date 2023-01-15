@@ -1,6 +1,7 @@
 <template>
+  <div id="app">
     <v-app>
-      <template v-if="!currentUser">
+      <div v-if="!currentUser">
   <!--        <v-carousel-->
   <!--          height="auto"-->
   <!--        >-->
@@ -32,11 +33,12 @@
   <!--            <br>-->
   <!--          </v-carousel-item>-->
   <!--        </v-carousel>-->
-      </template>
-      <template v-if="user">
+      </div>
+      <div v-if="user">
           <home></home>
-      </template>
+      </div>
     </v-app>
+  </div>
 </template>
 
 <script>

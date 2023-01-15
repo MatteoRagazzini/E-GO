@@ -68,15 +68,15 @@ export default {
   },
   methods: {
     formatDate(date) {
-      if (date !== null) {
+      let formattedDate = ""
+      if (date) {
         let time = date.substring(11, 19)
         let day = date.substring(8, 10)
         let month = date.substring(5, 7)
         let year = date.substring(0, 4)
-        return day + "." + month + "." + year + ", " + time
-      } else {
-        return ""
+        formattedDate = day + "." + month + "." + year + ", " + time
       }
+      return formattedDate
     }
   }
 }

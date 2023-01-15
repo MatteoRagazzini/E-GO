@@ -2,9 +2,9 @@
     <v-app-bar :elevation="15" rounded>
       <v-container class="flex-row">
         <v-row>
-          <AutocompleteComponent @newLocation="updateLocation" :geoCords="this.geoCords" v-if="this.tab=='Map'"></AutocompleteComponent>
-          <!--         this is a trick which is not nice-->
-          <v-col class="flex-grow-1" v-if="this.tab!='Map'"></v-col>
+          <AutocompleteComponent @newLocation="updateLocation" :geoCords="this.geoCords" v-if="this.tab==='Map'"></AutocompleteComponent>
+
+          <v-col class="flex-grow-1" v-if="this.tab!=='Map'"></v-col>
           <v-col class="flex-grow-0">
             <v-menu>
               <template v-slot:activator="{ props }">
@@ -51,27 +51,14 @@
                       Logout
                     </v-btn>
                   </div>
-<!--                </v-list-item-content>-->
               </v-card>
-<!--              <v-list>-->
-<!--                <v-list-item>-->
-<!--                  <v-list-item-title @click="switchTab('Profile')">Profile</v-list-item-title>-->
-<!--&lt;!&ndash;                    <router-link to="/profile" custom v-slot="{ navigate }">&ndash;&gt;-->
-<!--&lt;!&ndash;                      <v-list-item-title @click="navigate">Profile</v-list-item-title>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </router-link>&ndash;&gt;-->
-<!--&lt;!&ndash;                <v-list-item-title @click="openProfile">Profile</v-list-item-title>&ndash;&gt;-->
-<!--                </v-list-item>-->
-<!--                <v-list-item>-->
-<!--                  <v-list-item-title @click="logOut">Logout</v-list-item-title>-->
-<!--                </v-list-item>-->
-<!--              </v-list>-->
             </v-menu>
           </v-col>
         </v-row>
       </v-container>
     </v-app-bar>
       <v-main>
-        <v-container class="flex-grow-1, flex-column" align="center">
+        <div>{{this.status}}</div>
         <v-window v-model="tab">
           <v-window-item value="Map"
           >
@@ -86,7 +73,7 @@
               <vehicle-overview v-if="currentUser!==undefined"></vehicle-overview>
             </v-card>
           </v-window-item>
-          <v-window-item value="Charging"
+          <v-window-item value="Charges"
           >
             <v-card>
               <charging-status @switchTab="switchTab"></charging-status>
@@ -99,7 +86,6 @@
             </v-card>
           </v-window-item>
         </v-window>
-        </v-container>
       </v-main>
     <v-bottom-navigation>
       <v-tabs
@@ -119,10 +105,10 @@
 
           Map
         </v-tab>
-        <v-tab value="Charging">
+        <v-tab value="Charges">
           <v-icon>mdi-battery</v-icon>
 
-          Charging
+          Charges
         </v-tab>
       </v-tabs>
     </v-bottom-navigation>
@@ -187,7 +173,7 @@ export default {
     },
     updateLocation(newLocation) {
       console.log("updating location in response of the emit from the AutocompleteComponent")
-      if(newLocation.lat == this.coords.lat && newLocation.lng == this.coords.lng){
+      if(newLocation.lat === this.coords.lat && newLocation.lng === this.coords.lng){
         this.$refs.Map.setMapCenter(newLocation)
       }
         this.coords.lat = newLocation.lat;

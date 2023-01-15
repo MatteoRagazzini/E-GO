@@ -10,38 +10,10 @@ module.exports = function(app) {
         next();
     });
 
-    app.get(
-        "/api/station/retrieve",
-        [authJwt.verifyToken],
-        controller.retrieveStations
-    );
+    app.route("/stations", [authJwt.verifyToken])
+        .get(controller.retrieveStations)
 
-    app.get(
-        "/api/station/retrieve/:id",
-        [authJwt.verifyToken],
-        controller.retrieveStation
-    );
-
-    app.post(
-        "/api/station/tower/occupy",
-        [authJwt.verifyToken],
-        controller.occupyTower
-    );
-
-    app.post(
-        "/api/station/tower/release",
-        [authJwt.verifyToken],
-        controller.releaseTower
-    );
-
-    app.post(
-        "/api/station/tower/unlock",
-        [authJwt.verifyToken],
-        controller.releaseTower
-    );
-
-    // app.post(
-    //     "/api/station/tower/connect",
-    //     controller.connect
-    // )
+    app.route("/stations", [authJwt.verifyToken, authJwt.isAdmin])
+        .post(controller.registerStation)
+        .put(controller.freeAllStations)
 };

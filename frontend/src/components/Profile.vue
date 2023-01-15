@@ -4,10 +4,8 @@
   >
     <v-toolbar
     >
-      <v-toolbar-title>
 <!--        <v-icon>mdi-account</v-icon>-->
-        Your profile
-      </v-toolbar-title>
+      <span class="px-3 text-h6">Your profile</span>
       <v-spacer></v-spacer>
       <v-btn
         color="green"
@@ -24,15 +22,16 @@
       </v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-avatar
-        size="164"
-        class="py-5"
-      >
-<!--        <v-icon size="x-large">mdi-account-circle</v-icon>-->
-            <v-img
-              :src=this.avatarImg
-            ></v-img>
-      </v-avatar>
+        <div align="center">
+        <v-avatar
+          size="164"
+          class="py-5"
+        >
+              <v-img
+                :src=this.avatarImg
+              ></v-img>
+        </v-avatar>
+      </div>
       <v-autocomplete
         v-model="this.avatar"
         :items="avatars"
@@ -54,13 +53,13 @@
       </v-autocomplete>
       <v-text-field
         v-model="username"
-        :disabled="!isEditing"
+        disabled=true
         color="white"
         label="Username"
       ></v-text-field>
       <v-text-field
         v-model="email"
-        :disabled="!isEditing"
+        disabled=true
         color="white"
         label="E-mail"
       ></v-text-field>
@@ -86,13 +85,13 @@
       </v-btn>
     </v-card-actions>
     <v-snackbar
-      v-model="hasSaved"
-      :timeout="2000"
+      v-model="showSnackbar"
+      :timeout="1800"
       absolute
-      color="green"
+      :color="snackbarColor"
       location="bottom left"
     >
-      Your profile has been updated
+      {{this.snackbarText}}
     </v-snackbar>
   </v-card>
 </template>
@@ -112,9 +111,11 @@ export default {
   name: 'Profile',
   data () {
     return {
+      showSnackbar: false,
+      snackbarText: "",
+      snackbarColor: "",
       username:"",
       email:"",
-      hasSaved: false,
       isEditing: null,
       paymentOption: "Pay per use",
       paymentOptions: [
@@ -140,15 +141,24 @@ export default {
       this.isEditing = !this.isEditing
       //update user in backend
       UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
-      UserService.updateProfile(this.currentUser._id, this.username, this.email, this.avatar)
-      //update user in store
-      const updatedUser = this.currentUser
-      updatedUser.username = this.username
-      updatedUser.email = this.email
-      updatedUser.profilePicture = this.avatar
-      this.$store.dispatch("auth/updateProfile", updatedUser)
-      this.$emit("save", this.avatar)
-      this.hasSaved = true
+        .then(res=>{
+          //update user in store
+          let updatedUser = this.currentUser
+          updatedUser.username = this.username
+          updatedUser.email = this.email
+          updatedUser.profilePicture = this.avatar
+          this.$store.dispatch("auth/updateProfile", updatedUser)
+          this.$emit("save", this.avatar)
+          this.showSnackbar = true
+          this.snackbarColor = "green"
+          this.snackbarText = "Profile saved correctly!"
+        }).catch(err=>{
+        this.showSnackbar = true
+        this.snackbarColor = "red"
+        this.snackbarText =  err.response.data.message
+      })
+
+
     },
 
     selectAvatar(){

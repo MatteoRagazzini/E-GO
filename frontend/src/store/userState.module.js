@@ -34,10 +34,10 @@ export const userState = {
     toFreeStatus(state){
       state.status = "free";
     },
-    refresh(state, status){
+    refresh(state, newState){
       // this is a walk around to the fact that store is resetting everytime I refresh
-      state.status = status.status;
-      state.station = status.station;
+      state.status = newState.status;
+      state.station = newState.station;
     }
   }
 };

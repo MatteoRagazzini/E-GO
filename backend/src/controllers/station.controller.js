@@ -1,112 +1,125 @@
 const db = require("../models");
 const Station = db.station;
-const UserController  = require("./user.controller")
+const UserController = require("./user.controller")
 
 
 exports.retrieveStations = (req, res) => {
-    Station.find({}, function (err, station) {
-        if (err)
-            res.send(err);
-        res.json(station);
-    });
+    Station.find({})
+        .then(stations => res.status(200).json(stations))
+        .catch(err => res.status(400).send({message: err}))
 };
 
-exports.retrieveStation = (req, res) => {
-    Station.findById(req.params.id, function (err, station) {
-        if (err)
-            res.send(err);
-        else {
-            if (station == null) {
-                res.status(404).send({
-                    description: 'Station not found'
-                });
-            } else {
-                res.json(station)
-            }
-        }
-    });
-};
-
-
-exports.occupyTower = (req, res) => {
-    this.TowerOccupy(req.body.user_id, req.body.station_id)
-        .then(result=>res.status(200).send(result))
-        .catch(err => res.status(500).send(err))
-}
-
-exports.releaseTower = (req, res) => {
-   this.TowerRelease(req.body.station_id, req.body.tower_id)
-       .then(result=>res.status(200).send(result))
-       .catch(err => res.status(500).send(err))
-}
-
-exports.TowerOccupy = (user_id,station_id) => {
-    console.log("[OCCUPY TOWER] user: " + user_id, "| station: " + station_id)
+exports.findStationByID = (station_id) => {
     return new Promise((resolve, reject) => {
         Station.findById(station_id, function (err, station) {
-            if (err){
-                reject(err);
-                console.log(err)
-            }
+            if (err)
+                reject({message: err});
             else {
-                if (station == null) {
-                    reject('Station not found')
+                if (station === null) {
+                    reject({message: 'Station not found'})
                 } else {
-                    const firstFreeTower = station.towers.find(s => s.isAvailable)
-                    if (firstFreeTower === undefined) {
-                        reject('All towers occupied')
-                    } else {
-                        firstFreeTower.isAvailable = false;
-                        firstFreeTower.charging_vehicle_id = user_id
-                        station.usedTowers = station.towers.filter(s => !s.isAvailable).length
-                        // if I will be able to retrieve the currentVehicle direclty I can refactor this
-                        UserController.setIsCharging(user_id, true).then(user=>{
-                            const currVehicle = user.vehicles.find(v=>v.isCurrent)
-                            if(currVehicle === undefined) reject("user doesn't have a vehicle in use")
-                            firstFreeTower.charging_vehicle_id = currVehicle.id
-                            console.log("here")
-                            station.save().then( res =>{
-                                    console.log("[OCCUPY TOWER]:station occupied");
-                                    resolve(firstFreeTower)
-                            }).catch(err => reject(err))
-                        }).catch(err=>(err))
-                    }
+                    resolve(station)
                 }
             }
-        })
+        });
     })
 }
 
-exports.TowerRelease = (station_id, tower_id) => {
-    console.log("[RELEASE TOWER] station: " + station_id, "| tower: " + tower_id)
+exports.occupyTower = (user_id, station_id) => {
     return new Promise((resolve, reject) => {
-        if(station_id=== undefined || tower_id === undefined) reject("Impossible to release tower due to undefined parameters")
-        else{
-            Station.findById(station_id, function (err, station) {
-                if (err) reject(err)
-                else {
-                    if (station == null) {
-                        reject('station not found')
-                    } else {
-                        console.log(station.towers.filter(t=>!t.isAvailable).map(t=>t.id),tower_id)
-                        const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
-                        if (towerToFree === undefined) reject('tower not found')
-                        else if (towerToFree.isAvailable) reject('tower not occupied')
-                        else {
-                            towerToFree.isAvailable = true
-                            towerToFree.charging_vehicle_id = ""
-                            station.usedTowers = station.towers.filter(s => !s.isAvailable).length
-                            station.save().then(
-                                resolve("tower released")
-                            ).catch(er => {
-                                    reject('error in saving')
-                                }
-                            )
-                        }
-                    }
-                }
 
+        if (user_id === undefined || station_id === undefined) reject({message: "Impossible to release tower due to undefined parameters"})
+
+        this.findStationByID(station_id)
+            .then(station => {
+                const firstFreeTower = station.towers.find(s => s.isAvailable)
+                if (firstFreeTower === undefined) {
+                    reject({message: 'All towers occupied'})
+                } else {
+                    firstFreeTower.isAvailable = false;
+                    station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                    UserController.setIsCharging(user_id, true)
+                        .then(user => {
+                            const currVehicle = user.vehicles.find(v => v.isCurrent)
+                            if (currVehicle === undefined) reject({message: "user doesn't have a vehicle in use"})
+                            firstFreeTower.charging_vehicle_id = currVehicle.id
+                        })
+                        .catch(err => reject({message: "Impossible to change user status"}))
+                    station.save()
+                        .then(res => {
+                            resolve(firstFreeTower)
+                        })
+                        .catch(err => reject({message: err}))
+                }
+            }).catch(err => reject({message: err}))
+    })
+}
+
+exports.releaseTower = (station_id, tower_id) => {
+
+    return new Promise((resolve, reject) => {
+
+        if (station_id === undefined || tower_id === undefined) reject({message: "Impossible to release tower due to undefined parameters"})
+
+
+        this.findStationByID(station_id)
+            .then(station => {
+                const towerToFree = station.towers.find(s => s.id.toString() === tower_id.toString())
+                if (towerToFree === undefined) reject({message: 'tower not found'})
+                else if (towerToFree.isAvailable) reject({message: 'tower not occupied'})
+                else {
+                    towerToFree.isAvailable = true
+                    towerToFree.charging_vehicle_id = ""
+                    station.usedTowers = station.towers.filter(s => !s.isAvailable).length
+                    station.save().then(
+                        resolve("tower released")
+                    ).catch(err => reject(err))
+                }
             })
+            .catch(err => reject(err))
+    })
+}
+
+exports.registerStation = (req, res) => {
+
+    const station = new Station({
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        address: req.body.address,
+        totalTowers: req.body.totalTowers,
+        usedTowers: req.body.usedTowers,
+        towers: req.body.towers
+    });
+
+    station.save(err => {
+        if (err) {
+            res.status(500).send({message: err});
+            return;
+        }
+        res.status(200).send({message: "Station was registered successfully!"});
+    });
+};
+
+
+exports.freeAllStations = (req, res) => {
+    Station.find({}, function (err, stations) {
+        if (err)
+            res.send({message: err});
+        else {
+            if (stations === null) {
+                res.status(404).send({message: 'Stations not found'});
+            } else {
+                stations.forEach(s => {
+                        s.towers.forEach(t => {
+                            t.isAvailable = true
+                            t.charging_vehicle_id = ""
+                        })
+                        s.usedTowers = 0
+                        s.save()
+                    }
+                )
+                res.status(200).send({message: "All stations free"})
+            }
         }
     })
 }

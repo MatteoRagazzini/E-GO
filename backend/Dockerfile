@@ -3,5 +3,7 @@ FROM node:14
 WORKDIR /backend
 COPY package.json .
 RUN npm install
-COPY . .
+COPY ./src ./src
+COPY ./test ./test
+COPY ./server.js ./server.js
 CMD npm start

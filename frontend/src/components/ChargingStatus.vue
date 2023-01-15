@@ -36,28 +36,31 @@
           </v-row>
           <v-snackbar
             v-model="showSnackbar"
-            :timeout="3000"
+            :timeout="1800"
             absolute
             location="bottom right"
             :color="snackbarColor"
           >
             {{ this.snackbarText }}
           </v-snackbar>
-          <!--    <v-alert type="success" dismissible v-model="showAlert">Successfully charged!</v-alert>-->
       </v-container>
       <v-container v-else>
+        <div align="center">
           <h2 class="py-10">Looks like you are not charging a vehicle</h2>
           <v-img
             max-height="600"
             max-width="600"
             :src=this.url
           ></v-img>
+        </div>
         </v-container>
       </v-window-item>
       <v-window-item value="ChargingHistory"
       >
         <v-container id="scrollDiv">
-        <v-list
+          <span v-if="!this.chargesExist">No charges yet</span>
+
+          <v-list v-else
         >
           <v-list-item
             v-for="charge in this.charges"
@@ -96,6 +99,7 @@ export default {
       currentCharge: {},
       chargingText: "Your vehicle is charging...",
       url: imgUrl,
+      chargesExist: false
     }
   },
 
@@ -114,44 +118,50 @@ export default {
       this.value = data
     },
     chargeCompleted:function(){
-      this.snackbarColor = "green"
-      this.snackbarText = "Charge completed"
-      this.showSnackbar = true
+      this.displaySnackbar("Charge completed", "green")
       this.chargingText = "Your vehicle is fully charged"
+    },
+    updateHistory:function(){
+      this.loadChargeHistory()
+    },
+    resetValue:function(){
+      this.value = 0;
     }
   },
   mounted() {
-    console.log(this.isCharging)
     this.loadChargeHistory()
   },
   methods: {
     loadChargeHistory() {
-      ChargeService.getChargeHistory(this.currentUser._id).then(response=>{
-        this.currentCharge = response.find(c=>!c.isCompleted)
-        console.log(this.currentCharge)
-        this.charges = response.reverse()
-      }).catch(err=>console.log(err))
+      ChargeService.getChargeHistory(this.currentUser._id)
+        .then(response=>{
+          this.currentCharge = response.data.find(c=>!c.isCompleted)
+          if(response.data.length > 0){
+            this.chargesExist = true
+            this.charges = response.data.reverse()
+          }
+      }).catch(err=>{
+        this.displaySnackbar(err.response.data.message, "red")
+      })
     },
     endCharge(){
-      ChargeService.endCharge(this.currentUser).then(response=>{
-        console.log(response)
-        this.$store.dispatch("userState/goToFreeStatus")
-        this.$socket.emit('endCharge')
-        this.loadChargeHistory()
-        this.value = 0
-        this.switchTab("Map")
-        //this.tab = "ChargingHistory"
-      }).catch(err=>{
-        console.log(err)
-        this.snackbarColor = "red"
-        this.snackbarText =  err
-        this.showSnackbar = true
-      })
-      console.log("end charge")
+      ChargeService.endCharge(this.currentUser, this.value)
+        .then(response=>{
+          this.$store.dispatch("userState/goToFreeStatus")
+          this.$socket.emit('endCharge')
+          this.switchTab("Map")
+        }).catch(err=>{
+          this.displaySnackbar(err.response.data.message, "red")
+        })
     },
     switchTab(tab) {
       this.$emit("switchTab", tab)
     },
+    displaySnackbar(snackbarText, snackBarColor) {
+      this.snackbarColor = snackBarColor
+      this.snackbarText = snackbarText
+      this.showSnackbar = true
+    }
   }
 }
 </script>

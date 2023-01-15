@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors')
 
@@ -14,12 +13,9 @@ require("dotenv").config();
 
 
 //Per gestire i parametri passati nel corpo della richiesta http.
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors())
-
-
-
 
 
 app.use('/static', express.static(__dirname + '/public'));
@@ -35,12 +31,9 @@ const SERVER_PORT = process.env.SERVER_DOCKER_PORT || 3000;
 const SOCKET_PORT = process.env.SOCKET_DOCKER_PORT || 3001;
 
 
-
-require('./src/routes/router')(app)
 require('./src/routes/auth.routes')(app);
 require('./src/routes/user.routes')(app);
 require('./src/routes/station.routes')(app);
-require('./src/routes/admin.routes')(app);
 require('./src/routes/charge.routes')(app);
 require('./src/routes/reservation.routes')(app);
 
@@ -53,7 +46,7 @@ const io = new Server(httpServer, {
     }
 });
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     let timer = null;
     let timeout = null;
     let time = null;
@@ -64,7 +57,7 @@ io.on('connection', function(socket) {
     socket.on('disconnect', function () {
         console.log('A user disconnected');
     });
-    socket.on('user', (userInfo)=>{
+    socket.on('user', (userInfo) => {
         user = userInfo
     })
 
@@ -72,7 +65,7 @@ io.on('connection', function(socket) {
         console.log("[SOCKET] ", data)
         io.emit("ChangeMarker", "inc");
         // in case of reserving I send back a longer timer
-        if(data.reason === "reserve") time = 500;
+        if (data.reason === "reserve") time = 500;
         else time = 25;
         socket.emit("timer", time)
         timer = setInterval(() => {
@@ -86,10 +79,10 @@ io.on('connection', function(socket) {
                 console.log("[SOCKET] ", res)
                 socket.emit("expired")
                 io.emit("ChangeMarker", "dec");
-            }).catch(err=>{
+            }).catch(err => {
                 console.log(err)
             })
-        }, time*1000)
+        }, time * 1000)
     });
 
     socket.on("cancelTimer", () => {
@@ -99,28 +92,36 @@ io.on('connection', function(socket) {
         io.emit("ChangeMarker", "dec");
     })
 
-    socket.on("startCharge",()=>{
+    socket.on("startCharge", () => {
         clearInterval(timer)
         clearTimeout(timeout)
         // to change the marker to green
+        socket.emit("updateHistory")
         socket.emit("ChangeMarker")
         timer = setInterval(() => {
             battery++;
             socket.emit("battery", battery)
-            if(battery===100){
+            if (battery === 100) {
                 battery = (Math.round(Math.random() * (95 - 80) + 80));
                 socket.emit("chargeCompleted")
+                socket.emit("updateHistory")
                 clearInterval(timer)
             }
         }, 1000)
     })
 
-    socket.on("endCharge",()=>{
+    socket.on("endCharge", () => {
         clearInterval(timer)
         clearTimeout(timeout)
         battery = (Math.round(Math.random() * (95 - 80) + 80));
         io.emit("ChangeMarker", "dec");
         socket.emit("endCharge")
+        socket.emit("resetValue")
+        socket.emit("updateHistory")
+    })
+
+    socket.on("changeFavourite", () => {
+        socket.emit("ChangeMarker")
     })
 })
 
@@ -147,12 +148,15 @@ db.mongoose
     });
 
 
+
 httpServer.listen(SOCKET_PORT, () => console.log(`Listening on port ${SOCKET_PORT}`));
 
-app.listen(SERVER_PORT, () => {
+const server =app.listen(SERVER_PORT, () => {
     console.log(`Example app listening on port ${SERVER_PORT}`)
 })
 
+
+module.exports = server
 
 function initial() {
     Role.estimatedDocumentCount((err, count) => {

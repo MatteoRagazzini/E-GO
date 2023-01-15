@@ -10,21 +10,11 @@ module.exports = function(app) {
         next();
     });
 
-    app.get(
-        "/api/reservation/:id",
-        [authJwt.verifyToken],
-        controller.getReservation
-    );
+    app.route("/reservations", [authJwt.verifyToken])
+        .post(controller.createReservation)
+    ;
 
-    app.post(
-        "/api/reservation/create",
-        [authJwt.verifyToken],
-        controller.createReservation
-    );
-
-    app.post(
-        "/api/reservation/delete",
-        [authJwt.verifyToken],
-        controller.deleteReservation
-    );
+    app.route("/reservations/:user_id", [authJwt.verifyToken])
+        .put(controller.deleteReservation)
+    ;
 };

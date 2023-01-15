@@ -2,9 +2,9 @@
   "name": "e-go",
   "version": "1.0.0",
   "description": "E-GO - one page web application for using charging stations for electric vehicles",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,9 @@
     "vuetify": "^2.6.12"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "mocha": "10.2.0",
     "deepmerge": "^4.2.2",
     "sass": "~1.32",
     "sass-loader": "^13.1.0"

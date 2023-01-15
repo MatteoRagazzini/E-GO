@@ -38,7 +38,7 @@ exports.occupyTower = (user_id, station_id) => {
                 } else {
                     firstFreeTower.isAvailable = false;
                     station.usedTowers = station.towers.filter(s => !s.isAvailable).length
-                    UserController.setIsCharging(user_id, true)
+                    UserController.findUser(user_id)
                         .then(user => {
                             const currVehicle = user.vehicles.find(v => v.isCurrent)
                             if (currVehicle === undefined) reject( "Add a vehicle and put it in use to continue")

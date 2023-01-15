@@ -155,25 +155,6 @@ function performOperationFavourites(user, req, operation, newStation = {}) {
     })
 }
 
-
-// // we need to pass true or false based on if it's charging or not.
-exports.setIsCharging = (user_id, isCharging) => {
-    return new Promise((resolve, reject) => {
-        this.findUser(user_id)
-            .then(user => {
-                user.isChargingAVehicle = isCharging;
-                user.save().then(
-                    resolve(user)
-                ).catch(error => {
-                         reject({message:error})
-                    }
-                )
-            }).catch(err => {
-            reject({message:err})
-        })
-    })
-}
-
 function queryCallbackWithError(res, err, queryResult, notFoundCond) {
     if (err)
         res.send({message: err});

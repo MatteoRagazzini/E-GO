@@ -9,8 +9,6 @@ const User = mongoose.model(
         profilePicture: String,
         status: String,
         occupiedStationId:String,
-        isChargingAVehicle: Boolean,
-        hasReserved : Boolean,
         showOnlyFavourites: Boolean,
         favouriteStations : [
             {
@@ -31,19 +29,7 @@ const User = mongoose.model(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Role"
             }
-        ],
-        chargeHistory: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Charge"
-            }
-        ],
-        reservations: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Reservation"
-            }
-        ],
+        ]
     })
 );
 

@@ -4,9 +4,9 @@ E-GO - is a single page web application that emulates an electric vehicles charg
 
 
 ## How to run it 
-once downnloaded and inside E-GO/:
+once downnloaded and inside E-GO/ run:
 
 ````
 docker-compose up
 
-```
+````

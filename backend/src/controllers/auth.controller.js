@@ -18,25 +18,19 @@ exports.signup = (req, res) => {
             res.status(500).send({ message: err });
             return;
         }
-
         if (req.body.roles) {
-            Role.find(
-                {
-                    name: { $in: req.body.roles }
-                },
+            Role.find({name: { $in: req.body.roles }},
                 (err, roles) => {
                     if (err) {
                         res.status(500).send({ message: err });
                         return;
                     }
-
                     user.roles = roles.map(role => role._id);
                     user.save(err => {
                         if (err) {
                             res.status(500).send({ message: err });
                             return;
                         }
-
                         res.send({ message: "User was registered successfully!" });
                     });
                 }
@@ -47,14 +41,12 @@ exports.signup = (req, res) => {
                     res.status(500).send({ message: err });
                     return;
                 }
-
                 user.roles = [role._id];
                 user.save(err => {
                     if (err) {
                         res.status(500).send({ message: err });
                         return;
                     }
-
                     res.send({ message: "User was registered successfully!" });
                 });
             });
@@ -98,12 +90,11 @@ exports.signin = (req, res) => {
             for (let i = 0; i < user.roles.length; i++) {
                 authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
             }
-            console.log(user)
+
             res.status(200).send({
                 user:user,
                 roles: authorities,
                 accessToken: token
             });
         });
-
 };

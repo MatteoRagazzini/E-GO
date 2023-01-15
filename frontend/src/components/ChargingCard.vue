@@ -16,9 +16,9 @@
       </v-chip>
     </v-card-title>
     <v-card-text>
-      <span class="font-weight-bold">StartTime:</span> {{ this.charge.startDateTime }}
+      <span class="font-weight-bold">Start time:</span> {{ formatDate(this.charge.startDateTime) }}
       <br>
-      <span class="font-weight-bold">EndTime:</span> {{ this.charge.stopDateTime }}
+      <span class="font-weight-bold">End time:</span> {{ formatDate(this.charge.stopDateTime) }}
       <br>
       <span class="font-weight-bold">Duration:</span> {{ this.charge.duration }}
       <br>
@@ -44,6 +44,9 @@ export default {
       stationName: "test",
     }
   },
+  mounted() {
+    console.log(this.charge)
+  },
   props: {
     charge: Object
   },
@@ -61,6 +64,19 @@ export default {
           text: "Not Completed",
           color: "red"
         }
+    }
+  },
+  methods: {
+    formatDate(date) {
+      let formattedDate = ""
+      if (date) {
+        let time = date.substring(11, 19)
+        let day = date.substring(8, 10)
+        let month = date.substring(5, 7)
+        let year = date.substring(0, 4)
+        formattedDate = day + "." + month + "." + year + ", " + time
+      }
+      return formattedDate
     }
   }
 }
